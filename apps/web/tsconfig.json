@@ -1,7 +1,6 @@
 {
   "extends": "@voeq/tsconfig/nextjs.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
