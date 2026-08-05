@@ -1,0 +1,10 @@
+{
+  "extends": "@voeq/tsconfig/library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "CommonJS",
+    "moduleResolution": "Node"
+  },
+  "include": ["src/**/*", "prisma/**/*"]
+}

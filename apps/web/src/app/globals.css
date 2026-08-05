@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 247 245 240;
+    --foreground: 15 61 46;
+    --muted: 239 235 224;
+    --muted-foreground: 15 61 46;
+    --border: 229 222 204;
+    --ring: 201 162 75;
+    --font-geist-sans: 'Geist', system-ui, -apple-system, sans-serif;
+    --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-fraunces: 'Fraunces', Georgia, serif;
+  }
+
+  .dark {
+    --background: 6 31 23;
+    --foreground: 247 245 240;
+    --muted: 15 61 46;
+    --muted-foreground: 247 245 240;
+    --border: 15 61 46;
+    --ring: 201 162 75;
+  }
+
+  * {
+    @apply border-cream-300 dark:border-forest-700;
+  }
+
+  body {
+    @apply bg-cream-100 text-forest-700 dark:bg-forest-900 dark:text-cream-100;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  ::selection {
+    @apply bg-gold-500/30 text-forest-900;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}

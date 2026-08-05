@@ -1,0 +1,67 @@
+import type { Request, Response, NextFunction } from 'express';
+import { jwtVerify } from 'jose';
+import { prisma } from '@voeq/db';
+import { env } from '../config/env';
+import { logAdminAction } from './audit';
+
+const secret = new TextEncoder().encode(env.AUTH_SECRET);
+
+export interface AdminRequest extends Request {
+  userId?: string;
+  userRole?: string;
+  impersonatedBy?: string;
+}
+
+export async function requireAdmin(req: AdminRequest, res: Response, next: NextFunction): Promise<void> {
+  const token = req.cookies?.['voeq_session'];
+  if (!token) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    if (typeof payload.sub !== 'string') {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true, role: true, status: true },
+    });
+
+    if (!user || (user.role !== 'admin' && user.role !== 'super_admin')) {
+      res.status(403).json({ error: 'Forbidden', message: 'Admin access required' });
+      return;
+    }
+
+    if (user.status === 'suspended') {
+      res.status(403).json({ error: 'Suspended' });
+      return;
+    }
+
+    req.userId = user.id;
+    req.userRole = user.role;
+    if (typeof payload.impersonatedBy === 'string') {
+      req.impersonatedBy = payload.impersonatedBy;
+    }
+
+    await logAdminAction(req, 'admin.accessed', 'admin', undefined, {
+      path: req.path,
+      method: req.method,
+    });
+
+    next();
+  } catch {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+}
+
+export function requireSuperAdmin(req: AdminRequest, res: Response, next: NextFunction): void {
+  if (req.userRole !== 'super_admin') {
+    res.status(403).json({ error: 'Forbidden', message: 'Super-admin access required' });
+    return;
+  }
+  next();
+}

@@ -1,0 +1,23 @@
+{
+  "name": "voeq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voeq — Find. Connect. Grow. A multi-university campus marketplace.",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "security:audit": "bash scripts/security-audit.sh"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.3",
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "pnpm@9.7.0"
+}

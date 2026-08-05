@@ -1,0 +1,43 @@
+import { Router } from 'express';
+import { requireAdmin } from '../../middleware/admin';
+import { statsRouter } from './stats';
+import { institutionsRouter } from './institutions';
+import { campusesRouter } from './campuses';
+import { categoriesRouter } from './categories';
+import { vendorsRouter } from './vendors';
+import { listingsRouter } from './listings';
+import { usersRouter } from './users';
+import { reviewsRouter } from './reviews';
+import { reportsRouter } from './reports';
+import { featuredRouter } from './featured';
+import { analyticsRouter } from './analytics';
+import { systemRouter } from './system';
+import { emailsRouter } from './emails';
+import { featuresRouter } from './features';
+import { auditRouter } from './audit';
+import { settingsRouter } from './settings';
+import { impersonateRouter } from './impersonate';
+import { exportRouter } from './export';
+
+export const adminRouter: ReturnType<typeof Router> = Router();
+
+adminRouter.use(requireAdmin);
+
+adminRouter.use('/stats', statsRouter);
+adminRouter.use('/institutions', institutionsRouter);
+adminRouter.use('/campuses', campusesRouter);
+adminRouter.use('/categories', categoriesRouter);
+adminRouter.use('/vendors', vendorsRouter);
+adminRouter.use('/listings', listingsRouter);
+adminRouter.use('/users', usersRouter);
+adminRouter.use('/reviews', reviewsRouter);
+adminRouter.use('/reports', reportsRouter);
+adminRouter.use('/featured', featuredRouter);
+adminRouter.use('/analytics', analyticsRouter);
+adminRouter.use('/system', systemRouter);
+adminRouter.use('/emails', emailsRouter);
+adminRouter.use('/features', featuresRouter);
+adminRouter.use('/audit', auditRouter);
+adminRouter.use('/settings', settingsRouter);
+adminRouter.use('/impersonate', impersonateRouter);
+adminRouter.use('/export', exportRouter);

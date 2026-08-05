@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/config/*"
+  - "packages/config/eslint-config"
+  - "packages/config/tsconfig"
+  - "packages/config/tailwind-preset"
