@@ -1,6 +1,9 @@
+import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import { withSentryConfig } from '@sentry/nextjs';
 
-/** @type {import('next').NextConfig} */
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -37,7 +40,15 @@ const nextConfig = {
       },
     ];
   },
-  transpilePackages: ['@voeq/shared', '@voeq/ui'],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        '@': resolve(__dirname, 'src'),
+      };
+    }
+    return config;
+  },
 };
 
 export default withSentryConfig(nextConfig, {
