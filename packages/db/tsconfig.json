@@ -15,9 +15,9 @@
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
     "sourceMap": true
   },
-  "include": ["src/**/*", "prisma/**/*"]
+  "include": ["src/**/*"]
 }

@@ -3,7 +3,7 @@ services:
     name: voeq-api
     runtime: node
     plan: free
-    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @voeq/db prisma:generate && pnpm --filter @voeq/shared build && pnpm --filter @voeq/ui build && pnpm --filter @voeq/api build
+    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @voeq/db prisma:generate && pnpm --filter @voeq/db build && pnpm --filter @voeq/shared build && pnpm --filter @voeq/ui build && pnpm --filter @voeq/api build
     startCommand: cd ../.. && pnpm --filter @voeq/api start
     healthCheckPath: /health
     envVars:
