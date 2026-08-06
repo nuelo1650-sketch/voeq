@@ -3,9 +3,8 @@ services:
     name: voeq-api
     runtime: node
     plan: free
-    rootDir: apps/api
-    buildCommand: pnpm install --filter @voeq/api... && pnpm --filter @voeq/api build
-    startCommand: pnpm --filter @voeq/api start
+    buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @voeq/db prisma:generate && pnpm --filter @voeq/api build
+    startCommand: cd ../.. && pnpm --filter @voeq/api start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -16,6 +15,8 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: DIRECT_URL
+        sync: false
       - key: LOG_LEVEL
         value: info
       - key: AUTH_SECRET
@@ -24,9 +25,17 @@ services:
         sync: false
       - key: AUTH_GOOGLE_CLIENT_SECRET
         sync: false
+      - key: AUTH_TRUST_HOST
+        value: true
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: WEB_URL
+        sync: false
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: ADMIN_EMAIL
         sync: false
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
@@ -38,4 +47,19 @@ services:
         sync: false
       - key: SIGHTENGINE_SECRET
         sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: IMPERSONATION_SECRET
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      - key: TURNSTILE_SECRET_KEY
+        sync: false
     autoDeploy: true
+
