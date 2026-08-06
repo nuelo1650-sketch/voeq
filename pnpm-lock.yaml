@@ -136,6 +136,9 @@ importers:
       '@voeq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.5.4(postcss@8.5.25)
       browser-image-compression:
         specifier: ^2.0.2
         version: 2.0.2
@@ -157,6 +160,9 @@ importers:
       papaparse:
         specifier: ^5.4.1
         version: 5.5.4
+      postcss:
+        specifier: ^8.4.41
+        version: 8.5.25
       posthog-js:
         specifier: ^1.157.2
         version: 1.413.0(preact-render-to-string@6.5.11(preact@10.11.3))
@@ -178,6 +184,9 @@ importers:
       recharts:
         specifier: ^2.12.7
         version: 2.15.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      tailwindcss:
+        specifier: ^3.4.10
+        version: 3.4.19(tsx@4.23.5)
       web-vitals:
         specifier: ^4.2.3
         version: 4.2.4
@@ -206,24 +215,15 @@ importers:
       '@voeq/tsconfig':
         specifier: workspace:*
         version: link:../../packages/config/tsconfig
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.5.4(postcss@8.5.25)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
       eslint-config-next:
         specifier: 14.2.5
         version: 14.2.5(eslint@8.57.1)(typescript@5.9.3)
-      postcss:
-        specifier: ^8.4.41
-        version: 8.5.25
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
-      tailwindcss:
-        specifier: ^3.4.10
-        version: 3.4.19(tsx@4.23.5)
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
