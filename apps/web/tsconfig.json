@@ -3,7 +3,7 @@
     "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "allowJs": false,
     "noEmit": true,
@@ -19,6 +19,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
