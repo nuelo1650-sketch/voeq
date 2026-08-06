@@ -12,12 +12,12 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
     "@voeq/eslint-config": "workspace:*",
     "@voeq/tsconfig": "workspace:*",
-    "eslint": "^8.57.0",
-    "typescript": "^5.5.4"
+    "eslint": "^8.57.0"
   }
 }
