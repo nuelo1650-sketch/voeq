@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'url';
 import { resolve } from 'path';
-import { withSentryConfig } from '@sentry/nextjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -52,11 +51,4 @@ const nextConfig = {
   transpilePackages: ['@voeq/shared', '@voeq/ui'],
 };
 
-export default withSentryConfig(nextConfig, {
-  silent: true,
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-  hideSourceMaps: true,
-  disableLogger: true,
-});
+export default nextConfig;
