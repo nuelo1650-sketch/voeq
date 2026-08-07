@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'url';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -40,6 +40,7 @@ const nextConfig = {
       },
     ];
   },
+  outputFileTracingRoot: join(__dirname, '../../'),
   transpilePackages: ['@voeq/shared', '@voeq/ui'],
 };
 
