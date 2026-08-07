@@ -1,10 +1,9 @@
 import { fileURLToPath } from 'url';
-import { resolve, join } from 'path';
+import { resolve } from 'path';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const nextConfig = {
-  output: 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
@@ -12,7 +11,6 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
     serverComponentsHmrCache: false,
   },
-  outputFileTracingRoot: join(__dirname, '../../'),
   images: {
     remotePatterns: [
       {
@@ -23,6 +21,11 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
+  },
+  transpilePackages: ['@voeq/shared', '@voeq/ui'],
+  webpack: (config) => {
+    config.resolve.alias['@'] = resolve(__dirname, 'src');
+    return config;
   },
   async headers() {
     return [
@@ -43,7 +46,6 @@ const nextConfig = {
       },
     ];
   },
-  transpilePackages: ['@voeq/shared', '@voeq/ui'],
 };
 
 export default nextConfig;
