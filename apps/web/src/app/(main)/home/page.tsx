@@ -20,9 +20,19 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const me = await getMe().catch(() => null);
+  let me: Awaited<ReturnType<typeof getMe>>['user'] | null = null;
+  try {
+    const result = await getMe();
+    me = result.user;
+  } catch {
+    me = null;
+  }
 
-  if (!me?.user.defaultCampusId) {
+  const campusId = me?.defaultCampusId ?? null;
+  const campusName = me?.defaultCampus?.name ?? 'your campus';
+  const institutionName = me?.defaultCampus?.institution.name ?? '';
+
+  if (!campusId) {
     return (
       <Container size="lg">
         <div className="py-16 text-center">
@@ -32,10 +42,6 @@ export default async function HomePage() {
     );
   }
 
-  const campusId = me.user.defaultCampusId;
-  const campusName = me.user.defaultCampus?.name ?? 'your campus';
-  const institutionName = me.user.defaultCampus?.institution.name ?? '';
-
   const recentResult = await listListings({ campusId, sort: 'newest', limit: 12 }).catch(() => null);
   const featuredResult = await listListings({ campusId, sort: 'newest', limit: 6 }).catch(() => null);
 
@@ -43,7 +49,7 @@ export default async function HomePage() {
   const featuredListings = featuredResult?.listings.slice(0, 6) ?? [];
 
   const greeting = getGreeting();
-  const firstName = me.user.name?.split(' ')[0] ?? 'there';
+  const firstName = me?.name?.split(' ')[0] ?? 'there';
 
   return (
     <>
