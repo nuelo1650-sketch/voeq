@@ -9,6 +9,7 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    outputFileTracingRoot: join(__dirname, '../../'),
   },
   images: {
     remotePatterns: [
@@ -40,7 +41,6 @@ const nextConfig = {
       },
     ];
   },
-  outputFileTracingRoot: join(__dirname, '../../'),
   transpilePackages: ['@voeq/shared', '@voeq/ui'],
 };
 
