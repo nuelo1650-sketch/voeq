@@ -18,11 +18,12 @@ import { ReviewListWrapper } from '@/components/reviews/ReviewListWrapper';
 import Image from 'next/image';
 
 interface VendorPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: VendorPageProps): Promise<Metadata> {
-  const result = await getVendor(params.slug).catch(() => null);
+  const { slug } = await params;
+  const result = await getVendor(slug).catch(() => null);
   if (!result) {
     return buildMetadata({ title: 'Vendor not found', noIndex: true });
   }
@@ -38,7 +39,8 @@ export async function generateMetadata({ params }: VendorPageProps): Promise<Met
 export const dynamic = 'force-dynamic';
 
 export default async function VendorPage({ params }: VendorPageProps) {
-  const result = await getVendor(params.slug).catch(() => null);
+  const { slug } = await params;
+  const result = await getVendor(slug).catch(() => null);
   if (!result) notFound();
 
   const { vendor } = result;

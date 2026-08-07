@@ -9,16 +9,17 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function EditListingPage({ params }: Props) {
+export default async function EditListingPage({ params }: Props) {
+  const { id } = await params;
   return (
     <div className="space-y-6">
       <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
         Edit listing
       </h1>
-      <ListingForm mode="edit" listingId={params.id} />
+      <ListingForm mode="edit" listingId={id} />
     </div>
   );
 }

@@ -16,10 +16,11 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 interface BrowsePageProps {
-  searchParams: { category?: string };
+  searchParams: Promise<{ category?: string }>;
 }
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
+  const params = await searchParams;
   const me = await getMe().catch(() => null);
   const campusId = me?.user.defaultCampusId;
   const campusName = me?.user.defaultCampus?.name ?? '';
@@ -38,13 +39,13 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   }
 
   const [listingsResult, categoriesResult] = await Promise.all([
-    listListings({ campusId, category: searchParams.category, limit: 40 }).catch(() => null),
+    listListings({ campusId, category: params.category, limit: 40 }).catch(() => null),
     getCategories().catch(() => null),
   ]);
 
   const listings = listingsResult?.listings ?? [];
   const categories = categoriesResult?.categories ?? [];
-  const activeCategory = searchParams.category;
+  const activeCategory = params.category;
 
   return (
     <>

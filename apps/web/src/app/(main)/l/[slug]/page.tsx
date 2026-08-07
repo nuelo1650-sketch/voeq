@@ -13,11 +13,12 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 
 interface ListingPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: ListingPageProps): Promise<Metadata> {
-  const result = await getListing(params.slug).catch(() => null);
+  const { slug } = await params;
+  const result = await getListing(slug).catch(() => null);
   if (!result) {
     return buildMetadata({ title: 'Listing not found', noIndex: true });
   }
@@ -33,7 +34,8 @@ export async function generateMetadata({ params }: ListingPageProps): Promise<Me
 export const dynamic = 'force-dynamic';
 
 export default async function ListingPage({ params }: ListingPageProps) {
-  const result = await getListing(params.slug).catch(() => null);
+  const { slug } = await params;
+  const result = await getListing(slug).catch(() => null);
   if (!result) notFound();
 
   const { listing } = result;

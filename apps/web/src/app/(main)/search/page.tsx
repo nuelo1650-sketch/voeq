@@ -18,12 +18,13 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 interface SearchPageProps {
-  searchParams: { q?: string; page?: string };
+  searchParams: Promise<{ q?: string; page?: string }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q?.trim() ?? '';
-  const page = Number(searchParams.page) || 1;
+  const params = await searchParams;
+  const query = params.q?.trim() ?? '';
+  const page = Number(params.page) || 1;
 
   const me = await getMe().catch(() => null);
   const campusId = me?.user.defaultCampusId;

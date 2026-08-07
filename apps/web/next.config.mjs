@@ -9,8 +9,8 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    outputFileTracingRoot: join(__dirname, '../../'),
   },
+  outputFileTracingRoot: join(__dirname, '../../'),
   images: {
     remotePatterns: [
       {

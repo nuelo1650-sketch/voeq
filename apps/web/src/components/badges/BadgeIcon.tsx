@@ -48,7 +48,7 @@ export function BadgeIcon({ badgeKey, size = 'md', showTooltip = true, className
 }
 
 function BadgeIconSvg({ name, className }: { name: string; className?: string }) {
-  const icons: Record<string, JSX.Element> = {
+  const icons: Record<string, React.ReactElement> = {
     sprout: <path d="M12 22v-8M12 14c0-3 2-6 6-6-1 4-3 6-6 6zm0 0c0-3-2-6-6-6 1 4 3 6 6 6z" />,
     star: <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />,
     'shield-check': <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4" />,
