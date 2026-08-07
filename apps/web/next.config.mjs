@@ -4,11 +4,13 @@ import { resolve, join } from 'path';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    serverComponentsHmrCache: false,
   },
   outputFileTracingRoot: join(__dirname, '../../'),
   images: {
