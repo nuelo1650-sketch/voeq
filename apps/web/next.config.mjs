@@ -28,6 +28,15 @@ const nextConfig = {
     config.resolve.alias['@'] = resolve(__dirname, 'src');
     return config;
   },
+  async redirects() {
+    return [
+      { source: '/about', destination: '/public-group/about', permanent: true },
+      { source: '/for-vendors', destination: '/public-group/for-vendors', permanent: true },
+      { source: '/privacy', destination: '/public-group/privacy', permanent: true },
+      { source: '/terms', destination: '/public-group/terms', permanent: true },
+      { source: '/vendor-agreement', destination: '/public-group/vendor-agreement', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
