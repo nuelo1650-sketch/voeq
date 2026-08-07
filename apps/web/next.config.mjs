@@ -7,7 +7,6 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  output: 'standalone',
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
