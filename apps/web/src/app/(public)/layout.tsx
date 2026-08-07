@@ -122,7 +122,28 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </div>
           </div>
 
-          <div className="mt-12 border-t border-forest-700 pt-6">
+          {/* Powered by Legacy LM */}
+          <div className="mt-8 flex flex-col items-center justify-center gap-2 border-t border-forest-700 pt-6 sm:flex-row sm:gap-3">
+            <span className="text-xs uppercase tracking-widest text-cream-100/50">
+              Powered by
+            </span>
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="group inline-flex items-center gap-2 transition hover:opacity-80"
+              aria-label="Legacy LM"
+            >
+              <span className="font-serif text-base font-semibold tracking-wide text-cream-100">
+                Legacy
+              </span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-xs font-bold text-forest-900 ring-1 ring-gold-400/30 transition group-hover:ring-gold-400/60">
+                LM
+              </span>
+            </a>
+          </div>
+
+          <div className="mt-6 border-t border-forest-700 pt-6">
             <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
               <p className="text-sm text-cream-100/50">
                 © 2026 Voeq Limited. All rights reserved.

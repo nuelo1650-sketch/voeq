@@ -5,7 +5,7 @@ import { Section } from '@/components/ui/Section';
 
 export const metadata: Metadata = buildMetadata({
   title: 'About',
-  description: 'Voeq is a marketplace directory connecting people with trusted vendors and service providers. Find. Connect. Grow.',
+  description: 'Voeq is a marketplace directory connecting people with trusted vendors and service providers around them. Find. Connect. Grow.',
   path: '/about',
 });
 
@@ -27,7 +27,7 @@ export default function AboutPage() {
             We started with a simple problem: people had no reliable way to discover the vendors and service providers around them. Word of mouth only goes so far. Voeq exists to close that gap — a directory where you can search by what you need, see verified vendors, and connect directly.
           </p>
           <p>
-            Today, Voeq is a discovery platform — helping you find people, and helping vendors get found. We&apos;re building toward a future where you can discover, connect, and transact with vendors directly on Voeq.
+            Voeq is a discovery platform — helping you find people, and helping vendors get found. We&apos;re built for campus discovery, community trust, and seamless communication.
           </p>
           <p className="pt-6 font-serif text-2xl text-forest-900 dark:text-cream-100">
             Find. Connect. Grow.
