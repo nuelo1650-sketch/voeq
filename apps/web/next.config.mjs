@@ -6,8 +6,14 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    workerThreads: false,
+    cpus: 1,
+  },
+  outputFileTracingExcludes: {
+    '*': ['.next/server/app/**/*_client-reference-manifest.js'],
   },
   images: {
     remotePatterns: [
