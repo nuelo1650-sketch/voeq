@@ -7,6 +7,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  output: 'standalone',
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
