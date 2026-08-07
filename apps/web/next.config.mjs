@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'url';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -7,6 +7,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  outputFileTracingRoot: join(__dirname, '.'),
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
     serverComponentsHmrCache: false,
