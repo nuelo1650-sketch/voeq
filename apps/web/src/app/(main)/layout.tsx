@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { AgreementModal } from '@/components/modals/AgreementModal';
 import { CampusSelectModal } from '@/components/modals/CampusSelectModal';
 import { getMe, signOut } from '@/lib/auth-client';
-import type { AuthUser } from '@/lib/auth-client';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
@@ -14,7 +13,6 @@ import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAgreement, setShowAgreement] = useState(false);
   const [showCampus, setShowCampus] = useState(false);
@@ -22,7 +20,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     getMe()
       .then((data) => {
-        setUser(data.user);
         if (!data.user.agreementAcceptedAt) {
           setShowAgreement(true);
         } else if (!data.user.defaultCampusId) {
