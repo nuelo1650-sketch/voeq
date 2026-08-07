@@ -7,13 +7,8 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  // Disable build tracing entirely to avoid ENOENT race condition
-  output: 'standalone',
-  outputFileTracing: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    workerThreads: false,
-    cpus: 1,
   },
   images: {
     remotePatterns: [
