@@ -32,8 +32,14 @@ export const metadata: Metadata = {
     creator: '@voeqng',
   },
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }, { url: '/favicon.ico' }],
-    apple: '/apple-icon.png',
+    icon: [
+      { url: '/Favicon.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon.ico', type: 'image/x-icon', sizes: 'any' },
+    ],
+    apple: '/Logo.png',
+    other: [
+      { rel: 'apple-touch-icon', url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   manifest: '/manifest.webmanifest',
   alternates: {
