@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 
 export async function isUserAdmin(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({

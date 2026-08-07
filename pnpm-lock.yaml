@@ -48,9 +48,6 @@ importers:
       '@upstash/redis':
         specifier: ^1.34.0
         version: 1.38.2
-      '@voeq/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@voeq/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -90,6 +87,9 @@ importers:
       pino-pretty:
         specifier: ^11.2.2
         version: 11.3.0
+      prisma:
+        specifier: ^6.0.0
+        version: 6.19.3(typescript@5.9.3)
       resend:
         specifier: ^4.0.0
         version: 4.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -257,34 +257,6 @@ importers:
   packages/config/tailwind-preset: {}
 
   packages/config/tsconfig: {}
-
-  packages/db:
-    dependencies:
-      '@prisma/client':
-        specifier: ^6.0.0
-        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
-      prisma:
-        specifier: ^6.0.0
-        version: 6.19.3(typescript@5.9.3)
-    devDependencies:
-      '@types/node':
-        specifier: ^20.14.13
-        version: 20.19.43
-      '@voeq/eslint-config':
-        specifier: workspace:*
-        version: link:../config/eslint-config
-      '@voeq/tsconfig':
-        specifier: workspace:*
-        version: link:../config/tsconfig
-      eslint:
-        specifier: ^8.57.0
-        version: 8.57.1
-      tsx:
-        specifier: ^4.17.0
-        version: 4.23.5
-      typescript:
-        specifier: ^5.5.4
-        version: 5.9.3
 
   packages/shared:
     dependencies:

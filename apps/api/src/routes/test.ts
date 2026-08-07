@@ -1,5 +1,5 @@
 import { Router, type Router as ExpressRouter } from 'express';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 
 export const testRouter: ExpressRouter = Router();
 

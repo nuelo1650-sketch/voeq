@@ -2,7 +2,7 @@ import { Router, type Response, type NextFunction } from 'express';
 import { SelectCampusSchema } from '../schemas/auth';
 import { setDefaultCampus } from '../services/auth.service';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { z } from 'zod';
 
 export const usersRouter: ReturnType<typeof Router> = Router();

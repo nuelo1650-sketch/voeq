@@ -1,6 +1,6 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { type AdminRequest } from '../../middleware/admin';
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 import { toCsv } from '../../services/admin/export.service';
 
 export const exportRouter: ReturnType<typeof Router> = Router();

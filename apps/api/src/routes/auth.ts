@@ -19,7 +19,7 @@ import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
 import { getSessionCookieName, getSessionCookieOptions } from '../services/session.service';
 import { env } from '../config/env';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { issueSession } from '../services/session.service';
 
 export const authRouter: ReturnType<typeof Router> = Router();

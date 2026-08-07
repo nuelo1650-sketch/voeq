@@ -7,14 +7,12 @@ declare global {
 export const prisma: PrismaClient =
   globalThis.prismaGlobal ??
   new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 
 if (process.env.NODE_ENV !== 'production') {
   globalThis.prismaGlobal = prisma;
 }
 
+// Re-export all Prisma types and enums for convenience
 export * from '@prisma/client';

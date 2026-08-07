@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import type { Vendor } from '@prisma/client';
 
 export async function calculateTrustScore(vendor: Vendor): Promise<number> {

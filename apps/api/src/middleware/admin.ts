@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { jwtVerify } from 'jose';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { env } from '../config/env';
 import { logAdminAction } from './audit';
 

@@ -1,5 +1,5 @@
-import { prisma } from '@voeq/db';
-import type { User } from '@voeq/db';
+import { prisma } from '../lib/db';
+import type { User } from '../lib/db';
 import { hashPassword, verifyPassword, validatePasswordStrength } from './password.service';
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
 import { sendOtpEmail, sendMagicLinkEmail } from './email.service';

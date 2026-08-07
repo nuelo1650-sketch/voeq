@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import type { EventType } from '@prisma/client';
 
 interface LogEventParams {

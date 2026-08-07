@@ -7,7 +7,7 @@ import {
 } from '../schemas/vendor';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimit } from '../middleware/rate-limit';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import {
   generateUniqueVendorSlug,
   calculateOnboardingProgress,

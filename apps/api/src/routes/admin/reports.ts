@@ -2,7 +2,7 @@ import { Router, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
 import { type AdminRequest } from '../../middleware/admin';
 import { logAdminAction } from '../../middleware/audit';
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 import { markReportFalse } from '../../services/report.service';
 
 export const reportsRouter: ReturnType<typeof Router> = Router();

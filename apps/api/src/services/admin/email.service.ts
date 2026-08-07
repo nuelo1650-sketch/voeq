@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 import { env } from '../../config/env';
 import { logger } from '../../config/logger';
 import { Resend } from 'resend';

@@ -8,7 +8,7 @@ import {
 } from '../schemas/review';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimit } from '../middleware/rate-limit';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import {
   createReview,
   updateReview,

@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { env } from '../config/env';
-import type { UserRole } from '@voeq/db';
+import type { UserRole } from '../lib/db';
 
 const secret = new TextEncoder().encode(env.AUTH_SECRET);
 const SESSION_DURATION_SECONDS = 30 * 24 * 60 * 60;

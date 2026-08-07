@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import type { Vendor } from '@prisma/client';
 
 export function generateSlug(name: string): string {

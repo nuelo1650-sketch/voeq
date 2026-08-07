@@ -1,7 +1,7 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { requireSuperAdmin } from '../../middleware/admin';
 import { type AdminRequest } from '../../middleware/admin';
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 import { syncAllVendorBadges } from '../../services/badge.service';
 
 export const systemRouter: ReturnType<typeof Router> = Router();

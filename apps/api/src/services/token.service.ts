@@ -1,6 +1,6 @@
 import { randomBytes, randomInt, createHash } from 'node:crypto';
-import { prisma } from '@voeq/db';
-import type { AuthTokenType } from '@voeq/db';
+import { prisma } from '../lib/db';
+import type { AuthTokenType } from '../lib/db';
 
 export function generateOtp(): string {
   return randomInt(100000, 1000000).toString();

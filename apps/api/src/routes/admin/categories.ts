@@ -1,7 +1,7 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
 import { type AdminRequest } from '../../middleware/admin';
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 
 export const categoriesRouter: ReturnType<typeof Router> = Router();
 

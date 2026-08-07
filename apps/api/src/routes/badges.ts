@@ -1,5 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { BADGE_DEFINITIONS } from '../services/badge.service';
 
 export const badgesRouter: ReturnType<typeof Router> = Router();

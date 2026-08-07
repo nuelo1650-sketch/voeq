@@ -1,6 +1,6 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { logEvent } from '../services/analytics.service';
 import { getClientIp } from '../utils/ip';
 import { optionalAuth, type AuthedRequest } from '../middleware/auth';

@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { Prisma } from '@prisma/client';
 
 export interface SearchParams {

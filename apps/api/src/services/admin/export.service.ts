@@ -1,4 +1,4 @@
-import { prisma } from '@voeq/db';
+import { prisma } from '../../lib/db';
 
 function escapeCsv(value: unknown): string {
   if (value === null || value === undefined) return '';

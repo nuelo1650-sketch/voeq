@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 
 export const institutionsRouter: ReturnType<typeof Router> = Router();
 

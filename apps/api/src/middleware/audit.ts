@@ -1,5 +1,5 @@
 import type { Response, NextFunction } from 'express';
-import { prisma } from '@voeq/db';
+import { prisma } from '../lib/db';
 import { getClientIp } from '../utils/ip';
 import type { AdminRequest } from './admin';
 
