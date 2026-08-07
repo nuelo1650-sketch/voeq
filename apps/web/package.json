@@ -20,7 +20,7 @@
     "browser-image-compression": "^2.0.2",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.30",
-    "next": "14.2.5",
+    "next": "14.2.18",
     "next-auth": "5.0.0-beta.20",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -49,7 +49,7 @@
     "@voeq/tailwind-preset": "workspace:*",
     "@voeq/tsconfig": "workspace:*",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "14.2.18",
     "sharp": "^0.33.5"
   }
 }
