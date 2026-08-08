@@ -33,11 +33,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.png', type: 'image/png', sizes: '180x180' },
       { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
       { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
     ],
     apple: '/apple-touch-icon.png',
     other: [
+      { rel: 'icon', url: '/favicon.png', sizes: '192x192' },
       { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },

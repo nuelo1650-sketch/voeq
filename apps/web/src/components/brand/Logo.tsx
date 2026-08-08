@@ -23,7 +23,7 @@ export function Logo({ size = 'md', className }: LogoProps) {
       alt="Voeq"
       width={width}
       height={height}
-      className={cn('object-contain', className)}
+      className={cn('object-contain brightness-0 dark:brightness-100 dark:invert', className)}
       loading="eager"
       decoding="async"
     />
