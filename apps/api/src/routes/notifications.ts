@@ -2,7 +2,7 @@ import { Router, type Response, type NextFunction } from 'express';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { prisma } from '../lib/db';
 
-export const notificationsRouter = Router();
+export const notificationsRouter: ReturnType<typeof Router> = Router();
 
 notificationsRouter.get('/', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {

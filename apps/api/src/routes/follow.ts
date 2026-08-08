@@ -4,7 +4,7 @@ import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimit } from '../middleware/rate-limit';
 import { prisma } from '../lib/db';
 
-export const followRouter = Router();
+export const followRouter: ReturnType<typeof Router> = Router();
 
 followRouter.post(
   '/',

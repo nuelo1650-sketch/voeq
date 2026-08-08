@@ -4,7 +4,7 @@ import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimit } from '../middleware/rate-limit';
 import { prisma } from '../lib/db';
 
-export const wishlistRouter = Router();
+export const wishlistRouter: ReturnType<typeof Router> = Router();
 
 wishlistRouter.get('/', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {

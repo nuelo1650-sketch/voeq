@@ -45,9 +45,7 @@ export function createApp(): Application {
       },
     }),
   );
-  const corsOrigin = env.CORS_ORIGINS
-    ? env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
-    : env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+  const corsOrigin = env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
   const corsOriginValidator = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     if (!origin || corsOrigin.includes(origin)) {
       callback(null, true);
