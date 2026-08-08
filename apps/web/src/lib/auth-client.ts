@@ -57,6 +57,11 @@ export async function signOut(): Promise<{ signedOut: true }> {
   return api<{ signedOut: true }>('/api/auth/signout', { method: 'POST' });
 }
 
+export async function signInWithGoogle(): Promise<never> {
+  window.location.href = '/api/auth/google';
+  return Promise.reject(new Error('Redirecting to Google'));
+}
+
 export async function acceptAgreement(version: string): Promise<{ accepted: true; user: AuthUser }> {
   return api('/api/auth/accept-agreement', {
     method: 'POST',
