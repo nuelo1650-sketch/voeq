@@ -27,7 +27,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         }
       })
       .catch(() => {
-        router.replace('/signin');
+        // Stay on the current page instead of forcing a redirect loop.
       })
       .finally(() => setLoading(false));
   }, [router]);
