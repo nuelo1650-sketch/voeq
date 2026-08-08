@@ -57,7 +57,7 @@ export function DisputeButton({ vendorId, vendorName, listingId, listingTitle }:
       <Modal isOpen={open} onClose={() => setOpen(false)} title={`Report ${vendorName}`}>
         <div className="p-6 space-y-4">
           <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
-            Tell us what's wrong. We'll review within 24 hours.
+            Tell us what&apos;s wrong. We&apos;ll review within 24 hours.
           </p>
 
           {listingTitle && (

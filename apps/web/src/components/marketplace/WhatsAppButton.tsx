@@ -90,7 +90,7 @@ export function WhatsAppButton({
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={`Message ${vendorName}`}>
         <div className="p-6 space-y-4">
           <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
-            Choose a message template. We'll open WhatsApp with your message pre-filled.
+            Choose a message template. We&apos;ll open WhatsApp with your message pre-filled.
           </p>
 
           <div className="space-y-2">
