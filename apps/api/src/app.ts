@@ -44,7 +44,7 @@ export function createApp(): Application {
   );
   const corsOrigin = env.CORS_ORIGINS
     ? env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
-    : env.CORS_ORIGIN;
+    : env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
   app.use(
     cors({
       origin: corsOrigin,

@@ -16,7 +16,7 @@ export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(4000),
-  CORS_ORIGIN: z.string().url().default('http://localhost:3000'),
+  CORS_ORIGIN: z.string().default('http://localhost:3000'),
   CORS_ORIGINS: z.string().optional(), // comma-separated list, overrides CORS_ORIGIN if set
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
