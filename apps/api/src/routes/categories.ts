@@ -78,7 +78,7 @@ categoriesRouter.post(
           slug,
           name: input.name,
           description: input.description,
-          iconName: input.iconName,
+          iconName: input.iconName ?? undefined,
           displayOrder,
           isOfficial: false,
           createdById: req.userId ?? null,

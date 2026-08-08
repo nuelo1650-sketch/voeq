@@ -9,8 +9,6 @@ const updateSchema = z.object({
   name: z.string().min(1).max(50).optional(),
   iconName: z.string().min(1).max(50).optional(),
   displayOrder: z.number().int().nonnegative().optional(),
-  requiresDelivery: z.boolean().optional(),
-  escrowDurationHours: z.number().int().min(1).max(168).optional(),
   isActive: z.boolean().optional(),
 });
 
