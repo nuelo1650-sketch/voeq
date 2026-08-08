@@ -160,3 +160,103 @@ export interface CategorySummary {
 export async function getCategories(): Promise<{ categories: CategorySummary[] }> {
   return api<{ categories: CategorySummary[] }>('/api/categories');
 }
+
+export interface WishlistItemSummary {
+  id: string;
+  vendorId: string;
+  vendor: {
+    id: string;
+    businessName: string;
+    businessSlug: string;
+    description: string;
+    profilePhotoUrl: string | null;
+    whatsappNumber: string;
+    verifiedBadge: boolean;
+    trustScore: number;
+    ratingAvg: number;
+    ratingCount: number;
+    institution: { name: string };
+    campus: { name: string };
+    listings: Array<{
+      id: string;
+      slug: string;
+      title: string;
+      description: string;
+      priceMin: number;
+      priceMax: number | null;
+      photoUrl: string | null;
+      categoryName: string;
+      categorySlug: string;
+    }>;
+  };
+  createdAt: string;
+}
+
+export async function getWishlist(): Promise<{ items: WishlistItemSummary[] }> {
+  return api<{ items: WishlistItemSummary[] }>('/api/wishlist');
+}
+
+export async function addToWishlist(vendorId: string): Promise<{ added: boolean }> {
+  return api<{ added: boolean }>('/api/wishlist', { method: 'POST', body: JSON.stringify({ vendorId }) });
+}
+
+export async function removeFromWishlist(vendorId: string): Promise<{ removed: boolean }> {
+  return api<{ removed: boolean }>(`/api/wishlist/${vendorId}`, { method: 'DELETE' });
+}
+
+export interface FollowSummary {
+  id: string;
+  vendorId: string;
+  vendor: {
+    id: string;
+    businessName: string;
+    businessSlug: string;
+    description: string;
+    profilePhotoUrl: string | null;
+    whatsappNumber: string;
+    verifiedBadge: boolean;
+    trustScore: number;
+    ratingAvg: number;
+    ratingCount: number;
+    institution: { name: string };
+    campus: { name: string };
+    listings: Array<{
+      id: string;
+      slug: string;
+      title: string;
+      description: string;
+      priceMin: number;
+      priceMax: number | null;
+      photoUrl: string | null;
+      categoryName: string;
+      categorySlug: string;
+    }>;
+  };
+  createdAt: string;
+}
+
+export async function followVendor(vendorId: string): Promise<{ following: boolean }> {
+  return api<{ following: boolean }>('/api/follow', { method: 'POST', body: JSON.stringify({ vendorId }) });
+}
+
+export async function unfollowVendor(vendorId: string): Promise<{ following: boolean }> {
+  return api<{ following: boolean }>(`/api/follow/${vendorId}`, { method: 'DELETE' });
+}
+
+export async function getFollowing(): Promise<{ follows: FollowSummary[] }> {
+  return api<{ follows: FollowSummary[] }>('/api/follow/following');
+}
+
+export interface NotificationSummary {
+  id: string;
+  type: 'review';
+  title: string;
+  body: string;
+  vendorSlug: string;
+  createdAt: string;
+  read: boolean;
+}
+
+export async function getNotifications(): Promise<{ notifications: NotificationSummary[] }> {
+  return api<{ notifications: NotificationSummary[] }>('/api/notifications');
+}

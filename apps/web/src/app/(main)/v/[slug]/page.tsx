@@ -10,6 +10,8 @@ import { WhatsAppButton } from '@/components/marketplace/WhatsAppButton';
 import { ShareButton } from '@/components/marketplace/ShareButton';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { RatingStars } from '@/components/marketplace/RatingStars';
+import { WishlistButton } from '@/components/marketplace/WishlistButton';
+import { FollowButton } from '@/components/marketplace/FollowButton';
 import { CheckIcon } from '@/components/icons';
 import { BadgeList } from '@/components/badges/BadgeList';
 import { TrustScore } from '@/components/badges/TrustScore';
@@ -119,6 +121,8 @@ export default async function VendorPage({ params }: VendorPageProps) {
           </div>
 
           <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[200px]">
+            <WishlistButton vendorId={vendor.id} className="w-full" />
+            <FollowButton vendorId={vendor.id} className="w-full" />
             <WhatsAppButton
               vendorId={vendor.id}
               vendorName={vendor.businessName}

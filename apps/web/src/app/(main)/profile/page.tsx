@@ -83,6 +83,20 @@ export default async function ProfilePage() {
 
           <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
             <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
+              Saved & Following
+            </h2>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Button variant="outline" asChild>
+                <a href="/wishlist">Wishlist</a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="/following">Following</a>
+              </Button>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+            <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
               Appearance
             </h2>
             <div className="mt-4 flex items-center justify-between">

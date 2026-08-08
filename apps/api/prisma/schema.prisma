@@ -170,6 +170,8 @@ model User {
   sessions         Session[]
   auditLogs        AuditLog[]
   events           EventLog[]
+  wishlistItems    WishlistItem[]
+  following        Follow[]
 
   @@index([email])
   @@index([role])
@@ -354,6 +356,8 @@ model Vendor {
   requests    Request[]
   badges      VendorBadge[]
   events      EventLog[]
+  wishlistItems WishlistItem[]
+  followers   Follow[]
 
   @@index([businessSlug])
   @@index([status])
@@ -614,4 +618,32 @@ model AuditLog {
   @@index([actorUserId])
   @@index([targetType, targetId])
   @@index([createdAt])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vendorId])
+  @@index([userId])
+  @@index([vendorId])
+}
+
+model Follow {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vendorId])
+  @@index([userId])
+  @@index([vendorId])
 }

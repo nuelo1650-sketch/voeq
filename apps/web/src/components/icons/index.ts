@@ -8,5 +8,7 @@ export { MenuIcon } from './ui/MenuIcon';
 export { WhatsAppIcon } from './ui/WhatsAppIcon';
 export { StarIcon } from './ui/StarIcon';
 export { ShareIcon } from './ui/ShareIcon';
+export { HeartIcon } from './ui/HeartIcon';
+export { PlusIcon } from './ui/PlusIcon';
 
 export * from './categories';

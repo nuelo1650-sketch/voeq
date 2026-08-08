@@ -10,6 +10,7 @@ import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </>
               )}
               <ThemeToggle />
+              {me && <NotificationBell />}
               {me && (
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   Sign out
