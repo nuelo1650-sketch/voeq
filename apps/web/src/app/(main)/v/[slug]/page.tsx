@@ -16,6 +16,7 @@ import { CheckIcon } from '@/components/icons';
 import { BadgeList } from '@/components/badges/BadgeList';
 import { TrustScore } from '@/components/badges/TrustScore';
 import { ReportButton } from '@/components/reports/ReportButton';
+import { DisputeButton } from '@/components/reports/DisputeButton';
 import { ReviewListWrapper } from '@/components/reviews/ReviewListWrapper';
 import Image from 'next/image';
 
@@ -162,7 +163,10 @@ export default async function VendorPage({ params }: VendorPageProps) {
         </div>
 
         <div className="mt-8 text-center">
-          <ReportButton vendorId={vendor.id} vendorName={vendor.businessName} />
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <ReportButton vendorId={vendor.id} vendorName={vendor.businessName} />
+            <DisputeButton vendorId={vendor.id} vendorName={vendor.businessName} />
+          </div>
         </div>
       </Container>
     </>

@@ -291,3 +291,15 @@ export async function generateWhatsAppMessage(params: {
     body: JSON.stringify(params),
   });
 }
+
+export async function fileDispute(data: { vendorId: string; listingId?: string; reason: string; details?: string }): Promise<{ dispute: any }> {
+  return api('/api/disputes', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function getMyDisputes(): Promise<{ disputes: any[] }> {
+  return api('/api/disputes/mine');
+}
+
+export async function getVendorOpenStatus(slug: string): Promise<{ isOpen: boolean; hours?: any }> {
+  return api(`/api/vendors/${slug}/is-open`);
+}

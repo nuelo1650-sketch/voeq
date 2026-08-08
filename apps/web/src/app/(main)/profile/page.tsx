@@ -95,6 +95,9 @@ export default async function ProfilePage() {
               <Button variant="outline" asChild>
                 <a href="/buyer-dashboard">Buyer Dashboard</a>
               </Button>
+              <Button variant="outline" asChild>
+                <a href="/settings">Settings</a>
+              </Button>
             </div>
           </div>
 

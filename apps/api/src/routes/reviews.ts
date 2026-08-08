@@ -123,3 +123,88 @@ reviewsRouter.patch(
     }
   },
 );
+
+const commentSchema = z.object({ content: z.string().min(1).max(1000) });
+
+// Review interactions
+reviewsRouter.get('/:reviewId/comments', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { reviewId } = req.params;
+    if (!reviewId) {
+      res.status(400).json({ error: 'ReviewIdRequired' });
+      return;
+    }
+    const comments = await prisma.reviewComment.findMany({
+      where: { reviewId },
+      orderBy: { createdAt: 'asc' },
+      include: { author: { select: { name: true, image: true } } },
+    });
+    res.status(200).json({ comments });
+  } catch (error) {
+    next(error);
+  }
+});
+
+reviewsRouter.post('/:reviewId/comments', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
+  try {
+    const { reviewId } = req.params;
+    if (!reviewId) {
+      res.status(400).json({ error: 'ReviewIdRequired' });
+      return;
+    }
+    const { content } = commentSchema.parse(req.body);
+
+    const review = await prisma.review.findUnique({ where: { id: reviewId } });
+    if (!review || review.status !== 'visible') {
+      res.status(404).json({ error: 'NotFound' });
+      return;
+    }
+
+    const comment = await prisma.reviewComment.create({
+      data: { reviewId, authorId: req.userId!, content },
+      include: { author: { select: { name: true, image: true } } },
+    });
+
+    res.status(201).json({ comment });
+  } catch (error) {
+    next(error);
+  }
+});
+
+reviewsRouter.post('/:reviewId/like', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
+  try {
+    const { reviewId } = req.params;
+    if (!reviewId) {
+      res.status(400).json({ error: 'ReviewIdRequired' });
+      return;
+    }
+
+    const existing = await prisma.reviewLike.findUnique({
+      where: { reviewId_userId: { reviewId, userId: req.userId! } },
+    });
+
+    if (existing) {
+      await prisma.reviewLike.delete({ where: { id: existing.id } });
+      res.status(200).json({ liked: false });
+    } else {
+      await prisma.reviewLike.create({ data: { reviewId, userId: req.userId! } });
+      res.status(200).json({ liked: true });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+reviewsRouter.get('/:reviewId/likes', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { reviewId } = req.params;
+    if (!reviewId) {
+      res.status(400).json({ error: 'ReviewIdRequired' });
+      return;
+    }
+    const count = await prisma.reviewLike.count({ where: { reviewId } });
+    res.status(200).json({ count });
+  } catch (error) {
+    next(error);
+  }
+});

@@ -10,6 +10,15 @@ export const CreateVendorSchema = z.object({
   campusId: z.string().min(1).optional(),
   profilePhotoPublicId: z.string().optional().nullable(),
   profilePhotoUrl: z.string().url().optional().nullable(),
+  operatingHours: z.any().optional().nullable(),
+  isAlwaysOpen: z.boolean().optional().nullable(),
+  timezone: z.string().optional().nullable(),
+  instagramHandle: z.string().max(50).optional().nullable(),
+  tiktokHandle: z.string().max(50).optional().nullable(),
+  twitterHandle: z.string().max(50).optional().nullable(),
+  facebookPage: z.string().url().max(200).optional().nullable(),
+  linkedinProfile: z.string().url().max(200).optional().nullable(),
+  websiteUrl: z.string().url().max(200).optional().nullable(),
 });
 
 export const UpdateVendorSchema = CreateVendorSchema.partial();

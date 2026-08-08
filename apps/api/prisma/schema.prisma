@@ -172,6 +172,10 @@ model User {
   events           EventLog[]
   wishlistItems    WishlistItem[]
   following        Follow[]
+  preference       UserPreference?
+  reviewComments   ReviewComment[]
+  reviewLikes      ReviewLike[]
+  disputesFiled    Dispute[] @relation("DisputeReporter")
 
   @@index([email])
   @@index([role])
@@ -347,6 +351,19 @@ model Vendor {
   onboardingProgress  Int          @default(0)
   lastDraftSavedAt    DateTime?
 
+  // Operating hours
+  operatingHours Json?
+  isAlwaysOpen   Boolean @default(false)
+  timezone       String? @default("Africa/Lagos")
+
+  // Social media handles
+  instagramHandle  String?
+  tiktokHandle     String?
+  twitterHandle    String?
+  facebookPage     String?
+  linkedinProfile  String?
+  websiteUrl       String?
+
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   institution Institution   @relation(fields: [institutionId], references: [id])
   campus      Campus        @relation(fields: [campusId], references: [id])
@@ -358,6 +375,7 @@ model Vendor {
   events      EventLog[]
   wishlistItems WishlistItem[]
   followers   Follow[]
+  disputes    Dispute[] @relation("DisputeVendor")
 
   @@index([businessSlug])
   @@index([status])
@@ -415,6 +433,7 @@ model Listing {
   photos   ListingPhoto[]
   reviews  Review[]
   events   EventLog[]
+  disputes Dispute[]
 
   @@unique([vendorId, slug])
   @@index([vendorId])
@@ -463,6 +482,9 @@ model Review {
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
 
+  comments ReviewComment[]
+  likes    ReviewLike[]
+
   @@unique([userId, vendorId])
   @@index([vendorId])
   @@index([status])
@@ -487,6 +509,75 @@ model VendorBadge {
 // ============================================================================
 // REQUESTS & REPORTS
 // ============================================================================
+
+model UserPreference {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  emailMarketing      Boolean  @default(true)
+  emailReviews        Boolean  @default(true)
+  emailNewsletter     Boolean  @default(true)
+  notifyNewListings   Boolean  @default(true)
+  notifyNewReviews    Boolean  @default(true)
+  notifyNewFollowers  Boolean  @default(true)
+  notifyDisputes      Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Dispute {
+  id          String   @id @default(cuid())
+  reporterId  String
+  vendorId    String
+  listingId   String?
+  reason      String
+  details     String?
+  status      String   @default("open")
+  resolution  String?
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  reporter User    @relation("DisputeReporter", fields: [reporterId], references: [id])
+  vendor   Vendor  @relation("DisputeVendor", fields: [vendorId], references: [id], onDelete: Cascade)
+  listing  Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([vendorId])
+  @@index([reporterId])
+  @@index([createdAt])
+}
+
+model ReviewComment {
+  id        String   @id @default(cuid())
+  reviewId  String
+  authorId  String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId])
+  @@index([authorId])
+}
+
+model ReviewLike {
+  id        String   @id @default(cuid())
+  reviewId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([reviewId])
+  @@index([userId])
+}
 
 model Request {
   id               String        @id @default(cuid())

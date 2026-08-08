@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { upsertVendor, type VendorProfile } from '@/lib/vendor-client';
+import { VendorHoursEditor } from '@/components/vendor/VendorHoursEditor';
 
 const schema = z.object({
   businessName: z.string().min(3).max(100),
@@ -15,6 +16,15 @@ const schema = z.object({
   description: z.string().min(100).max(500),
   whatsappNumber: z.string().regex(/^\+?[1-9]\d{6,14}$/),
   publicPhone: z.string().regex(/^\+?[1-9]\d{6,14}$/).optional().or(z.literal('')),
+  operatingHours: z.any().optional().nullable(),
+  isAlwaysOpen: z.boolean().optional().nullable(),
+  timezone: z.string().optional().nullable(),
+  instagramHandle: z.string().max(50).optional().nullable(),
+  tiktokHandle: z.string().max(50).optional().nullable(),
+  twitterHandle: z.string().max(50).optional().nullable(),
+  facebookPage: z.string().url().max(200).optional().nullable(),
+  linkedinProfile: z.string().url().max(200).optional().nullable(),
+  websiteUrl: z.string().url().max(200).optional().nullable(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -55,7 +65,26 @@ export function VendorProfileForm({ vendor }: { vendor: VendorProfile }) {
       <Textarea label="Description" rows={4} maxLength={500} error={errors.description?.message} {...register('description')} />
       <Input label="WhatsApp number" type="tel" error={errors.whatsappNumber?.message} {...register('whatsappNumber')} />
       <Input label="Public phone (optional)" type="tel" error={errors.publicPhone?.message} {...register('publicPhone')} />
+      <Input label="Instagram handle" placeholder="e.g. voeq" {...register('instagramHandle')} />
+      <Input label="TikTok handle" placeholder="e.g. voeq" {...register('tiktokHandle')} />
+      <Input label="Twitter handle" placeholder="e.g. voeq" {...register('twitterHandle')} />
+      <Input label="Facebook page URL" placeholder="https://facebook.com/..." {...register('facebookPage')} />
+      <Input label="LinkedIn profile URL" placeholder="https://linkedin.com/in/..." {...register('linkedinProfile')} />
+      <Input label="Website URL" placeholder="https://..." {...register('websiteUrl')} />
       <Button type="submit" isLoading={isSubmitting} disabled={!isDirty}>Save changes</Button>
+      <VendorHoursEditor
+        initialHours={vendor.operatingHours ?? null}
+        isAlwaysOpen={vendor.isAlwaysOpen ?? false}
+        timezone={vendor.timezone ?? 'Africa/Lagos'}
+        onSave={async (data) => {
+          await upsertVendor({
+            operatingHours: data.operatingHours,
+            isAlwaysOpen: data.isAlwaysOpen,
+            timezone: data.timezone,
+          });
+          router.refresh();
+        }}
+      />
     </form>
   );
 }

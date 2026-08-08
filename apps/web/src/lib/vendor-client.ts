@@ -15,6 +15,15 @@ export interface VendorProfile {
   verifiedBadge: boolean;
   agreementAcceptedAt: string | null;
   onboardingProgress: number;
+  operatingHours?: Record<string, { open?: string; close?: string; closed?: boolean }> | null;
+  isAlwaysOpen?: boolean;
+  timezone?: string | null;
+  instagramHandle?: string | null;
+  tiktokHandle?: string | null;
+  twitterHandle?: string | null;
+  facebookPage?: string | null;
+  linkedinProfile?: string | null;
+  websiteUrl?: string | null;
   listings: Array<{
     id: string;
     slug: string;
@@ -30,12 +39,7 @@ export async function getMyVendor(): Promise<{ vendor: VendorProfile; progress: 
   return api('/api/vendors/me');
 }
 
-export async function upsertVendor(input: Partial<{
-  businessName: string;
-  ownerName: string;
-  description: string;
-  whatsappNumber: string;
-  publicPhone: string;
+export async function upsertVendor(input: Partial<VendorProfile> & Partial<{
   institutionId: string;
   campusId: string;
   profilePhotoPublicId: string;

@@ -95,9 +95,21 @@ vendorRouter.patch(
           data: { role: 'vendor' },
         });
       } else {
+        const { operatingHours, isAlwaysOpen, timezone, instagramHandle, tiktokHandle, twitterHandle, facebookPage, linkedinProfile, websiteUrl, ...rest } = input as any;
         vendor = await prisma.vendor.update({
           where: { id: vendor.id },
-          data: input,
+          data: {
+            ...rest,
+            operatingHours,
+            isAlwaysOpen,
+            timezone,
+            instagramHandle,
+            tiktokHandle,
+            twitterHandle,
+            facebookPage,
+            linkedinProfile,
+            websiteUrl,
+          },
         });
       }
 

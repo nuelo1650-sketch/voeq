@@ -26,6 +26,10 @@ import { uploadRouter } from './routes/upload';
 import { apiRouter } from './routes';
 import { adminRouter } from './routes/admin';
 import { backupRouter } from './routes/backup';
+import { disputesRouter } from './routes/disputes';
+import { preferencesRouter } from './routes/preferences';
+import { vendorSocialRouter } from './routes/vendor-social';
+import { vendorHoursRouter } from './routes/vendor-hours';
 import { errorHandler } from './middleware/error';
 import { notFoundHandler } from './middleware/notFound';
 
@@ -93,12 +97,16 @@ export function createApp(): Application {
   app.use('/api/listings', listingsRouter);
   app.use('/api/vendors', vendorsRouter);
   app.use('/api/vendors', vendorRouter);
+  app.use('/api/vendors', vendorSocialRouter);
+  app.use('/api/vendors', vendorHoursRouter);
   app.use('/api/upload', uploadRouter);
   app.use('/api/whatsapp', whatsappRouter);
   app.use('/api/categories', categoriesRouter);
   app.use('/api/wishlist', wishlistRouter);
   app.use('/api/follow', followRouter);
   app.use('/api/notifications', notificationsRouter);
+  app.use('/api/disputes', disputesRouter);
+  app.use('/api/preferences', preferencesRouter);
   app.use('/api', apiRouter);
   app.use('/api/admin', adminRouter);
   app.use('/api/admin/backup', backupRouter);
