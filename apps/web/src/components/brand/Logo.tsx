@@ -18,16 +18,14 @@ export function Logo({ size = 'md', className }: LogoProps) {
   const { width, height } = sizeMap[size];
 
   return (
-    <picture className={cn('inline-block', className)}>
-      <source srcSet="/brand/voeq-wordmark-dark.svg" media="(prefers-color-scheme: dark)" />
-      <img
-        src="/brand/voeq-wordmark.svg"
-        alt="Voeq"
-        width={width}
-        height={height}
-        loading="eager"
-        decoding="async"
-      />
-    </picture>
+    <img
+      src="/Name.jpg"
+      alt="Logo"
+      width={width}
+      height={height}
+      className={cn('inline-block object-contain', className)}
+      loading="eager"
+      decoding="async"
+    />
   );
 }
