@@ -1,221 +1,433 @@
-'use client';
-
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { getCategories, listListings } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { FoodIcon, TechIcon, FashionIcon, LaundryIcon, BeautyIcon, RepairsIcon, ArrowRightIcon, CheckIcon } from '@/components/icons';
-import { WhatsAppClick } from '@/components/illustrations';
-import Link from 'next/link';
+import { ListingCard } from '@/components/marketplace/ListingCard';
+import {
+  FoodIcon,
+  TechIcon,
+  FashionIcon,
+  LaundryIcon,
+  BeautyIcon,
+  RepairsIcon,
+  PhotographyIcon,
+  AcademicIcon,
+  LogisticsIcon,
+  FurnitureIcon,
+  HealthIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  StarIcon,
+  WhatsAppIcon,
+} from '@/components/icons';
+import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
-const CATEGORIES = [
-  { name: 'Food', slug: 'food', icon: FoodIcon },
-  { name: 'Tech', slug: 'tech', icon: TechIcon },
-  { name: 'Fashion', slug: 'fashion', icon: FashionIcon },
-  { name: 'Laundry', slug: 'laundry', icon: LaundryIcon },
-  { name: 'Beauty', slug: 'beauty', icon: BeautyIcon },
-  { name: 'Repairs', slug: 'repairs', icon: RepairsIcon },
-  { name: 'Books', slug: 'books', icon: TechIcon },
-  { name: 'Photography', slug: 'photography', icon: FashionIcon },
-  { name: 'Fitness', slug: 'fitness', icon: RepairsIcon },
-  { name: 'Events', slug: 'events', icon: BeautyIcon },
-  { name: 'Tutoring', slug: 'tutoring', icon: LaundryIcon },
-  { name: 'Delivery', slug: 'delivery', icon: FoodIcon },
+export const metadata: Metadata = buildMetadata({
+  title: 'Voeq — Find. Connect. Grow.',
+  description: 'Discover verified campus vendors on Voeq. Browse food, tech, fashion, and 20+ categories. Connect directly via WhatsApp. Built for Nigerian students at 100+ universities.',
+  path: '/',
+  keywords: [
+    'campus vendors Nigeria',
+    'student marketplace',
+    'UNILAG vendors',
+    'food near campus',
+    'tech repair campus',
+    'tailoring campus',
+    'verified vendors',
+    'WhatsApp marketplace',
+    'university vendors',
+  ],
+});
+
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  food: FoodIcon,
+  fashion: FashionIcon,
+  tech: TechIcon,
+  laundry: LaundryIcon,
+  beauty: BeautyIcon,
+  repairs: RepairsIcon,
+  photography: PhotographyIcon,
+  academic: AcademicIcon,
+  logistics: LogisticsIcon,
+  furniture: FurnitureIcon,
+  health: HealthIcon,
+};
+
+const FAQS = [
+  { question: 'Is Voeq free to use?', answer: 'Yes, Voeq is completely free for students. You can browse vendors, save listings, and connect via WhatsApp at no cost.' },
+  { question: 'How do I contact a vendor?', answer: 'Every vendor profile has a "Chat on WhatsApp" button. Click it to start a conversation directly with the vendor.' },
+  { question: 'Are vendors verified?', answer: 'Yes. Vendors go through a verification process including campus presence confirmation and profile review.' },
+  { question: 'Which campuses are supported?', answer: 'Voeq supports 100+ Nigerian universities. If your institution is not listed, you can submit it and we will add it within 24 hours.' },
+  { question: 'Can I become a vendor?', answer: 'Absolutely. Sign up as a vendor, complete your business profile, add your first listing, and start receiving messages from students immediately.' },
+  { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2 (January 2027), Voeq will integrate secure payments with buyer protection.' },
 ];
 
-export function LandingPage() {
+export default async function LandingPage() {
+  const [categoriesResult, recentListingsResult, popularListingsResult] = await Promise.all([
+    getCategories().catch(() => ({ categories: [] })),
+    listListings({ sort: 'newest', limit: 8 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
+    listListings({ sort: 'newest', limit: 6 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
+  ]);
+
+  const categories = categoriesResult.categories ?? [];
+  const recentListings = recentListingsResult.listings ?? [];
+  const popularListings = popularListingsResult.listings ?? [];
+
+  const orgJsonLd = buildOrganizationJsonLd();
+  const websiteJsonLd = buildWebSiteJsonLd();
+  const faqJsonLd = buildFaqJsonLd(FAQS);
+
   return (
     <>
-      <Section spacing="xl" className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgJsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
+
+      <div className="bg-forest-700 text-cream-100 py-2 px-4 text-center text-sm relative">
+        <span>🎉 Voeq is live at NMU — find vendors now</span>
+        <button className="absolute right-4 top-1/2 -translate-y-1/2 text-cream-100/70 hover:text-cream-100" aria-label="Dismiss">
+          ×
+        </button>
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
-            <h1 className="font-serif text-5xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-6xl lg:text-7xl text-balance">
-              Discover verified campus vendors
-            </h1>
-            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
-              Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
-            </p>
-            <div className="mt-10">
-              <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
+          <div className="flex h-16 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <span className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">Voeq</span>
+            </Link>
+            <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
+              <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
+              <Link href="/for-vendors" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">For Vendors</Link>
+              <Link href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">About</Link>
+            </nav>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/signin">Sign in</Link>
+              </Button>
+              <Button variant="primary" size="sm" asChild>
+                <Link href="/become-vendor">List your business</Link>
+              </Button>
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Popular:</span>
-              {['Food', 'Tech', 'Fashion', 'Laundry'].map((cat) => (
-                <a key={cat} href={'/browse?category=' + cat.toLowerCase()} className="inline-block">
-                  <Badge variant="outline" className="cursor-pointer hover:bg-forest-700/5">{cat}</Badge>
-                </a>
+            <button className="md:hidden" aria-label="Open menu">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="20" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </Container>
+      </header>
+
+      <main>
+        <Section spacing="xl" className="relative overflow-hidden">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10" />
+          <Container size="lg">
+            <div className="mx-auto max-w-3xl text-center">
+              <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
+              <h1 className="font-serif text-4xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-5xl lg:text-6xl text-balance">
+                Discover verified campus vendors
+              </h1>
+              <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
+                Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
+              </p>
+              <div className="mt-10">
+                <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
+              </div>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Popular:</span>
+                {categories.slice(0, 4).map((cat) => {
+                  const Icon = CATEGORY_ICONS[cat.slug];
+                  return (
+                    <Link key={cat.id} href={`/browse?category=${cat.slug}`}>
+                      <Badge variant="outline" className="cursor-pointer hover:bg-forest-700/5">
+                        {Icon && <Icon className="h-3 w-3 mr-1" />}
+                        {cat.name}
+                      </Badge>
+                    </Link>
+                  );
+                })}
+              </div>
+              <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
+                Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
+              </p>
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+          <Container size="lg">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+              {[
+                { number: '100+', label: 'Universities' },
+                { number: '20+', label: 'Categories' },
+                { number: 'Free', label: 'For students' },
+                { number: 'Direct', label: 'WhatsApp connect' },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">{stat.number}</div>
+                  <div className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{stat.label}</div>
+                </div>
               ))}
             </div>
-            <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
-              Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
-            </p>
-          </div>
-        </Container>
-      </Section>
+          </Container>
+        </Section>
 
-      <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
-        <Container size="lg">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {[
-              { number: '100+', label: 'Universities' },
-              { number: '20+', label: 'Categories' },
-              { number: 'Free', label: 'For students' },
-              { number: 'Direct', label: 'WhatsApp connect' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">{stat.number}</div>
-                <div className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      <Section spacing="lg">
-        <Container size="lg">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">How it works</h2>
-            <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Three steps from search to chat</p>
-          </div>
-          <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
-            {[
-              { step: '1', title: 'Pick your campus', description: 'Tell us where you are. We show you vendors from your campus first.' },
-              { step: '2', title: 'Browse verified vendors', description: 'See ratings, reviews, and listings from vendors on your campus.' },
-              { step: '3', title: 'Chat on WhatsApp', description: 'One tap to message the vendor directly. No middleman, no fees.' },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-forest-700 text-xl font-semibold text-cream-100">{item.step}</div>
-                <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
-                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
-        <Container size="lg">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">Browse by category</h2>
-            <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <Link key={cat.slug} href={'/browse?category=' + cat.slug} className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-forest-700/30 hover:shadow-md dark:border-forest-700 dark:bg-forest-900 dark:hover:border-cream-100/20">
-                  <Icon className="h-10 w-10 text-forest-700 transition group-hover:text-forest-900 dark:text-cream-100" />
-                  <span className="mt-3 text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
-                </Link>
-              );
-            })}
-          </div>
-          <div className="mt-8 text-center">
-            <Link href="/browse">
-              <Button variant="outline" rightIcon={<ArrowRightIcon className="h-4 w-4" />}>View all categories</Button>
-            </Link>
-          </div>
-        </Container>
-      </Section>
-
-      <Section spacing="lg">
-        <Container size="lg">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
-            {[
-              { title: 'Verified campus vendors', description: 'Every vendor is confirmed to be physically present on the campus they claim. No scams, no fake profiles.' },
-              { title: 'Direct WhatsApp connect', description: 'No middleman, no platform fees. Message vendors directly and arrange everything on your terms.' },
-              { title: 'Built for students', description: 'Designed by Nigerian students who understand the campus life. Fast, simple, and mobile-first.' },
-            ].map((item) => (
-              <div key={item.title}>
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/20">
-                  <CheckIcon className="h-5 w-5 text-gold-700" />
+        {recentListings.length > 0 && (
+          <Section spacing="lg">
+            <Container size="lg">
+              <div className="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Recently joined</h2>
+                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">New vendors and listings on Voeq</p>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
-                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      <Section spacing="lg" className="bg-forest-900 text-cream-100">
-        <Container size="lg">
-          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-            <div>
-              <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
-              <p className="mt-4 text-lg text-cream-100/80">Reach thousands of students on your campus. Free to start, no upfront costs.</p>
-              <ul className="mt-8 space-y-3">
-                {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
-                  <li key={benefit} className="flex items-center gap-3">
-                    <CheckIcon className="h-5 w-5 text-gold-500" />
-                    <span className="text-cream-100">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <Link href="/for-vendors">
-                  <Button variant="gold" size="lg">List your business</Button>
+                <Link href="/browse?sort=newest" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
+                  View all →
                 </Link>
               </div>
-            </div>
-            <div className="flex justify-center">
-              <WhatsAppClick className="h-64 w-64 text-gold-500" />
-            </div>
-          </div>
-        </Container>
-      </Section>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {recentListings.slice(0, 8).map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            </Container>
+          </Section>
+        )}
 
-      <Section spacing="lg">
-        <Container size="md">
-          <div className="text-center">
-            <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">Frequently asked questions</h2>
-          </div>
-          <div className="mt-12 space-y-4">
-            {[
-              { q: 'Is Voeq free to use?', a: 'Yes, Voeq is completely free for students. You can browse vendors, save listings, and connect via WhatsApp at no cost.' },
-              { q: 'How do I contact a vendor?', a: 'Every vendor profile has a "Chat on WhatsApp" button. Click it to start a conversation directly with the vendor.' },
-              { q: 'Are vendors verified?', a: 'Yes. Vendors go through a verification process including campus presence confirmation and profile review.' },
-              { q: 'Which campuses are supported?', a: 'Voeq supports 100+ Nigerian universities. If your institution is not listed, you can submit it and we will add it.' },
-              { q: 'Can I become a vendor?', a: 'Absolutely. Sign up as a vendor, complete your business profile, add your first listing, and start receiving messages immediately.' },
-            ].map((item) => (
-              <details key={item.q} className="group rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
-                <summary className="cursor-pointer text-base font-medium text-forest-900 dark:text-cream-100">{item.q}</summary>
-                <p className="mt-3 text-sm text-forest-700/70 dark:text-cream-100/70">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
-        <Container size="md">
-          <div className="text-center">
-            <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">Ready to find what you need on campus?</h2>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/signup">
-                <Button variant="primary" size="lg">Get started</Button>
-              </Link>
-              <Link href="/for-vendors">
-                <Button variant="outline" size="lg">List your business</Button>
+        <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
+          <Container size="lg">
+            <div className="mb-6">
+              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Browse by category</h2>
+              <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
+            </div>
+            <div className="-mx-6 mb-8 overflow-x-auto px-6 pb-2">
+              <div className="flex gap-2">
+                <Link href="/browse">
+                  <Badge variant="default" className="cursor-pointer px-4 py-2 text-sm">All</Badge>
+                </Link>
+                {categories.map((cat) => {
+                  const Icon = CATEGORY_ICONS[cat.slug];
+                  return (
+                    <Link key={cat.id} href={`/browse?category=${cat.slug}`}>
+                      <Badge variant="outline" className="cursor-pointer px-4 py-2 text-sm hover:bg-forest-700/5">
+                        {Icon && <Icon className="h-4 w-4 mr-1.5" />}
+                        {cat.name}
+                      </Badge>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              {categories.slice(0, 6).map((cat) => {
+                const Icon = CATEGORY_ICONS[cat.slug];
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/browse?category=${cat.slug}`}
+                    className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-forest-700/30 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
+                  >
+                    {Icon && <Icon className="h-10 w-10 text-forest-700 transition group-hover:text-forest-900 dark:text-cream-100" />}
+                    <span className="mt-3 text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="mt-8 text-center">
+              <Link href="/browse">
+                <Button variant="outline" rightIcon={<ArrowRightIcon className="h-4 w-4" />}>View all categories</Button>
               </Link>
             </div>
-          </div>
-        </Container>
-      </Section>
+          </Container>
+        </Section>
+
+        {popularListings.length > 0 && (
+          <Section spacing="lg">
+            <Container size="lg">
+              <div className="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Popular on Voeq</h2>
+                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Hand-picked by our team</p>
+                </div>
+                <Link href="/browse" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
+                  View all →
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+                {popularListings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            </Container>
+          </Section>
+        )}
+
+        <Section spacing="md" className="bg-forest-900 text-cream-100">
+          <Container size="lg">
+            <div className="mb-6 text-center">
+              <h2 className="font-serif text-3xl font-semibold">Trending this week</h2>
+              <p className="mt-1 text-sm text-cream-100/70">What students are looking at right now</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-6">
+              {popularListings.slice(0, 6).map((listing) => (
+                <Link
+                  key={listing.id}
+                  href={`/l/${listing.slug}`}
+                  className="group rounded-xl border border-forest-700 bg-forest-800/50 p-4 transition hover:border-gold-500"
+                >
+                  <p className="text-sm font-medium text-cream-100 group-hover:text-gold-500">{listing.title}</p>
+                  <p className="mt-1 text-xs text-cream-100/60">{listing.campusName}</p>
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="lg">
+          <Container size="lg">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">How it works</h2>
+              <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Three steps from search to chat</p>
+            </div>
+            <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
+              {[
+                { step: '1', title: 'Pick your campus', description: 'Tell us where you are. We show you vendors from your campus first.' },
+                { step: '2', title: 'Browse verified vendors', description: 'See ratings, reviews, and listings from vendors on your campus.' },
+                { step: '3', title: 'Chat on WhatsApp', description: 'One tap to message the vendor directly. No middleman, no fees.' },
+              ].map((item) => (
+                <div key={item.step} className="text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-forest-700 text-xl font-semibold text-cream-100">{item.step}</div>
+                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
+                  <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="md" className="bg-cream-50 dark:bg-forest-800">
+          <Container size="lg">
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+              {[
+                { title: 'Verified campus vendors', description: 'Every vendor is confirmed to be physically present on the campus they claim. No scams, no fake profiles.' },
+                { title: 'Direct WhatsApp connect', description: 'No middleman, no platform fees. Message vendors directly and arrange everything on your terms.' },
+                { title: 'Built for students', description: 'Designed by Nigerian students who understand the campus life. Fast, simple, and mobile-first.' },
+              ].map((item) => (
+                <div key={item.title}>
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/20">
+                    <CheckIcon className="h-5 w-5 text-gold-700" />
+                  </div>
+                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
+                  <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="lg" className="bg-forest-900 text-cream-100">
+          <Container size="lg">
+            <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+              <div>
+                <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
+                <p className="mt-4 text-lg text-cream-100/80">Reach thousands of students on your campus. Free to start, no upfront costs.</p>
+                <ul className="mt-8 space-y-3">
+                  {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
+                    <li key={benefit} className="flex items-center gap-3">
+                      <CheckIcon className="h-5 w-5 text-gold-500" />
+                      <span className="text-cream-100">{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8">
+                  <Button variant="gold" size="lg" rightIcon={<ArrowRightIcon className="h-5 w-5" />}>
+                    <Link href="/become-vendor">List your business</Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="hidden md:flex justify-center">
+                <div className="grid grid-cols-2 gap-4">
+                  {[FoodIcon, TechIcon, FashionIcon, BeautyIcon].map((Icon, i) => (
+                    <div key={i} className="rounded-2xl border border-forest-700 bg-forest-800/50 p-8">
+                      <Icon className="h-12 w-12 text-gold-500" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="md">
+          <Container size="lg">
+            <div className="text-center">
+              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Coming soon to campuses near you</h2>
+              <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Launching at NMU, expanding to UNILAG, UI, OAU, and more</p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-forest-700/60 dark:text-cream-100/60">
+                <span className="text-xs font-medium">NMU</span>
+                <span>•</span>
+                <span className="text-xs font-medium">UNILAG</span>
+                <span>•</span>
+                <span className="text-xs font-medium">UI</span>
+                <span>•</span>
+                <span className="text-xs font-medium">OAU</span>
+                <span>•</span>
+                <span className="text-xs font-medium">UNIBEN</span>
+                <span>•</span>
+                <span className="text-xs font-medium">100+ more</span>
+              </div>
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="lg">
+          <Container size="md">
+            <h2 className="text-center font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Frequently asked questions</h2>
+            <div className="mt-12 space-y-4">
+              {FAQS.map((item) => (
+                <details key={item.question} className="group rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+                  <summary className="cursor-pointer text-base font-medium text-forest-900 dark:text-cream-100">
+                    {item.question}
+                  </summary>
+                  <p className="mt-3 text-sm text-forest-700/70 dark:text-cream-100/70">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </Container>
+        </Section>
+
+        <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
+          <Container size="md">
+            <div className="text-center">
+              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Ready to find what you need on campus?</h2>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button variant="primary" size="lg" asChild>
+                  <Link href="/signup">Get started</Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <Link href="/for-vendors">List your business</Link>
+                </Button>
+              </div>
+            </div>
+          </Container>
+        </Section>
+      </main>
 
       <footer className="border-t border-cream-200 bg-forest-900 py-12 text-cream-100 dark:border-forest-700">
         <Container size="lg">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
-            <div>
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Voeq home">
                 <span className="font-serif text-lg font-semibold text-cream-100">Voeq</span>
               </Link>
-              <p className="mt-4 text-sm text-cream-100/70">Voeq /voʊk/ — like Vogue</p>
-              <p className="mt-2 text-sm text-cream-100/70">Built by students, for students.</p>
+              <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
             </div>
+
             <div>
               <h3 className="mb-3 text-sm font-semibold text-cream-100">Product</h3>
               <ul className="space-y-2 text-sm text-cream-100/70">
@@ -224,13 +436,15 @@ export function LandingPage() {
                 <li><Link href="/for-vendors" className="hover:text-gold-500">For vendors</Link></li>
               </ul>
             </div>
+
             <div>
               <h3 className="mb-3 text-sm font-semibold text-cream-100">Company</h3>
               <ul className="space-y-2 text-sm text-cream-100/70">
                 <li><Link href="/about" className="hover:text-gold-500">About</Link></li>
-                <li><Link href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</Link></li>
+                <li><a href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</a></li>
               </ul>
             </div>
+
             <div>
               <h3 className="mb-3 text-sm font-semibold text-cream-100">Legal</h3>
               <ul className="space-y-2 text-sm text-cream-100/70">
@@ -239,12 +453,22 @@ export function LandingPage() {
                 <li><Link href="/vendor-agreement" className="hover:text-gold-500">Vendor Agreement</Link></li>
               </ul>
             </div>
+
             <div>
               <h3 className="mb-3 text-sm font-semibold text-cream-100">Social</h3>
               <ul className="space-y-2 text-sm text-cream-100/70">
-                <li><Link href="https://instagram.com/voeq.ng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Instagram</Link></li>
-                <li><Link href="https://tiktok.com/@voeq.ng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">TikTok</Link></li>
-                <li><Link href="https://twitter.com/voeqng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Twitter / X</Link></li>
+                <li>
+                  <a href="https://instagram.com/voeq.ng" target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-2 hover:text-gold-500">
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.259.014-3.667.072-4.947.196-4.354 2.617-6.78 6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
+                    Instagram
+                  </a>
+                </li>
+                <li>
+                  <a href="https://tiktok.com/@voeq.ng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">TikTok</a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/voeqng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Twitter / X</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -257,11 +481,9 @@ export function LandingPage() {
             </Link>
           </div>
 
-          <div className="mt-6 border-t border-forest-700 pt-6">
-            <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-              <p className="text-sm text-cream-100/50">© 2026 Voeq Limited. All rights reserved.</p>
-              <p className="text-sm text-cream-100/50">Pronounced <span className="font-semibold text-gold-500">/voʊk/</span> — like Vogue</p>
-            </div>
+          <div className="mt-6 flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+            <p className="text-sm text-cream-100/50">© 2026 Voeq Limited. All rights reserved.</p>
+            <p className="text-sm text-cream-100/50">Pronounced <span className="font-semibold text-gold-500">/voʊk/</span> — like Vogue</p>
           </div>
         </Container>
       </footer>
