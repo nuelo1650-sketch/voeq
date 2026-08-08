@@ -45,9 +45,24 @@ export function createApp(): Application {
   const corsOrigin = env.CORS_ORIGINS
     ? env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
     : env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+  const corsOriginValidator = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin || corsOrigin.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    try {
+      if (/\.vercel\.app$/.test(new URL(origin).hostname)) {
+        callback(null, true);
+        return;
+      }
+    } catch {
+      // ignore malformed origins
+    }
+    callback(new Error('Not allowed by CORS'));
+  };
   app.use(
     cors({
-      origin: corsOrigin,
+      origin: corsOriginValidator,
       credentials: true,
     }),
   );
