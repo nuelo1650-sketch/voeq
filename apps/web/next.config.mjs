@@ -7,7 +7,6 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  outputFileTracingRoot: join(__dirname, '.'),
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
     serverComponentsHmrCache: false,
