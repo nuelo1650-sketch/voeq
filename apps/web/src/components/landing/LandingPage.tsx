@@ -23,7 +23,10 @@ import {
   CheckIcon,
   StarIcon,
   WhatsAppIcon,
+  MapIcon,
+  TrendingUpIcon,
 } from '@/components/icons';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
@@ -63,13 +66,22 @@ const FAQS = [
   { question: 'Are vendors verified?', answer: 'Yes. Vendors go through a verification process including campus presence confirmation and profile review.' },
   { question: 'Which campuses are supported?', answer: 'Voeq supports 100+ Nigerian universities. If your institution is not listed, you can submit it and we will add it within 24 hours.' },
   { question: 'Can I become a vendor?', answer: 'Absolutely. Sign up as a vendor, complete your business profile, add your first listing, and start receiving messages from students immediately.' },
-  { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2 (January 2027), Voeq will integrate secure payments with buyer protection.' },
+  { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2, Voeq will integrate secure payments with buyer protection.' },
+];
+
+const CAMPUSES = ['NMU', 'UNILAG', 'UI', 'OAU', 'UNIBEN', 'UNIPORT', 'UNICAL', 'UNILORIN', 'FUTMINNA', 'FUTO'];
+
+const STATS = [
+  { number: '100+', label: 'Universities' },
+  { number: '20+', label: 'Categories' },
+  { number: 'Free', label: 'For students' },
+  { number: 'Direct', label: 'WhatsApp connect' },
 ];
 
 export default async function LandingPage() {
   const [categoriesResult, recentListingsResult, popularListingsResult] = await Promise.all([
     getCategories().catch(() => ({ categories: [] })),
-    listListings({ sort: 'newest', limit: 8 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
+    listListings({ sort: 'newest', limit: 12 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
     listListings({ sort: 'newest', limit: 6 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
   ]);
 
@@ -87,7 +99,7 @@ export default async function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
-      <div className="bg-forest-700 text-cream-100 py-2 px-4 text-center text-sm relative">
+      <div className="bg-forest-700 text-cream-100 py-3 px-4 text-center text-sm relative">
         <span>🎉 Voeq is live at NMU — find vendors now</span>
         <button className="absolute right-4 top-1/2 -translate-y-1/2 text-cream-100/70 hover:text-cream-100" aria-label="Dismiss">
           ×
@@ -128,47 +140,44 @@ export default async function LandingPage() {
         <Section spacing="xl" className="relative overflow-hidden">
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10" />
           <Container size="lg">
-            <div className="mx-auto max-w-3xl text-center">
-              <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
-              <h1 className="font-serif text-4xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-5xl lg:text-6xl text-balance">
-                Discover verified campus vendors
-              </h1>
-              <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
-                Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
-              </p>
-              <div className="mt-10">
-                <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
+            <AnimatedSection>
+              <div className="mx-auto max-w-3xl text-center">
+                <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
+                <h1 className="font-serif text-4xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-5xl lg:text-6xl text-balance">
+                  Discover verified campus vendors
+                </h1>
+                <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
+                  Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
+                </p>
+                <div className="mt-10">
+                  <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
+                </div>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                  <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Popular:</span>
+                  {categories.slice(0, 4).map((cat) => {
+                    const Icon = CATEGORY_ICONS[cat.slug];
+                    return (
+                      <Link key={cat.id} href={`/browse?category=${cat.slug}`}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-forest-700/5">
+                          {Icon && <Icon className="h-3 w-3 mr-1" />}
+                          {cat.name}
+                        </Badge>
+                      </Link>
+                    );
+                  })}
+                </div>
+                <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
+                  Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
+                </p>
               </div>
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Popular:</span>
-                {categories.slice(0, 4).map((cat) => {
-                  const Icon = CATEGORY_ICONS[cat.slug];
-                  return (
-                    <Link key={cat.id} href={`/browse?category=${cat.slug}`}>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-forest-700/5">
-                        {Icon && <Icon className="h-3 w-3 mr-1" />}
-                        {cat.name}
-                      </Badge>
-                    </Link>
-                  );
-                })}
-              </div>
-              <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
-                Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
-              </p>
-            </div>
+            </AnimatedSection>
           </Container>
         </Section>
 
         <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
           <Container size="lg">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {[
-                { number: '100+', label: 'Universities' },
-                { number: '20+', label: 'Categories' },
-                { number: 'Free', label: 'For students' },
-                { number: 'Direct', label: 'WhatsApp connect' },
-              ].map((stat) => (
+              {STATS.map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">{stat.number}</div>
                   <div className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{stat.label}</div>
@@ -181,15 +190,17 @@ export default async function LandingPage() {
         {recentListings.length > 0 && (
           <Section spacing="lg">
             <Container size="lg">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Recently joined</h2>
-                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">New vendors and listings on Voeq</p>
+              <AnimatedSection>
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Recently joined</h2>
+                    <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">New vendors and listings on Voeq</p>
+                  </div>
+                  <Link href="/browse?sort=newest" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
+                    View all →
+                  </Link>
                 </div>
-                <Link href="/browse?sort=newest" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                  View all →
-                </Link>
-              </div>
+              </AnimatedSection>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 {recentListings.slice(0, 8).map((listing) => (
                   <ListingCard key={listing.id} listing={listing} />
@@ -201,10 +212,12 @@ export default async function LandingPage() {
 
         <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
           <Container size="lg">
-            <div className="mb-6">
-              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Browse by category</h2>
-              <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
-            </div>
+            <AnimatedSection>
+              <div className="mb-6">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Browse by category</h2>
+                <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
+              </div>
+            </AnimatedSection>
             <div className="-mx-6 mb-8 overflow-x-auto px-6 pb-2">
               <div className="flex gap-2">
                 <Link href="/browse">
@@ -249,15 +262,17 @@ export default async function LandingPage() {
         {popularListings.length > 0 && (
           <Section spacing="lg">
             <Container size="lg">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Popular on Voeq</h2>
-                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Hand-picked by our team</p>
+              <AnimatedSection>
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Popular on Voeq</h2>
+                    <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Hand-picked by our team</p>
+                  </div>
+                  <Link href="/browse" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
+                    View all →
+                  </Link>
                 </div>
-                <Link href="/browse" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                  View all →
-                </Link>
-              </div>
+              </AnimatedSection>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                 {popularListings.map((listing) => (
                   <ListingCard key={listing.id} listing={listing} />
@@ -269,10 +284,12 @@ export default async function LandingPage() {
 
         <Section spacing="md" className="bg-forest-900 text-cream-100">
           <Container size="lg">
-            <div className="mb-6 text-center">
-              <h2 className="font-serif text-3xl font-semibold">Trending this week</h2>
-              <p className="mt-1 text-sm text-cream-100/70">What students are looking at right now</p>
-            </div>
+            <AnimatedSection>
+              <div className="mb-6 text-center">
+                <h2 className="font-serif text-3xl font-semibold">Trending this week</h2>
+                <p className="mt-1 text-sm text-cream-100/70">What students are looking at right now</p>
+              </div>
+            </AnimatedSection>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-6">
               {popularListings.slice(0, 6).map((listing) => (
                 <Link
@@ -290,21 +307,25 @@ export default async function LandingPage() {
 
         <Section spacing="lg">
           <Container size="lg">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">How it works</h2>
-              <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Three steps from search to chat</p>
-            </div>
+            <AnimatedSection>
+              <div className="mx-auto max-w-2xl text-center">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">How it works</h2>
+                <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Three steps from search to chat</p>
+              </div>
+            </AnimatedSection>
             <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
               {[
                 { step: '1', title: 'Pick your campus', description: 'Tell us where you are. We show you vendors from your campus first.' },
                 { step: '2', title: 'Browse verified vendors', description: 'See ratings, reviews, and listings from vendors on your campus.' },
                 { step: '3', title: 'Chat on WhatsApp', description: 'One tap to message the vendor directly. No middleman, no fees.' },
               ].map((item) => (
-                <div key={item.step} className="text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-forest-700 text-xl font-semibold text-cream-100">{item.step}</div>
-                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
-                  <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
-                </div>
+                <AnimatedSection key={item.step} delay={Number(item.step) * 0.1}>
+                  <div className="text-center">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-forest-700 text-xl font-semibold text-cream-100">{item.step}</div>
+                    <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
+                    <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
+                  </div>
+                </AnimatedSection>
               ))}
             </div>
           </Container>
@@ -316,15 +337,17 @@ export default async function LandingPage() {
               {[
                 { title: 'Verified campus vendors', description: 'Every vendor is confirmed to be physically present on the campus they claim. No scams, no fake profiles.' },
                 { title: 'Direct WhatsApp connect', description: 'No middleman, no platform fees. Message vendors directly and arrange everything on your terms.' },
-                { title: 'Built for students', description: 'Designed by Nigerian students who understand the campus life. Fast, simple, and mobile-first.' },
+                { title: 'Built for students', description: 'Designed by Nigerian students who understand campus life. Fast, simple, and mobile-first.' },
               ].map((item) => (
-                <div key={item.title}>
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/20">
-                    <CheckIcon className="h-5 w-5 text-gold-700" />
+                <AnimatedSection key={item.title}>
+                  <div>
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/20">
+                      <CheckIcon className="h-5 w-5 text-gold-700" />
+                    </div>
+                    <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
+                    <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
                   </div>
-                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
-                  <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
-                </div>
+                </AnimatedSection>
               ))}
             </div>
           </Container>
@@ -333,23 +356,25 @@ export default async function LandingPage() {
         <Section spacing="lg" className="bg-forest-900 text-cream-100">
           <Container size="lg">
             <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-              <div>
-                <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
-                <p className="mt-4 text-lg text-cream-100/80">Reach thousands of students on your campus. Free to start, no upfront costs.</p>
-                <ul className="mt-8 space-y-3">
-                  {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
-                    <li key={benefit} className="flex items-center gap-3">
-                      <CheckIcon className="h-5 w-5 text-gold-500" />
-                      <span className="text-cream-100">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8">
-                  <Button variant="gold" size="lg" rightIcon={<ArrowRightIcon className="h-5 w-5" />}>
-                    <Link href="/become-vendor">List your business</Link>
-                  </Button>
+              <AnimatedSection>
+                <div>
+                  <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
+                  <p className="mt-4 text-lg text-cream-100/80">Reach thousands of students on your campus. Free to start, no upfront costs.</p>
+                  <ul className="mt-8 space-y-3">
+                    {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
+                      <li key={benefit} className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-gold-500" />
+                        <span className="text-cream-100">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-8">
+                    <Button variant="gold" size="lg" rightIcon={<ArrowRightIcon className="h-5 w-5" />} asChild>
+                      <Link href="/become-vendor">List your business</Link>
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </AnimatedSection>
               <div className="hidden md:flex justify-center">
                 <div className="grid grid-cols-2 gap-4">
                   {[FoodIcon, TechIcon, FashionIcon, BeautyIcon].map((Icon, i) => (
@@ -363,31 +388,46 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
-        <Section spacing="md">
+        <Section spacing="lg">
           <Container size="lg">
-            <div className="text-center">
-              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Coming soon to campuses near you</h2>
-              <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Launching at NMU, expanding to UNILAG, UI, OAU, and more</p>
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-forest-700/60 dark:text-cream-100/60">
-                <span className="text-xs font-medium">NMU</span>
-                <span>•</span>
-                <span className="text-xs font-medium">UNILAG</span>
-                <span>•</span>
-                <span className="text-xs font-medium">UI</span>
-                <span>•</span>
-                <span className="text-xs font-medium">OAU</span>
-                <span>•</span>
-                <span className="text-xs font-medium">UNIBEN</span>
-                <span>•</span>
-                <span className="text-xs font-medium">100+ more</span>
+            <AnimatedSection>
+              <div className="text-center">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Ready to find what you need on campus?</h2>
+                <p className="mt-4 text-base text-forest-700/70 dark:text-cream-100/70">Join thousands of students already using Voeq.</p>
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Button variant="primary" size="lg" asChild>
+                    <Link href="/signup">Get started</Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild>
+                    <Link href="/for-vendors">List your business</Link>
+                  </Button>
+                </div>
               </div>
-            </div>
+            </AnimatedSection>
+          </Container>
+        </Section>
+
+        <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
+          <Container size="md">
+            <AnimatedSection>
+              <div className="text-center">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Coming soon to campuses near you</h2>
+                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Launching at NMU, expanding to UNILAG, UI, OAU, and more</p>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-forest-700/60 dark:text-cream-100/60">
+                  {CAMPUSES.map((campus) => (
+                    <span key={campus} className="text-xs font-medium">{campus}</span>
+                  ))}
+                </div>
+              </div>
+            </AnimatedSection>
           </Container>
         </Section>
 
         <Section spacing="lg">
           <Container size="md">
-            <h2 className="text-center font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Frequently asked questions</h2>
+            <AnimatedSection>
+              <h2 className="text-center font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Frequently asked questions</h2>
+            </AnimatedSection>
             <div className="mt-12 space-y-4">
               {FAQS.map((item) => (
                 <details key={item.question} className="group rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
@@ -397,22 +437,6 @@ export default async function LandingPage() {
                   <p className="mt-3 text-sm text-forest-700/70 dark:text-cream-100/70">{item.answer}</p>
                 </details>
               ))}
-            </div>
-          </Container>
-        </Section>
-
-        <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
-          <Container size="md">
-            <div className="text-center">
-              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Ready to find what you need on campus?</h2>
-              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Button variant="primary" size="lg" asChild>
-                  <Link href="/signup">Get started</Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link href="/for-vendors">List your business</Link>
-                </Button>
-              </div>
             </div>
           </Container>
         </Section>
@@ -426,6 +450,7 @@ export default async function LandingPage() {
                 <span className="font-serif text-lg font-semibold text-cream-100">Voeq</span>
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
+              <p className="mt-2 text-sm text-cream-100/50">The campus marketplace for Nigerian students.</p>
             </div>
 
             <div>
@@ -434,6 +459,7 @@ export default async function LandingPage() {
                 <li><Link href="/browse" className="hover:text-gold-500">Browse vendors</Link></li>
                 <li><Link href="/search" className="hover:text-gold-500">Search</Link></li>
                 <li><Link href="/for-vendors" className="hover:text-gold-500">For vendors</Link></li>
+                <li><Link href="/wishlist" className="hover:text-gold-500">Wishlist</Link></li>
               </ul>
             </div>
 
@@ -442,6 +468,8 @@ export default async function LandingPage() {
               <ul className="space-y-2 text-sm text-cream-100/70">
                 <li><Link href="/about" className="hover:text-gold-500">About</Link></li>
                 <li><a href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</a></li>
+                <li><Link href="/press" className="hover:text-gold-500">Press</Link></li>
+                <li><Link href="/careers" className="hover:text-gold-500">Careers</Link></li>
               </ul>
             </div>
 
@@ -451,6 +479,7 @@ export default async function LandingPage() {
                 <li><Link href="/terms" className="hover:text-gold-500">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="hover:text-gold-500">Privacy Policy</Link></li>
                 <li><Link href="/vendor-agreement" className="hover:text-gold-500">Vendor Agreement</Link></li>
+                <li><Link href="/cookies" className="hover:text-gold-500">Cookie Policy</Link></li>
               </ul>
             </div>
 
@@ -469,13 +498,16 @@ export default async function LandingPage() {
                 <li>
                   <a href="https://twitter.com/voeqng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Twitter / X</a>
                 </li>
+                <li>
+                  <a href="https://linkedin.com/company/voeq" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">LinkedIn</a>
+                </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-2 border-t border-forest-700 pt-6 sm:flex-row sm:gap-3">
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 border-t border-forest-700 pt-6">
             <span className="text-xs uppercase tracking-widest text-cream-100/50">Powered by</span>
-            <Link href="#" target="_blank" rel="noreferrer noopener" className="group inline-flex items-center gap-2 transition hover:opacity-80" aria-label="Legacy LM">
+            <Link href="https://legacylm.com" target="_blank" rel="noreferrer noopener" className="group inline-flex items-center gap-2 transition hover:opacity-80" aria-label="Legacy LM">
               <span className="font-serif text-base font-semibold tracking-wide text-cream-100">Legacy</span>
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-xs font-bold text-forest-900 ring-1 ring-gold-400/30 transition group-hover:ring-gold-400/60">LM</span>
             </Link>
