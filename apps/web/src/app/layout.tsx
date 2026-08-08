@@ -7,7 +7,7 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { SkipToContent } from '@/components/a11y/SkipToContent';
 import './globals.css';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq-web.vercel.app';
 
 const jsonLd = {
   '@context': 'https://schema.org',
