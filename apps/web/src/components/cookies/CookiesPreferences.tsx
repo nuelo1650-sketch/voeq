@@ -18,13 +18,12 @@ export function CookiesPreferences({ onClose }: CookiesPreferencesProps) {
   const handleSave = () => {
     setConsent({ analytics, marketing });
     onClose();
-    window.location.reload();
   };
 
   return (
     <Modal isOpen onClose={onClose} title="Cookie preferences">
       <div className="p-6 space-y-6">
-        <div>
+        <div className="rounded-2xl border border-cream-200 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <h3 className="font-medium text-forest-900 dark:text-cream-100">Essential cookies</h3>
@@ -38,24 +37,24 @@ export function CookiesPreferences({ onClose }: CookiesPreferencesProps) {
           </div>
         </div>
 
-        <div>
+        <div className="space-y-4">
           <Checkbox
             label="Analytics cookies"
             checked={analytics}
             onChange={(e) => setAnalytics(e.target.checked)}
           />
-          <p className="ml-8 mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
+          <p className="ml-8 text-sm text-forest-700/70 dark:text-cream-100/70">
             Help us understand how visitors use Voeq so we can improve the platform. No personal data is collected.
           </p>
         </div>
 
-        <div>
+        <div className="space-y-4">
           <Checkbox
             label="Marketing cookies"
             checked={marketing}
             onChange={(e) => setMarketing(e.target.checked)}
           />
-          <p className="ml-8 mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
+          <p className="ml-8 text-sm text-forest-700/70 dark:text-cream-100/70">
             Used to personalize content and measure ad performance. Not active yet.
           </p>
         </div>
