@@ -16,16 +16,28 @@ const sizeMap: Record<LogoSize, { width: number; height: number }> = {
 
 export function Logo({ size = 'md', className }: LogoProps) {
   const { width, height } = sizeMap[size];
+  const logoSize = height; // Make logo square based on height
 
   return (
-    <img
-      src="/Name.jpg"
-      alt="Logo"
-      width={width}
-      height={height}
-      className={cn('inline-block object-contain', className)}
-      loading="eager"
-      decoding="async"
-    />
+    <div className={cn('inline-flex items-center gap-2', className)}>
+      <img
+        src="/Logo.png"
+        alt="Logo"
+        width={logoSize}
+        height={logoSize}
+        className="object-contain"
+        loading="eager"
+        decoding="async"
+      />
+      <img
+        src="/Name.png"
+        alt="Voeq"
+        width={width}
+        height={height}
+        className="object-contain"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
   );
 }
