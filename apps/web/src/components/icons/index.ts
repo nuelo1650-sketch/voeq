@@ -10,5 +10,12 @@ export { StarIcon } from './ui/StarIcon';
 export { ShareIcon } from './ui/ShareIcon';
 export { HeartIcon } from './ui/HeartIcon';
 export { PlusIcon } from './ui/PlusIcon';
+export { GridIcon } from './ui/GridIcon';
+export { ListIcon } from './ui/ListIcon';
+export { MapIcon } from './ui/MapIcon';
+export { XIcon } from './ui/XIcon';
+export { EyeIcon } from './ui/EyeIcon';
+export { ChatIcon } from './ui/ChatIcon';
+export { TrendingUpIcon } from './ui/TrendingUpIcon';
 
 export * from './categories';

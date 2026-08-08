@@ -62,11 +62,24 @@ export async function getMyListings(): Promise<{ listings: Listing[] }> {
 export async function getMyAnalytics(): Promise<{
   stats: {
     totalViews: number;
-    whatsappClicks: number;
+    viewsLast7Days: number;
+    viewsLast30Days: number;
+    totalClicks: number;
+    clicksLast7Days: number;
+    conversionRate: number;
     activeListings: number;
-    reviews: number;
+    totalReviews: number;
+    avgRating: number;
+    trustScore: number;
   };
-  recentEvents: unknown[];
+  topListings: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    viewCount: number;
+    whatsappClickCount: number;
+    photos: Array<{ url: string }>;
+  }>;
 }> {
   return api('/api/vendors/me/analytics');
 }

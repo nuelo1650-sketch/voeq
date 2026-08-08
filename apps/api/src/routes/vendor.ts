@@ -219,29 +219,58 @@ vendorRouter.get('/me/analytics', requireAuth, async (req: AuthedRequest, res: R
       return;
     }
 
-    const [views, clicks, listingsCount, reviewsCount, recentEvents] = await Promise.all([
-      prisma.eventLog.count({
-        where: { vendorId: vendor.id, eventType: 'vendor_view' },
-      }),
-      prisma.vendor.findUnique({ where: { id: vendor.id }, select: { whatsappClickCount: true } }),
-      prisma.listing.count({ where: { vendorId: vendor.id, deletedAt: null, status: 'active' } }),
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const [
+      totalViews,
+      viewsLast7Days,
+      viewsLast30Days,
+      totalClicks,
+      clicksLast7Days,
+      activeListings,
+      totalReviews,
+      avgRating,
+    ] = await Promise.all([
+      prisma.eventLog.count({ where: { vendorId: vendor.id, eventType: { in: ['vendor_view', 'listing_view'] } } }),
+      prisma.eventLog.count({ where: { vendorId: vendor.id, eventType: { in: ['vendor_view', 'listing_view'] }, createdAt: { gte: sevenDaysAgo } } }),
+      prisma.eventLog.count({ where: { vendorId: vendor.id, eventType: { in: ['vendor_view', 'listing_view'] }, createdAt: { gte: thirtyDaysAgo } } }),
+      prisma.vendor.findUnique({ where: { id: vendor.id }, select: { whatsappClickCount: true } }).then((v) => v?.whatsappClickCount ?? 0),
+      prisma.eventLog.count({ where: { vendorId: vendor.id, eventType: 'whatsapp_click', createdAt: { gte: sevenDaysAgo } } }),
+      prisma.listing.count({ where: { vendorId: vendor.id, status: 'active', deletedAt: null } }),
       prisma.review.count({ where: { vendorId: vendor.id, status: 'visible' } }),
-      prisma.eventLog.findMany({
-        where: { vendorId: vendor.id, eventType: { in: ['vendor_view', 'whatsapp_click', 'listing_view'] } },
-        orderBy: { createdAt: 'desc' },
-        take: 20,
-        select: { eventType: true, createdAt: true, listingId: true },
-      }),
+      prisma.review.aggregate({ where: { vendorId: vendor.id, status: 'visible' }, _avg: { rating: true } }).then((r) => r._avg.rating ?? 0),
     ]);
+
+    const topListings = await prisma.listing.findMany({
+      where: { vendorId: vendor.id, deletedAt: null },
+      orderBy: { viewCount: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        viewCount: true,
+        whatsappClickCount: true,
+        photos: { orderBy: { displayOrder: 'asc' }, take: 1, select: { url: true } },
+      },
+    });
 
     res.status(200).json({
       stats: {
-        totalViews: views,
-        whatsappClicks: clicks?.whatsappClickCount ?? 0,
-        activeListings: listingsCount,
-        reviews: reviewsCount,
+        totalViews,
+        viewsLast7Days,
+        viewsLast30Days,
+        totalClicks,
+        clicksLast7Days,
+        conversionRate: totalViews > 0 ? Number(((totalClicks / totalViews) * 100).toFixed(1)) : 0,
+        activeListings,
+        totalReviews,
+        avgRating: Number(avgRating.toFixed(1)),
+        trustScore: vendor.trustScore,
       },
-      recentEvents,
+      topListings,
     });
   } catch (error) {
     next(error);
@@ -304,7 +333,11 @@ vendorRouter.patch(
 
       const input = UpdateListingSchema.parse(req.body);
       const listingInput: Parameters<typeof updateListing>[2] = {
-        ...input,
+        title: input.title,
+        description: input.description,
+        priceMin: input.priceMin,
+        priceMax: input.priceMax,
+        section: input.section,
         ...(input.photos && {
           photos: input.photos.map((p) => ({
             publicId: p.publicId,

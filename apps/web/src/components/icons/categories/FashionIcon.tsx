@@ -1,9 +1,5 @@
 import { cn } from '@/lib/utils';
-
-interface IconProps {
-  className?: string;
-  'aria-label'?: string;
-}
+import { IconProps } from '@/components/icons/icon-types';
 
 export function FashionIcon({ className, 'aria-label': ariaLabel }: IconProps) {
   return (

@@ -5,12 +5,19 @@ import { listListings, getListingBySlug } from '../services/listings.service';
 export const listingsRouter: ReturnType<typeof Router> = Router();
 
 const listQuerySchema = z.object({
-  campusId: z.string().optional(),
-  category: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
-  sort: z.enum(['newest', 'price_asc', 'price_desc']).default('newest'),
+  limit: z.coerce.number().int().positive().max(50).default(20),
+  search: z.string().optional(),
+  category: z.string().optional(),
+  campusId: z.string().optional(),
   minPrice: z.coerce.number().nonnegative().optional(),
   maxPrice: z.coerce.number().nonnegative().optional(),
+  minRating: z.coerce.number().min(1).max(5).optional(),
+  verifiedOnly: z.coerce.boolean().optional(),
+  sort: z.enum(['newest', 'oldest', 'price_asc', 'price_desc', 'rating', 'popular']).default('newest'),
+  lat: z.coerce.number().optional(),
+  lng: z.coerce.number().optional(),
+  radiusKm: z.coerce.number().positive().max(50).default(10),
 });
 
 listingsRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
@@ -20,9 +27,16 @@ listingsRouter.get('/', async (req: Request, res: Response, next: NextFunction) 
       campusId: params.campusId,
       categorySlug: params.category,
       page: params.page,
+      limit: params.limit,
       sort: params.sort,
       minPrice: params.minPrice,
       maxPrice: params.maxPrice,
+      search: params.search,
+      minRating: params.minRating,
+      verifiedOnly: params.verifiedOnly,
+      lat: params.lat,
+      lng: params.lng,
+      radiusKm: params.radiusKm,
     });
     res.status(200).json(results);
   } catch (error) {

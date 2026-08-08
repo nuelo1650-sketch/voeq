@@ -21,9 +21,15 @@ export interface ListListingsParams {
   category?: string;
   page?: number;
   limit?: number;
-  sort?: 'newest' | 'price_asc' | 'price_desc';
+  sort?: 'newest' | 'oldest' | 'price_asc' | 'price_desc' | 'rating' | 'popular';
+  search?: string;
   minPrice?: number;
   maxPrice?: number;
+  minRating?: number;
+  verifiedOnly?: boolean;
+  lat?: number;
+  lng?: number;
+  radiusKm?: number;
 }
 
 export interface ListListingsResult {
@@ -31,6 +37,10 @@ export interface ListListingsResult {
   total: number;
   page: number;
   totalPages: number;
+  facets?: {
+    categories: Array<{ name: string; count: number }>;
+    priceRange: { min: number; max: number };
+  };
 }
 
 export async function listListings(params: ListListingsParams = {}): Promise<ListListingsResult> {
@@ -40,8 +50,14 @@ export async function listListings(params: ListListingsParams = {}): Promise<Lis
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
   if (params.sort) searchParams.set('sort', params.sort);
+  if (params.search) searchParams.set('search', params.search);
   if (params.minPrice !== undefined) searchParams.set('minPrice', String(params.minPrice));
   if (params.maxPrice !== undefined) searchParams.set('maxPrice', String(params.maxPrice));
+  if (params.minRating !== undefined) searchParams.set('minRating', String(params.minRating));
+  if (params.verifiedOnly) searchParams.set('verifiedOnly', 'true');
+  if (params.lat !== undefined) searchParams.set('lat', String(params.lat));
+  if (params.lng !== undefined) searchParams.set('lng', String(params.lng));
+  if (params.radiusKm !== undefined) searchParams.set('radiusKm', String(params.radiusKm));
   const query = searchParams.toString();
   return api<ListListingsResult>(`/api/listings${query ? `?${query}` : ''}`);
 }

@@ -1,3 +1,4 @@
+export type { IconProps } from '@/components/icons/icon-types';
 export { FoodIcon } from './FoodIcon';
 export { FashionIcon } from './FashionIcon';
 export { TechIcon } from './TechIcon';
