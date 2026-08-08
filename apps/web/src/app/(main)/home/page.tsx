@@ -172,24 +172,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
-
-      <Section spacing="md">
-        <Container size="md">
-          <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
-            <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
-              Run a business on campus?
-            </h2>
-            <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-              List your business and start receiving orders directly from students.
-            </p>
-            <div className="mt-3">
-              <Button variant="outline" fullWidth asChild>
-                <a href="/become-vendor">List your business</a>
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </Section>
     </>
   );
 }

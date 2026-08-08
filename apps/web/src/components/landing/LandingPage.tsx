@@ -7,6 +7,22 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { FoodIcon, TechIcon, FashionIcon, LaundryIcon, BeautyIcon, RepairsIcon, ArrowRightIcon, CheckIcon } from '@/components/icons';
 import { WhatsAppClick } from '@/components/illustrations';
+import Link from 'next/link';
+
+const CATEGORIES = [
+  { name: 'Food', slug: 'food', icon: FoodIcon },
+  { name: 'Tech', slug: 'tech', icon: TechIcon },
+  { name: 'Fashion', slug: 'fashion', icon: FashionIcon },
+  { name: 'Laundry', slug: 'laundry', icon: LaundryIcon },
+  { name: 'Beauty', slug: 'beauty', icon: BeautyIcon },
+  { name: 'Repairs', slug: 'repairs', icon: RepairsIcon },
+  { name: 'Books', slug: 'books', icon: TechIcon },
+  { name: 'Photography', slug: 'photography', icon: FashionIcon },
+  { name: 'Fitness', slug: 'fitness', icon: RepairsIcon },
+  { name: 'Events', slug: 'events', icon: BeautyIcon },
+  { name: 'Tutoring', slug: 'tutoring', icon: LaundryIcon },
+  { name: 'Delivery', slug: 'delivery', icon: FoodIcon },
+];
 
 export function LandingPage() {
   return (
@@ -16,8 +32,12 @@ export function LandingPage() {
         <Container size="lg">
           <div className="mx-auto max-w-3xl text-center">
             <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
-            <h1 className="font-serif text-5xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-6xl lg:text-7xl text-balance">Discover verified campus vendors</h1>
-            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.</p>
+            <h1 className="font-serif text-5xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-6xl lg:text-7xl text-balance">
+              Discover verified campus vendors
+            </h1>
+            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
+              Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
+            </p>
             <div className="mt-10">
               <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
             </div>
@@ -29,7 +49,9 @@ export function LandingPage() {
                 </a>
               ))}
             </div>
-            <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span></p>
+            <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
+              Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
+            </p>
           </div>
         </Container>
       </Section>
@@ -80,28 +102,21 @@ export function LandingPage() {
             <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">Browse by category</h2>
             <p className="mt-4 text-lg text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
           </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {[
-              { name: 'Food', slug: 'food', icon: FoodIcon },
-              { name: 'Tech', slug: 'tech', icon: TechIcon },
-              { name: 'Fashion', slug: 'fashion', icon: FashionIcon },
-              { name: 'Laundry', slug: 'laundry', icon: LaundryIcon },
-              { name: 'Beauty', slug: 'beauty', icon: BeautyIcon },
-              { name: 'Repairs', slug: 'repairs', icon: RepairsIcon },
-            ].map((cat) => {
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
               return (
-                <a key={cat.slug} href={'/browse?category=' + cat.slug} className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-forest-700/30 hover:shadow-md dark:border-forest-700 dark:bg-forest-900 dark:hover:border-cream-100/20">
+                <Link key={cat.slug} href={'/browse?category=' + cat.slug} className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-forest-700/30 hover:shadow-md dark:border-forest-700 dark:bg-forest-900 dark:hover:border-cream-100/20">
                   <Icon className="h-10 w-10 text-forest-700 transition group-hover:text-forest-900 dark:text-cream-100" />
                   <span className="mt-3 text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
-                </a>
+                </Link>
               );
             })}
           </div>
           <div className="mt-8 text-center">
-            <a href="/browse">
+            <Link href="/browse">
               <Button variant="outline" rightIcon={<ArrowRightIcon className="h-4 w-4" />}>View all categories</Button>
-            </a>
+            </Link>
           </div>
         </Container>
       </Section>
@@ -141,9 +156,9 @@ export function LandingPage() {
                 ))}
               </ul>
               <div className="mt-8">
-                <a href="/for-vendors">
+                <Link href="/for-vendors">
                   <Button variant="gold" size="lg">List your business</Button>
-                </a>
+                </Link>
               </div>
             </div>
             <div className="flex justify-center">
@@ -180,16 +195,76 @@ export function LandingPage() {
           <div className="text-center">
             <h2 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100 sm:text-5xl">Ready to find what you need on campus?</h2>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a href="/signup">
+              <Link href="/signup">
                 <Button variant="primary" size="lg">Get started</Button>
-              </a>
-              <a href="/for-vendors">
+              </Link>
+              <Link href="/for-vendors">
                 <Button variant="outline" size="lg">List your business</Button>
-              </a>
+              </Link>
             </div>
           </div>
         </Container>
       </Section>
+
+      <footer className="border-t border-cream-200 bg-forest-900 py-12 text-cream-100 dark:border-forest-700">
+        <Container size="lg">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+            <div>
+              <Link href="/" aria-label="Voeq home">
+                <span className="font-serif text-lg font-semibold text-cream-100">Voeq</span>
+              </Link>
+              <p className="mt-4 text-sm text-cream-100/70">Voeq /voʊk/ — like Vogue</p>
+              <p className="mt-2 text-sm text-cream-100/70">Built by students, for students.</p>
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-cream-100">Product</h3>
+              <ul className="space-y-2 text-sm text-cream-100/70">
+                <li><Link href="/browse" className="hover:text-gold-500">Browse vendors</Link></li>
+                <li><Link href="/search" className="hover:text-gold-500">Search</Link></li>
+                <li><Link href="/for-vendors" className="hover:text-gold-500">For vendors</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-cream-100">Company</h3>
+              <ul className="space-y-2 text-sm text-cream-100/70">
+                <li><Link href="/about" className="hover:text-gold-500">About</Link></li>
+                <li><Link href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-cream-100">Legal</h3>
+              <ul className="space-y-2 text-sm text-cream-100/70">
+                <li><Link href="/terms" className="hover:text-gold-500">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-gold-500">Privacy Policy</Link></li>
+                <li><Link href="/vendor-agreement" className="hover:text-gold-500">Vendor Agreement</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-cream-100">Social</h3>
+              <ul className="space-y-2 text-sm text-cream-100/70">
+                <li><Link href="https://instagram.com/voeq.ng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Instagram</Link></li>
+                <li><Link href="https://tiktok.com/@voeq.ng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">TikTok</Link></li>
+                <li><Link href="https://twitter.com/voeqng" target="_blank" rel="noreferrer noopener" className="hover:text-gold-500">Twitter / X</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-2 border-t border-forest-700 pt-6 sm:flex-row sm:gap-3">
+            <span className="text-xs uppercase tracking-widest text-cream-100/50">Powered by</span>
+            <Link href="#" target="_blank" rel="noreferrer noopener" className="group inline-flex items-center gap-2 transition hover:opacity-80" aria-label="Legacy LM">
+              <span className="font-serif text-base font-semibold tracking-wide text-cream-100">Legacy</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-xs font-bold text-forest-900 ring-1 ring-gold-400/30 transition group-hover:ring-gold-400/60">LM</span>
+            </Link>
+          </div>
+
+          <div className="mt-6 border-t border-forest-700 pt-6">
+            <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+              <p className="text-sm text-cream-100/50">© 2026 Voeq Limited. All rights reserved.</p>
+              <p className="text-sm text-cream-100/50">Pronounced <span className="font-semibold text-gold-500">/voʊk/</span> — like Vogue</p>
+            </div>
+          </div>
+        </Container>
+      </footer>
     </>
   );
 }
