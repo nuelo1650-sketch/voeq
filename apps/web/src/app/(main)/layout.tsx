@@ -14,12 +14,14 @@ import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [me, setMe] = useState<Awaited<ReturnType<typeof getMe>>['user'] | null>(null);
   const [showAgreement, setShowAgreement] = useState(false);
   const [showCampus, setShowCampus] = useState(false);
 
   useEffect(() => {
     getMe()
       .then((data) => {
+        setMe(data.user);
         if (!data.user.agreementAcceptedAt) {
           setShowAgreement(true);
         } else if (!data.user.defaultCampusId) {
@@ -27,7 +29,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         }
       })
       .catch(() => {
-        // Stay on the current page instead of forcing a redirect loop.
+        setMe(null);
       })
       .finally(() => setLoading(false));
   }, [router]);
@@ -64,22 +66,28 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <Logo size="sm" />
             </Link>
             <nav className="flex items-center gap-2">
-              <Link
-                href="/browse"
-                className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
-              >
-                Browse
-              </Link>
-              <Link
-                href="/profile"
-                className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
-              >
-                Profile
-              </Link>
+              {me && (
+                <>
+                  <Link
+                    href="/browse"
+                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
+                  >
+                    Browse
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
+                  >
+                    Profile
+                  </Link>
+                </>
+              )}
               <ThemeToggle />
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                Sign out
-              </Button>
+              {me && (
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  Sign out
+                </Button>
+              )}
             </nav>
           </div>
         </Container>
