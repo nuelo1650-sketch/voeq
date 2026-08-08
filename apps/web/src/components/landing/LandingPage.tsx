@@ -7,6 +7,7 @@ import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ListingCard } from '@/components/marketplace/ListingCard';
+import { Logo } from '@/components/brand/Logo';
 import {
   FoodIcon,
   TechIcon,
@@ -110,7 +111,7 @@ export default async function LandingPage() {
         <Container size="lg">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">Voeq</span>
+              <Logo size="sm" />
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
@@ -447,7 +448,7 @@ export default async function LandingPage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Voeq home">
-                <span className="font-serif text-lg font-semibold text-cream-100">Voeq</span>
+                <Logo size="sm" />
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
               <p className="mt-2 text-sm text-cream-100/50">The campus marketplace for Nigerian students.</p>

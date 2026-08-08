@@ -16,7 +16,8 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function BecomeVendorPage() {
-  const me = await getMe();
+  const me = await getMe().catch(() => null);
+  if (!me?.user) redirect('/signin');
   if (!me.user.agreementAcceptedAt) redirect('/signin');
   if (!me.user.defaultCampusId) redirect('/select-campus');
 

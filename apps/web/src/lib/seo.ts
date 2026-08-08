@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq-web.vercel.app';
 const SITE_NAME = 'Voeq';
 const DEFAULT_DESCRIPTION = 'Discover verified campus vendors on Voeq. Browse food, tech, fashion, and 20+ categories. Connect directly via WhatsApp. Built for Nigerian students.';
 const DEFAULT_OG_IMAGE = '/og/default.png';
