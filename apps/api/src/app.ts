@@ -42,9 +42,12 @@ export function createApp(): Application {
       },
     }),
   );
+  const corsOrigin = env.CORS_ORIGINS
+    ? env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
+    : env.CORS_ORIGIN;
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: corsOrigin,
       credentials: true,
     }),
   );
