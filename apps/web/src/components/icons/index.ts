@@ -17,5 +17,7 @@ export { XIcon } from './ui/XIcon';
 export { EyeIcon } from './ui/EyeIcon';
 export { ChatIcon } from './ui/ChatIcon';
 export { TrendingUpIcon } from './ui/TrendingUpIcon';
+export { AlertIcon } from './ui/AlertIcon';
+export { InfoIcon } from './ui/InfoIcon';
 
 export * from './categories';

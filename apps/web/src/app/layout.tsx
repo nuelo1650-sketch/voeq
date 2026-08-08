@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { ThemeProvider } from '@/lib/theme';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { CookiesBanner } from '@/components/cookies/CookiesBanner';
+import { ToastProvider } from '@/components/ui/Toast';
 import { SkipToContent } from '@/components/a11y/SkipToContent';
 import './globals.css';
 
@@ -119,10 +120,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SkipToContent />
         <ThemeProvider>
           <PostHogProvider>
-            {children}
-            <Suspense fallback={null}>
-              <CookiesBanner />
-            </Suspense>
+            <ToastProvider>
+              {children}
+              <Suspense fallback={null}>
+                <CookiesBanner />
+              </Suspense>
+            </ToastProvider>
           </PostHogProvider>
         </ThemeProvider>
       </body>
