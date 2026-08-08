@@ -27,9 +27,6 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (hasAnalyticsConsent() && !posthog.__loaded) {
-        window.location.reload();
-      }
       if (!hasAnalyticsConsent() && posthog.__loaded) {
         posthog.opt_out_capturing();
       }

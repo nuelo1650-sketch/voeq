@@ -28,9 +28,19 @@ export default async function HomePage() {
     me = null;
   }
 
-  const campusId = me?.defaultCampusId ?? null;
-  const campusName = me?.defaultCampus?.name ?? 'your campus';
-  const institutionName = me?.defaultCampus?.institution.name ?? '';
+  if (!me) {
+    return (
+      <Container size="lg">
+        <div className="py-16 text-center">
+          <p className="text-sm text-forest-700/70">Please sign in to continue.</p>
+        </div>
+      </Container>
+    );
+  }
+
+  const campusId = me.defaultCampusId ?? null;
+  const campusName = me.defaultCampus?.name ?? 'your campus';
+  const institutionName = me.defaultCampus?.institution.name ?? '';
 
   if (!campusId) {
     return (
