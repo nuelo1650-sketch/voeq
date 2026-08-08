@@ -126,7 +126,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
             <WhatsAppButton
               vendorId={vendor.id}
               vendorName={vendor.businessName}
-              listingUrl={pageUrl}
+              vendorPhone={vendor.whatsappNumber}
               fullWidth
             />
             <ShareButton url={pageUrl} title={vendor.businessName} fullWidth />

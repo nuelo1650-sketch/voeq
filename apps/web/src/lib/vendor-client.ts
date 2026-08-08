@@ -138,6 +138,6 @@ export async function getDrafts(): Promise<{ drafts: Record<string, unknown> }> 
   return api('/api/vendors/me/draft');
 }
 
-export async function getCategories(): Promise<{ categories: Array<{ id: string; slug: string; name: string; iconName: string }> }> {
+export async function getCategories(): Promise<{ categories: Array<{ id: string; slug: string; name: string; description: string | null; iconName: string | null; displayOrder: number; isOfficial: boolean }> }> {
   return api('/api/categories');
 }

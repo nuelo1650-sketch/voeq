@@ -113,10 +113,10 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <WhatsAppButton
                 vendorId={listing.vendor.id}
                 vendorName={listing.vendor.businessName}
+                vendorPhone={listing.vendor.whatsappNumber}
                 listingId={listing.id}
                 listingTitle={listing.title}
                 listingPrice={priceStr}
-                listingUrl={pageUrl}
                 fullWidth
               />
               <ShareButton

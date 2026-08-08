@@ -276,3 +276,18 @@ export interface NotificationSummary {
 export async function getNotifications(): Promise<{ notifications: NotificationSummary[] }> {
   return api<{ notifications: NotificationSummary[] }>('/api/notifications');
 }
+
+export async function generateWhatsAppMessage(params: {
+  template: string;
+  vendorName: string;
+  listingTitle?: string;
+  price?: string;
+  date?: string;
+  quantity?: number;
+  customMessage?: string;
+}): Promise<{ message: string }> {
+  return api<{ message: string }>('/api/whatsapp/generate-message', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

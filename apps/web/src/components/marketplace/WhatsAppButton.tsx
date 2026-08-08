@@ -3,16 +3,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { WhatsAppIcon } from '@/components/icons';
-import { trackWhatsAppClick } from '@/lib/marketplace-client';
+import { trackWhatsAppClick, generateWhatsAppMessage } from '@/lib/marketplace-client';
 import { Modal } from '@/components/ui/Modal';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
 
 interface WhatsAppButtonProps {
   vendorId: string;
   vendorName: string;
+  vendorPhone: string;
   listingId?: string;
   listingTitle?: string;
   listingPrice?: string;
-  listingUrl?: string;
   variant?: 'primary' | 'secondary';
   fullWidth?: boolean;
   className?: string;
@@ -20,62 +22,56 @@ interface WhatsAppButtonProps {
 
 const PREFERENCE_KEY = 'voeq_whatsapp_confirmed';
 
-function buildPrefilledMessage(params: {
-  listingTitle?: string;
-  listingPrice?: string;
-  listingUrl?: string;
-  vendorName: string;
-}): string {
-  const lines: string[] = [];
-  lines.push('Hi! I found this on Voeq and I&apos;m interested — is it still available?');
-  if (params.listingTitle) {
-    lines.push(`${params.listingTitle}${params.listingPrice ? ` — ${params.listingPrice}` : ''}`);
-  } else {
-    lines.push(params.vendorName);
-  }
-  if (params.listingUrl) {
-    lines.push(params.listingUrl);
-  }
-  return lines.join('\n');
-}
-
 export function WhatsAppButton({
   vendorId,
   vendorName,
+  vendorPhone,
   listingId,
   listingTitle,
   listingPrice,
-  listingUrl,
   variant = 'primary',
   fullWidth,
   className,
 }: WhatsAppButtonProps) {
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('general_inquiry');
+  const [customMessage, setCustomMessage] = useState('');
+  const [availabilityDate, setAvailabilityDate] = useState('');
+  const [orderQuantity, setOrderQuantity] = useState(1);
 
   const handleClick = async () => {
     const confirmed = typeof window !== 'undefined' && localStorage.getItem(PREFERENCE_KEY) === 'true';
     if (!confirmed) {
-      setShowConfirm(true);
+      setShowModal(true);
       return;
     }
-    await performClick();
+    await sendMessage('general_inquiry');
   };
 
-  const performClick = async () => {
+  const sendMessage = async (template: string) => {
     setLoading(true);
     try {
-      const { url } = await trackWhatsAppClick({ vendorId, listingId });
+      const params: Parameters<typeof generateWhatsAppMessage>[0] = { template, vendorName };
+      if (listingTitle) params.listingTitle = listingTitle;
+      if (template === 'price_inquiry' && listingPrice) params.price = listingPrice;
+      if (template === 'availability') params.date = availabilityDate;
+      if (template === 'order') params.quantity = orderQuantity;
+      if (template === 'custom') params.customMessage = customMessage;
+
+      const { message } = await generateWhatsAppMessage(params);
+      await trackWhatsAppClick({ vendorId, listingId }).catch(() => null);
       localStorage.setItem(PREFERENCE_KEY, 'true');
+
+      const phone = vendorPhone.replace(/[^\d]/g, '');
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank', 'noopener,noreferrer');
-    } catch {
+      setShowModal(false);
+    } catch (error) {
+      console.error('Failed to send WhatsApp', error);
+    } finally {
       setLoading(false);
     }
-  };
-
-  const handleConfirm = async () => {
-    setShowConfirm(false);
-    await performClick();
   };
 
   return (
@@ -88,31 +84,88 @@ export function WhatsAppButton({
         leftIcon={<WhatsAppIcon className="h-5 w-5" />}
         className={className}
       >
-        Connect
+        Chat on WhatsApp
       </Button>
 
-      <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Open WhatsApp?">
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={`Message ${vendorName}`}>
         <div className="p-6 space-y-4">
           <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
-            You&apos;re about to chat with <span className="font-semibold">{vendorName}</span>
-            {listingTitle && <> about <span className="font-semibold">{listingTitle}</span></>}
-            {' '}on WhatsApp. Voeq doesn&apos;t see or store your messages.
+            Choose a message template. We'll open WhatsApp with your message pre-filled.
           </p>
-          <div className="rounded-lg bg-cream-100 p-3 text-xs text-forest-700/80 dark:bg-forest-900 dark:text-cream-100/80">
-            <p className="font-medium mb-1">Message preview:</p>
-            <pre className="whitespace-pre-wrap font-sans">
-              {buildPrefilledMessage({ listingTitle, listingPrice, listingUrl, vendorName })}
-            </pre>
+
+          <div className="space-y-2">
+            {[
+              { key: 'general_inquiry', label: 'General inquiry', description: 'Ask if it\'s still available' },
+              { key: 'price_inquiry', label: 'Price negotiation', description: 'Ask about the price' },
+              { key: 'availability', label: 'Check availability', description: 'Ask for specific date' },
+              { key: 'order', label: 'Place an order', description: 'Order a specific quantity' },
+              { key: 'custom', label: 'Custom message', description: 'Write your own' },
+            ].map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setSelectedTemplate(t.key)}
+                className={`w-full rounded-lg border-2 p-3 text-left transition ${
+                  selectedTemplate === t.key
+                    ? 'border-forest-700 bg-forest-700/5 dark:border-gold-500'
+                    : 'border-cream-300 hover:border-forest-700/30 dark:border-forest-700'
+                }`}
+              >
+                <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{t.label}</p>
+                <p className="mt-0.5 text-xs text-forest-700/60 dark:text-cream-100/60">{t.description}</p>
+              </button>
+            ))}
           </div>
-          <p className="text-xs text-forest-700/60 dark:text-cream-100/60">
-            Tip: Verify the vendor&apos;s identity and agree on price before sending money.
-          </p>
+
+          {selectedTemplate === 'availability' && (
+            <Input
+              type="date"
+              label="What date?"
+              value={availabilityDate}
+              onChange={(e) => setAvailabilityDate(e.target.value)}
+            />
+          )}
+
+          {selectedTemplate === 'order' && (
+            <Input
+              type="number"
+              label="Quantity"
+              min={1}
+              value={orderQuantity}
+              onChange={(e) => setOrderQuantity(Number(e.target.value))}
+            />
+          )}
+
+          {selectedTemplate === 'custom' && (
+            <Textarea
+              label="Your message"
+              rows={4}
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              placeholder="Write your message to the vendor..."
+            />
+          )}
+
+          <div className="rounded-lg border border-cream-300 bg-cream-50 p-3 dark:border-forest-700 dark:bg-forest-800">
+            <p className="text-xs font-medium text-forest-700/60 dark:text-cream-100/60">Message preview:</p>
+            <p className="mt-1 text-sm text-forest-900 dark:text-cream-100">
+              {selectedTemplate === 'general_inquiry' && `Hi! I found you on Voeq${listingTitle ? ` and I'm interested in "${listingTitle}"` : ''}. Is it still available?`}
+              {selectedTemplate === 'price_inquiry' && `Hi ${vendorName}! I saw "${listingTitle}" on Voeq for ${listingPrice}. Is the price still negotiable?`}
+              {selectedTemplate === 'availability' && `Hi ${vendorName}! I want to know if "${listingTitle}" is available on ${availabilityDate || '[date]'}. Thanks!`}
+              {selectedTemplate === 'order' && `Hi ${vendorName}! I'd like to order ${orderQuantity} of "${listingTitle}" from Voeq. How do I proceed?`}
+              {selectedTemplate === 'custom' && (customMessage || '[Your message]')}
+            </p>
+          </div>
+
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={() => setShowConfirm(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={handleConfirm} leftIcon={<WhatsAppIcon className="h-4 w-4" />}>
-              Continue
+            <Button variant="ghost" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button
+              variant="primary"
+              onClick={() => sendMessage(selectedTemplate)}
+              isLoading={loading}
+              leftIcon={<WhatsAppIcon className="h-4 w-4" />}
+            >
+              Send via WhatsApp
             </Button>
           </div>
         </div>

@@ -370,21 +370,22 @@ model Vendor {
 }
 
 model Category {
-  id                  String   @id @default(cuid())
-  slug                String   @unique
-  name                String
-  description         String?
-  iconName            String
-  displayOrder        Int      @default(0)
-  isActive            Boolean  @default(true)
-  requiresDelivery    Boolean  @default(false)
-  escrowDurationHours Int      @default(48)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  description   String?
+  iconName      String?
+  displayOrder  Int      @default(0)
+  isActive      Boolean  @default(true)
+  isOfficial    Boolean  @default(false)
+  createdById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   listings Listing[]
 
   @@index([isActive, displayOrder])
+  @@index([slug])
 }
 
 model Listing {
