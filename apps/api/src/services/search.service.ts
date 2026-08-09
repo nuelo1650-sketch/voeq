@@ -147,7 +147,7 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
         v."businessSlug" as slug,
         v."businessName" as business_name,
         v.description,
-        vp."profilePhotoPublicId" as photo_url,
+        v."profilePhotoPublicId" as photo_url,
         camp.name as campus_name,
         v."ratingAvg" as rating_avg,
         v."ratingCount" as rating_count,
