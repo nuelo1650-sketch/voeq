@@ -29,6 +29,7 @@ import {
   TrendingUpIcon,
 } from '@/components/icons';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import Image from 'next/image';
 import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
@@ -60,6 +61,27 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   logistics: LogisticsIcon,
   furniture: FurnitureIcon,
   health: HealthIcon,
+};
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  food: 'https://images.unsplash.com/photo-1604329760661-e071dc40a3cd?w=600&auto=format&fit=crop',
+  fashion: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&auto=format&fit=crop',
+  tech: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop',
+  laundry: 'https://images.unsplash.com/photo-1545173168-9f1947eebb8b?w=600&auto=format&fit=crop',
+  beauty: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop',
+  repairs: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&auto=format&fit=crop',
+  photography: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop',
+  'academic-services': 'https://images.unsplash.com/photo-1523050854058-8df90110a7f1?w=600&auto=format&fit=crop',
+  logistics: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=600&auto=format&fit=crop',
+  furniture: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop',
+  'health-wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&auto=format&fit=crop',
+  catering: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=600&auto=format&fit=crop',
+  cleaning: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop',
+  electrical: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&auto=format&fit=crop',
+  plumbing: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&auto=format&fit=crop',
+  tailoring: 'https://images.unsplash.com/photo-1598554747436-9e465d27b124?w=600&auto=format&fit=crop',
+  supermarket: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&auto=format&fit=crop',
+  pharmacy: 'https://images.unsplash.com/photo-1584308666464-793a0126206e?w=600&auto=format&fit=crop',
 };
 
 const FAQS = [
@@ -246,10 +268,22 @@ export default async function LandingPage() {
                   <Link
                     key={cat.id}
                     href={`/browse?category=${cat.slug}`}
-                    className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
+                    className="group flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
                   >
-                    {Icon && <Icon className="h-10 w-10 text-forest-700 transition group-hover:text-forest-900 dark:text-cream-100" />}
-                    <span className="mt-3 text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
+                    <div className="relative h-32 w-full overflow-hidden sm:h-40">
+                      <Image
+                        src={CATEGORY_IMAGES[cat.slug] ?? '/Logo.png'}
+                        alt={cat.name}
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                        sizes="(min-width: 640px) 200px, 50vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    </div>
+                    <div className="flex items-center gap-2 p-4">
+                      {Icon && <Icon className="h-5 w-5 text-forest-700 dark:text-cream-100" />}
+                      <span className="text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
+                    </div>
                   </Link>
                 );
               })}
