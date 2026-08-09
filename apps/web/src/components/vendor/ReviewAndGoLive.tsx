@@ -75,7 +75,37 @@ export function ReviewAndGoLive() {
         <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
           <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Contact</p>
           <p className="mt-1 text-sm text-forest-900 dark:text-cream-100">WhatsApp: {vendor.whatsappNumber}</p>
+          {vendor.publicPhone && <p className="text-sm text-forest-900 dark:text-cream-100">Public phone: {vendor.publicPhone}</p>}
+          <p className="text-sm text-forest-900 dark:text-cream-100">{vendor.institution.name} — {vendor.campus.name}</p>
+          {(vendor.websiteUrl || vendor.instagramHandle || vendor.tiktokHandle || vendor.twitterHandle || vendor.facebookPage || vendor.linkedinProfile) && (
+            <div className="mt-2 flex flex-wrap gap-2 text-xs text-forest-700/70 dark:text-cream-100/70">
+              {vendor.websiteUrl && <span>Website: {vendor.websiteUrl}</span>}
+              {vendor.instagramHandle && <span>Instagram: {vendor.instagramHandle}</span>}
+              {vendor.tiktokHandle && <span>TikTok: {vendor.tiktokHandle}</span>}
+              {vendor.twitterHandle && <span>X: {vendor.twitterHandle}</span>}
+              {vendor.facebookPage && <span>Facebook: {vendor.facebookPage}</span>}
+              {vendor.linkedinProfile && <span>LinkedIn: {vendor.linkedinProfile}</span>}
+            </div>
+          )}
         </div>
+        {vendor.listings.length > 0 && (
+          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+            <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Listings</p>
+            <ul className="mt-2 space-y-2">
+              {vendor.listings.map((listing) => (
+                <li key={listing.id} className="text-sm text-forest-900 dark:text-cream-100">
+                  {listing.title} <span className="text-forest-700/60 dark:text-cream-100/60">({listing.category.name})</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {(vendor.isAlwaysOpen || vendor.operatingHours) && (
+          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+            <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Hours</p>
+            <p className="mt-1 text-sm text-forest-900 dark:text-cream-100">{vendor.isAlwaysOpen ? 'Open 24/7' : 'Custom hours saved'}</p>
+          </div>
+        )}
       </div>
 
       <div className="rounded-lg border-2 border-gold-500/30 bg-gold-500/5 p-4">

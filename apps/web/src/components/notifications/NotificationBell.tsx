@@ -68,14 +68,30 @@ export function NotificationBell() {
             <ul className="max-h-80 overflow-y-auto">
               {notifications.map((n) => (
                 <li key={n.id} className="border-b border-cream-200 last:border-0 dark:border-forest-700">
-                  <Link
-                    href={`/v/${n.vendorSlug}`}
-                    onClick={() => setOpen(false)}
-                    className="block p-3 hover:bg-cream-100 dark:hover:bg-forest-700"
-                  >
-                    <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{n.title}</p>
-                    <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">{n.body}</p>
-                  </Link>
+                  <div className="flex items-start justify-between gap-3 p-3">
+                    <Link
+                      href={`/v/${n.vendorSlug}`}
+                      onClick={() => setOpen(false)}
+                      className="flex-1"
+                    >
+                      <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{n.title}</p>
+                      <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">{n.body}</p>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifications((prev) => prev.filter((item) => item.id !== n.id));
+                        setUnread((count) => Math.max(0, count - 1));
+                      }}
+                      className="flex-shrink-0 rounded p-1 text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60 dark:hover:text-white"
+                      aria-label="Dismiss notification"
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

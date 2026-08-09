@@ -20,8 +20,12 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               <a href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100 dark:hover:text-white">How it works</a>
             </nav>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => { window.location.href = '/signin'; }}>Sign in</Button>
-              <Button variant="primary" size="sm" onClick={() => { window.location.href = '/signup'; }}>Get started</Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/signin">Sign in</Link>
+              </Button>
+              <Button variant="primary" size="sm" asChild>
+                <Link href="/signup">Sign up</Link>
+              </Button>
             </div>
           </div>
         </Container>

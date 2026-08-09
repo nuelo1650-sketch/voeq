@@ -14,10 +14,16 @@ import { Modal } from '@/components/ui/Modal';
 import { CheckIcon } from '@/components/icons';
 
 const schema = z.object({
-  whatsappNumber: z.string().regex(/^\+?[1-9]\d{6,14}$/, 'Use E.164 format (e.g. +2348012345678)'),
+  whatsappNumber: z.string().regex(/^\+?[1-9]\d{6,14}$/, 'Use E.164 format (e.g. +234****5678)'),
   publicPhone: z.string().regex(/^\+?[1-9]\d{6,14}$/).optional().or(z.literal('')),
   institutionId: z.string().min(1, 'Required'),
   campusId: z.string().min(1, 'Required'),
+  websiteUrl: z.string().url().optional().or(z.literal('')),
+  instagramHandle: z.string().optional().or(z.literal('')),
+  tiktokHandle: z.string().optional().or(z.literal('')),
+  twitterHandle: z.string().optional().or(z.literal('')),
+  facebookPage: z.string().url().optional().or(z.literal('')),
+  linkedinProfile: z.string().url().optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -79,6 +85,12 @@ export function ContactLocationForm() {
       publicPhone: data.publicPhone || undefined,
       institutionId: data.institutionId,
       campusId: data.campusId,
+      websiteUrl: data.websiteUrl || undefined,
+      instagramHandle: data.instagramHandle || undefined,
+      tiktokHandle: data.tiktokHandle || undefined,
+      twitterHandle: data.twitterHandle || undefined,
+      facebookPage: data.facebookPage || undefined,
+      linkedinProfile: data.linkedinProfile || undefined,
     });
     router.push('/vendor/onboarding/step-3');
   };
@@ -144,6 +156,15 @@ export function ContactLocationForm() {
             {errors.campusId && <p className="text-sm text-red-600">Required</p>}
           </div>
         )}
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <Input label="Website (optional)" placeholder="https://yourbusiness.com" error={errors.websiteUrl?.message} {...register('websiteUrl')} />
+          <Input label="Instagram (optional)" placeholder="@handle" error={errors.instagramHandle?.message} {...register('instagramHandle')} />
+          <Input label="TikTok (optional)" placeholder="@handle" error={errors.tiktokHandle?.message} {...register('tiktokHandle')} />
+          <Input label="Twitter / X (optional)" placeholder="@handle" error={errors.twitterHandle?.message} {...register('twitterHandle')} />
+          <Input label="Facebook page (optional)" placeholder="https://facebook.com/yourpage" error={errors.facebookPage?.message} {...register('facebookPage')} />
+          <Input label="LinkedIn (optional)" placeholder="https://linkedin.com/in/you" error={errors.linkedinProfile?.message} {...register('linkedinProfile')} />
+        </div>
 
         <div className="flex justify-between">
           <Button type="button" variant="ghost" onClick={() => router.push('/vendor/onboarding/step-1')}>

@@ -7,7 +7,6 @@ import { Container } from '@/components/ui/Container';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { ListingCard } from '@/components/marketplace/ListingCard';
 import { CampusContextBar } from '@/components/marketplace/CampusContextBar';
 import { CategoryPill } from '@/components/marketplace/CategoryPill';
 import { ArrowRightIcon, SearchIcon, StarIcon } from '@/components/icons';
@@ -21,6 +20,7 @@ import {
 } from '@/components/icons';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { HomeCarousel } from '@/components/landing/HomeCarousel';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -181,45 +181,11 @@ export default async function HomePage() {
         </VendorSection>
       )}
 
-      {recentListings.length > 0 && (
-        <VendorSection title="Recently joined">
-          <Container size="lg">
-            <AnimatedSection>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">Recently joined</h2>
-                <Link href="/browse?sort=newest" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                  View all →
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-                {recentListings.slice(0, 8).map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
-                ))}
-              </div>
-            </AnimatedSection>
-          </Container>
-        </VendorSection>
-      )}
-
-      {popularListings.length > 0 && (
-        <VendorSection title="Popular near you" className="bg-cream-50 dark:bg-forest-800">
-          <Container size="lg">
-            <AnimatedSection>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">Popular near you</h2>
-                <Link href="/browse" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                  View all →
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-                {popularListings.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
-                ))}
-              </div>
-            </AnimatedSection>
-          </Container>
-        </VendorSection>
-      )}
+      <VendorSection>
+        <Container size="lg">
+          <HomeCarousel campusId={campusId} />
+        </Container>
+      </VendorSection>
 
       {recentListings.length === 0 && popularListings.length === 0 && (
         <VendorSection>
