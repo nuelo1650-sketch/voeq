@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Select } from '@/components/ui/Select';
 import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { SearchIcon, XIcon, GridIcon, ListIcon, MapIcon } from '@/components/icons';
+import { SearchIcon, XIcon, MapIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -31,6 +31,7 @@ interface BrowsePageProps {
     verifiedOnly?: string;
     sort?: string;
     view?: string;
+    trending?: string;
   }>;
 }
 
@@ -53,6 +54,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     );
   }
 
+  const trending = params.trending === 'true';
+  const querySort = trending ? 'popular' : ((params.sort ?? 'newest') as ListListingsParams['sort']);
+
   const query = {
     campusId,
     category: params.category,
@@ -61,7 +65,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
     minRating: params.minRating ? Number(params.minRating) : undefined,
     verifiedOnly: params.verifiedOnly === 'true',
-    sort: (params.sort ?? 'newest') as ListListingsParams['sort'],
+    sort: querySort,
     limit: 20,
     page: 1,
   };
@@ -123,34 +127,15 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Link
-              href={`/browse?${new URLSearchParams({ ...(params.category ? { category: params.category } : {}), view: 'grid' }).toString()}`}
+              href={`/browse?${new URLSearchParams({ ...(params.category ? { category: params.category } : {}), trending: 'true' }).toString()}`}
               className={cn(
-                'rounded-md p-2',
-                view === 'grid' ? 'bg-forest-700 text-cream-100' : 'text-forest-700/60 hover:bg-cream-200 dark:text-cream-100/60 dark:hover:bg-forest-800',
+                'rounded-full border px-3 py-1 text-xs font-medium transition',
+                trending
+                  ? 'border-gold-500 bg-gold-500/10 text-forest-900 dark:text-cream-100'
+                  : 'border-cream-300 bg-cream-50 text-forest-700 hover:border-gold-500/50 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100',
               )}
-              aria-label="Grid view"
             >
-              <GridIcon className="h-4 w-4" />
-            </Link>
-            <Link
-              href={`/browse?${new URLSearchParams({ ...(params.category ? { category: params.category } : {}), view: 'list' }).toString()}`}
-              className={cn(
-                'rounded-md p-2',
-                view === 'list' ? 'bg-forest-700 text-cream-100' : 'text-forest-700/60 hover:bg-cream-200 dark:text-cream-100/60 dark:hover:bg-forest-800',
-              )}
-              aria-label="List view"
-            >
-              <ListIcon className="h-4 w-4" />
-            </Link>
-            <Link
-              href={`/browse?${new URLSearchParams({ ...(params.category ? { category: params.category } : {}), view: 'map' }).toString()}`}
-              className={cn(
-                'rounded-md p-2',
-                view === 'map' ? 'bg-forest-700 text-cream-100' : 'text-forest-700/60 hover:bg-cream-200 dark:text-cream-100/60 dark:hover:bg-forest-800',
-              )}
-              aria-label="Map view"
-            >
-              <MapIcon className="h-4 w-4" />
+              Trending this week
             </Link>
           </div>
 
