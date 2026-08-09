@@ -17,7 +17,6 @@ export function AuthShell({ children, title, subtitle }: { children: React.React
         <div className="hidden md:block md:w-1/2">
           <div className="mb-8 flex items-center gap-3">
             <Logo size="sm" />
-            <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
           </div>
           <h1 className="font-serif text-4xl font-semibold text-forest-900 dark:text-cream-100">
             {title}
