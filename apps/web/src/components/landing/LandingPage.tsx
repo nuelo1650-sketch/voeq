@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { Logo } from '@/components/brand/Logo';
+import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 import {
   FoodIcon,
   TechIcon,
@@ -119,6 +120,7 @@ export default async function LandingPage() {
               <Link href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">About</Link>
             </nav>
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/signin">Sign in</Link>
               </Button>
@@ -244,7 +246,7 @@ export default async function LandingPage() {
                   <Link
                     key={cat.id}
                     href={`/browse?category=${cat.slug}`}
-                    className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-forest-700/30 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
+                    className="group flex flex-col items-center justify-center rounded-2xl border border-cream-300 bg-cream-50 p-6 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
                   >
                     {Icon && <Icon className="h-10 w-10 text-forest-700 transition group-hover:text-forest-900 dark:text-cream-100" />}
                     <span className="mt-3 text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
@@ -403,7 +405,7 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
-        <Section spacing="lg">
+        <Section spacing="lg" className="border-y border-gold-500/20 bg-cream-50 dark:bg-forest-800">
           <Container size="md">
             <AnimatedSection>
               <h2 className="text-center font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Frequently asked questions</h2>
@@ -495,7 +497,7 @@ export default async function LandingPage() {
 
           <div className="mt-6 flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
             <p className="text-sm text-cream-100/50">© 2026 Voeq Limited. All rights reserved.</p>
-            <p className="text-sm text-cream-100/50">Pronounced <span className="font-semibold text-gold-500">/voʊk/</span> — like Vogue</p>
+            <p className="text-sm text-cream-100/50">Built for Nigerian students</p>
           </div>
         </Container>
       </footer>
