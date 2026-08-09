@@ -1,8 +1,7 @@
 import { type Metadata } from 'next';
 import { getMyVendor } from '@/lib/vendor-client';
 import { VendorProfileForm } from '@/components/vendor/VendorProfileForm';
-import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 
 export const metadata: Metadata = {
   title: 'Edit business profile',
@@ -20,18 +19,16 @@ export default async function VendorProfilePage() {
   }
   if (!('vendor' in result)) {
     return (
-      <Section spacing="lg">
-        <Container size="md">
-          <p className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">Please sign in to manage your vendor profile.</p>
-        </Container>
-      </Section>
+      <VendorPageHeader title="Business profile" subtitle="Manage your storefront, contact details, and preferences." />
     );
   }
+
   return (
-    <Section spacing="lg">
-      <Container size="lg">
+    <>
+      <VendorPageHeader title="Business profile" subtitle="Manage your storefront, contact details, and preferences." />
+      <VendorSection title="Store details" description="Update the information students see on your profile.">
         <VendorProfileForm vendor={result.vendor} />
-      </Container>
-    </Section>
+      </VendorSection>
+    </>
   );
 }

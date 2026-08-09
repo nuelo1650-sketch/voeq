@@ -18,6 +18,8 @@ import { TrustScore } from '@/components/badges/TrustScore';
 import { ReportButton } from '@/components/reports/ReportButton';
 import { DisputeButton } from '@/components/reports/DisputeButton';
 import { ReviewListWrapper } from '@/components/reviews/ReviewListWrapper';
+import { VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import Image from 'next/image';
 
 interface VendorPageProps {
@@ -74,101 +76,111 @@ export default async function VendorPage({ params }: VendorPageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Container size="lg" className="py-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-          {vendor.profilePhotoUrl ? (
-            <Image
-              src={vendor.profilePhotoUrl}
-              alt={vendor.businessName}
-              width={96}
-              height={96}
-              className="h-24 w-24 rounded-full object-cover"
-              priority
-            />
-          ) : (
-            <Avatar size="xl" alt={vendor.businessName} />
-          )}
-
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">
-                {vendor.businessName}
-              </h1>
-              {vendor.verifiedBadge && (
-                <Badge variant="gold" className="gap-1">
-                  <CheckIcon className="h-3 w-3" /> Verified
-                </Badge>
+      <VendorSection>
+        <Container size="lg" className="py-6">
+          <AnimatedSection>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+              {vendor.profilePhotoUrl ? (
+                <Image
+                  src={vendor.profilePhotoUrl}
+                  alt={vendor.businessName}
+                  width={96}
+                  height={96}
+                  className="h-24 w-24 rounded-full object-cover"
+                  priority
+                />
+              ) : (
+                <Avatar size="xl" alt={vendor.businessName} />
               )}
-            </div>
-            <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
-              {vendor.institution.name} · {vendor.campus.name}
-            </p>
-            {vendor.ratingCount > 0 && (
-              <div className="mt-2">
-                <RatingStars rating={vendor.ratingAvg} count={vendor.ratingCount} size="md" />
-              </div>
-            )}
-            <div className="mt-2">
-              <TrustScore score={vendor.trustScore} size="sm" showLabel={false} />
-              <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">
-                Trust score: <span className="font-semibold text-forest-900 dark:text-cream-100">{vendor.trustScore}/100</span>
-              </p>
-            </div>
-            {vendorBadges.badges.length > 0 && (
-              <div className="mt-4">
-                <BadgeList badges={vendorBadges.badges} size="sm" />
-              </div>
-            )}
-          </div>
 
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[200px]">
-            <WishlistButton vendorId={vendor.id} className="w-full" />
-            <FollowButton vendorId={vendor.id} className="w-full" />
-            <WhatsAppButton
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">
+                    {vendor.businessName}
+                  </h1>
+                  {vendor.verifiedBadge && (
+                    <Badge variant="gold" className="gap-1">
+                      <CheckIcon className="h-3 w-3" /> Verified
+                    </Badge>
+                  )}
+                </div>
+                <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
+                  {vendor.institution.name} · {vendor.campus.name}
+                </p>
+                {vendor.ratingCount > 0 && (
+                  <div className="mt-2">
+                    <RatingStars rating={vendor.ratingAvg} count={vendor.ratingCount} size="md" />
+                  </div>
+                )}
+                <div className="mt-2">
+                  <TrustScore score={vendor.trustScore} size="sm" showLabel={false} />
+                  <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">
+                    Trust score: <span className="font-semibold text-forest-900 dark:text-cream-100">{vendor.trustScore}/100</span>
+                  </p>
+                </div>
+                {vendorBadges.badges.length > 0 && (
+                  <div className="mt-4">
+                    <BadgeList badges={vendorBadges.badges} size="sm" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[200px]">
+                <WishlistButton vendorId={vendor.id} className="w-full" />
+                <FollowButton vendorId={vendor.id} className="w-full" />
+                <WhatsAppButton
+                  vendorId={vendor.id}
+                  vendorName={vendor.businessName}
+                  vendorPhone={vendor.whatsappNumber}
+                  fullWidth
+                />
+                <ShareButton url={pageUrl} title={vendor.businessName} fullWidth />
+              </div>
+            </div>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+
+      <VendorSection title="About" description={vendor.description} className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+        <Container size="lg" className="py-6">
+          <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">{vendor.description}</p>
+        </Container>
+      </VendorSection>
+
+      {vendor.listings.length > 0 && (
+        <VendorSection title={`Listings (${vendor.listings.length})`} className="bg-cream-50 dark:bg-forest-800">
+          <Container size="lg" className="py-6">
+            <AnimatedSection>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {vendor.listings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            </AnimatedSection>
+          </Container>
+        </VendorSection>
+      )}
+
+      <VendorSection title="Reviews" className="border-y border-cream-200 dark:border-forest-700">
+        <Container size="lg" className="py-6">
+          <AnimatedSection>
+            <ReviewListWrapper
               vendorId={vendor.id}
               vendorName={vendor.businessName}
-              vendorPhone={vendor.whatsappNumber}
-              fullWidth
+              vendorSlug={vendor.slug}
             />
-            <ShareButton url={pageUrl} title={vendor.businessName} fullWidth />
-          </div>
-        </div>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
 
-        <div className="mt-8 rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
-          <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">About</h2>
-          <p className="mt-2 whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">
-            {vendor.description}
-          </p>
-        </div>
-
-        {vendor.listings.length > 0 && (
-          <div className="mt-12">
-            <h2 className="mb-4 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-              Listings ({vendor.listings.length})
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-              {vendor.listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="mt-12">
-          <ReviewListWrapper
-            vendorId={vendor.id}
-            vendorName={vendor.businessName}
-            vendorSlug={vendor.slug}
-          />
-        </div>
-
-        <div className="mt-8 text-center">
+      <VendorSection>
+        <Container size="lg" className="py-6">
           <div className="flex flex-wrap items-center justify-center gap-2">
             <ReportButton vendorId={vendor.id} vendorName={vendor.businessName} />
             <DisputeButton vendorId={vendor.id} vendorName={vendor.businessName} />
           </div>
-        </div>
-      </Container>
+        </Container>
+      </VendorSection>
     </>
   );
 }
