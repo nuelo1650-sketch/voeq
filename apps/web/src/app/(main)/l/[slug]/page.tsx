@@ -11,6 +11,8 @@ import { ListingCard } from '@/components/marketplace/ListingCard';
 import { RatingStars } from '@/components/marketplace/RatingStars';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
+import { VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 interface ListingPageProps {
   params: Promise<{ slug: string }>;
@@ -64,109 +66,111 @@ export default async function ListingPage({ params }: ListingPageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Container size="lg" className="py-6">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <PhotoGallery photos={listing.photos} alt={listing.title} />
+      <VendorSection>
+        <Container size="lg" className="py-6">
+          <AnimatedSection>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <PhotoGallery photos={listing.photos} alt={listing.title} />
 
-          <div className="space-y-6">
-            <div>
-              <Link
-                href={`/browse?category=${listing.category.slug}`}
-                className="text-xs font-medium text-gold-600 hover:underline"
-              >
-                {listing.category.name}
-              </Link>
-              <h1 className="mt-2 font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">
-                {listing.title}
-              </h1>
-              {listing.isFlashDeal && (
-                <div className="mt-2">
-                  <Badge variant="gold">Flash deal</Badge>
-                </div>
-              )}
-            </div>
-
-            <PriceRange min={listing.priceMin} max={listing.priceMax} size="lg" />
-
-            <div className="rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
-              <Link
-                href={`/v/${listing.vendor.slug}`}
-                className="flex items-center gap-3"
-              >
-                <div className="flex-1">
-                  <p className="font-semibold text-forest-900 dark:text-cream-100">
-                    {listing.vendor.businessName}
-                  </p>
-                  <p className="text-xs text-forest-700/60 dark:text-cream-100/60">
-                    {listing.vendor.campus.name}
-                  </p>
-                  {listing.vendor.ratingCount > 0 && (
-                    <div className="mt-1">
-                      <RatingStars rating={listing.vendor.ratingAvg} count={listing.vendor.ratingCount} size="sm" />
+              <div className="space-y-6">
+                <div>
+                  <Link
+                    href={`/browse?category=${listing.category.slug}`}
+                    className="text-xs font-medium text-gold-600 hover:underline"
+                  >
+                    {listing.category.name}
+                  </Link>
+                  <h1 className="mt-2 font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">
+                    {listing.title}
+                  </h1>
+                  {listing.isFlashDeal && (
+                    <div className="mt-2">
+                      <Badge variant="gold">Flash deal</Badge>
                     </div>
                   )}
                 </div>
-              </Link>
-            </div>
 
-            <div className="space-y-3">
-              <WhatsAppButton
-                vendorId={listing.vendor.id}
-                vendorName={listing.vendor.businessName}
-                vendorPhone={listing.vendor.whatsappNumber}
-                listingId={listing.id}
-                listingTitle={listing.title}
-                listingPrice={priceStr}
-                fullWidth
-              />
-              <ShareButton
-                url={pageUrl}
-                title={listing.title}
-                text={`Check out ${listing.title} on Voeq`}
-                fullWidth
-              />
-            </div>
-          </div>
-        </div>
+                <PriceRange min={listing.priceMin} max={listing.priceMax} size="lg" />
 
-        <div className="mt-12">
-          <h2 className="mb-4 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-            Description
-          </h2>
-          <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">
-            {listing.description}
-          </p>
-        </div>
+                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
+                  <Link
+                    href={`/v/${listing.vendor.slug}`}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="flex-1">
+                      <p className="font-semibold text-forest-900 dark:text-cream-100">
+                        {listing.vendor.businessName}
+                      </p>
+                      <p className="text-xs text-forest-700/60 dark:text-cream-100/60">
+                        {listing.vendor.campus.name}
+                      </p>
+                      {listing.vendor.ratingCount > 0 && (
+                        <div className="mt-1">
+                          <RatingStars rating={listing.vendor.ratingAvg} count={listing.vendor.ratingCount} size="sm" />
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </div>
 
-        {listing.related.length > 0 && (
-          <div className="mt-12">
-            <h2 className="mb-4 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-              More in {listing.category.name}
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-              {listing.related.map((related) => (
-                <ListingCard
-                  key={related.id}
-                  listing={{
-                    id: related.id,
-                    slug: related.slug,
-                    title: related.title,
-                    description: '',
-                    priceMin: related.priceMin,
-                    priceMax: null,
-                    photoUrl: related.photoUrl,
-                    categoryName: listing.category.name,
-                    categorySlug: listing.category.slug,
-                    vendorName: listing.vendor.businessName,
-                    vendorSlug: listing.vendor.slug,
-                    campusName: listing.vendor.campus.name,
-                  }}
-                />
-              ))}
+                <div className="space-y-3">
+                  <WhatsAppButton
+                    vendorId={listing.vendor.id}
+                    vendorName={listing.vendor.businessName}
+                    vendorPhone={listing.vendor.whatsappNumber}
+                    listingId={listing.id}
+                    listingTitle={listing.title}
+                    listingPrice={priceStr}
+                    fullWidth
+                  />
+                  <ShareButton
+                    url={pageUrl}
+                    title={listing.title}
+                    text={`Check out ${listing.title} on Voeq`}
+                    fullWidth
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </Container>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+
+      <VendorSection title="Description" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+        <Container size="lg" className="py-6">
+          <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">{listing.description}</p>
+        </Container>
+      </VendorSection>
+
+      {listing.related.length > 0 && (
+        <VendorSection title={`More in ${listing.category.name}`} className="bg-cream-50 dark:bg-forest-800">
+          <Container size="lg" className="py-6">
+            <AnimatedSection>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+                {listing.related.map((related) => (
+                  <ListingCard
+                    key={related.id}
+                    listing={{
+                      id: related.id,
+                      slug: related.slug,
+                      title: related.title,
+                      description: '',
+                      priceMin: related.priceMin,
+                      priceMax: null,
+                      photoUrl: related.photoUrl,
+                      categoryName: listing.category.name,
+                      categorySlug: listing.category.slug,
+                      vendorName: listing.vendor.businessName,
+                      vendorSlug: listing.vendor.slug,
+                      campusName: listing.vendor.campus.name,
+                    }}
+                  />
+                ))}
+              </div>
+            </AnimatedSection>
+          </Container>
+        </VendorSection>
+      )}
     </>
   );
 }
