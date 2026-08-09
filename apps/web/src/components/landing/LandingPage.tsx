@@ -455,13 +455,20 @@ export default async function LandingPage() {
             <AnimatedSection>
               <h2 className="text-center font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Frequently asked questions</h2>
             </AnimatedSection>
-            <div className="mt-12 space-y-4">
+            <div className="mt-12 space-y-3">
               {FAQS.map((item) => (
-                <details key={item.question} className="group rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
-                  <summary className="cursor-pointer text-base font-medium text-forest-900 dark:text-cream-100">
-                    {item.question}
+                <details key={item.question} className="group rounded-2xl border border-gold-500/20 bg-cream-50 transition hover:border-gold-500/40 dark:border-forest-700 dark:bg-forest-800 dark:hover:border-gold-500/30">
+                  <summary className="cursor-pointer list-none px-6 py-5 text-base font-medium text-forest-900 dark:text-cream-100">
+                    <div className="flex items-center justify-between gap-4">
+                      <span>{item.question}</span>
+                      <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gold-500/40 text-gold-700 transition group-open:rotate-180 dark:text-gold-400">
+                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </span>
+                    </div>
                   </summary>
-                  <p className="mt-3 text-sm text-forest-700/70 dark:text-cream-100/70">{item.answer}</p>
+                  <p className="px-6 pb-5 text-sm leading-relaxed text-forest-700/75 dark:text-cream-100/75">{item.answer}</p>
                 </details>
               ))}
             </div>

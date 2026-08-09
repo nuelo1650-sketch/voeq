@@ -34,7 +34,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               <Link href="/" aria-label="Voeq home">
                 <Logo size="md" />
               </Link>
-              <p className="mt-4 text-sm text-cream-100/70">Voeq /voʊk/ — like Vogue</p>
+              <p className="mt-4 text-sm text-cream-100/70">The campus marketplace for Nigerian students.</p>
               <p className="mt-2 text-sm text-cream-100/70">Built by students, for students.</p>
             </div>
             <div>
