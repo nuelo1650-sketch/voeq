@@ -8,6 +8,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { EmptySearch } from '@/components/illustrations';
 import { CampusContextBar } from '@/components/marketplace/CampusContextBar';
 import { getMe } from '@/lib/auth-client';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = {
   title: 'Search',
@@ -41,15 +43,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             institutionName={institutionName}
           />
         )}
-        <Section spacing="lg">
+        <VendorPageHeader title="Search" subtitle="Find vendors, services, or categories on Voeq." />
+        <VendorSection>
           <Container size="md">
-            <EmptyState
-              illustration={<EmptySearch className="h-40 w-40 text-forest-700/40 dark:text-cream-100/40" />}
-              title="Search for vendors"
-              description="Use the search bar to find vendors, services, or categories on your campus."
-            />
+            <AnimatedSection>
+              <EmptyState
+                illustration={<EmptySearch className="h-40 w-40 text-forest-700/40 dark:text-cream-100/40" />}
+                title="Search for vendors"
+                description="Use the search bar to find vendors, services, or categories on your campus."
+              />
+            </AnimatedSection>
           </Container>
-        </Section>
+        </VendorSection>
       </>
     );
   }
@@ -66,15 +71,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             institutionName={institutionName}
           />
         )}
-        <Section spacing="lg">
+        <VendorPageHeader title={`No results for "${query}"`} subtitle="Try different keywords or browse all categories." />
+        <VendorSection>
           <Container size="md">
-            <EmptyState
-              illustration={<EmptySearch className="h-40 w-40 text-forest-700/40 dark:text-cream-100/40" />}
-              title={`No results for "${query}"`}
-              description="Try different keywords or browse all categories."
-            />
+            <AnimatedSection>
+              <EmptyState
+                illustration={<EmptySearch className="h-40 w-40 text-forest-700/40 dark:text-cream-100/40" />}
+                title={`No results for "${query}"`}
+                description="Try different keywords or browse all categories."
+              />
+            </AnimatedSection>
           </Container>
-        </Section>
+        </VendorSection>
       </>
     );
   }
@@ -89,57 +97,49 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         />
       )}
 
-      <Section spacing="md">
-        <Container size="lg">
-          <h1 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100 sm:text-3xl">
-            Results for &quot;{query}&quot;
-          </h1>
-          <p className="mt-1 text-sm text-forest-700/60 dark:text-cream-100/60">
-            {results.totalListings + results.totalVendors} {results.totalListings + results.totalVendors === 1 ? 'result' : 'results'}
-          </p>
-        </Container>
-      </Section>
+      <VendorPageHeader
+        title={`Results for "${query}"`}
+        subtitle={`${results.totalListings + results.totalVendors} ${results.totalListings + results.totalVendors === 1 ? 'result' : 'results'}`}
+      />
 
       {results.listings.length > 0 && (
-        <Section spacing="md">
+        <VendorSection title="Listings">
           <Container size="lg">
-            <h2 className="mb-4 font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
-              Listings
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-              {results.listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
+            <AnimatedSection>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {results.listings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            </AnimatedSection>
           </Container>
-        </Section>
+        </VendorSection>
       )}
 
       {results.vendors.length > 0 && (
-        <Section spacing="md" className="bg-cream-50 dark:bg-forest-800">
+        <VendorSection title="Vendors" className="bg-cream-50 dark:bg-forest-800">
           <Container size="lg">
-            <h2 className="mb-4 font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
-              Vendors
-            </h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-              {results.vendors.map((vendor) => (
-                <VendorCard
-                  key={vendor.id}
-                  vendor={{
-                    id: vendor.id,
-                    slug: vendor.slug,
-                    businessName: vendor.businessName,
-                    description: vendor.description,
-                    photoUrl: vendor.photoUrl,
-                    campusName: vendor.campusName,
-                    ratingAvg: vendor.ratingAvg,
-                    ratingCount: vendor.ratingCount,
-                  }}
-                />
-              ))}
-            </div>
+            <AnimatedSection>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+                {results.vendors.map((vendor) => (
+                  <VendorCard
+                    key={vendor.id}
+                    vendor={{
+                      id: vendor.id,
+                      slug: vendor.slug,
+                      businessName: vendor.businessName,
+                      description: vendor.description,
+                      photoUrl: vendor.photoUrl,
+                      campusName: vendor.campusName,
+                      ratingAvg: vendor.ratingAvg,
+                      ratingCount: vendor.ratingCount,
+                    }}
+                  />
+                ))}
+              </div>
+            </AnimatedSection>
           </Container>
-        </Section>
+        </VendorSection>
       )}
     </>
   );
