@@ -1,6 +1,9 @@
 import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { FirstListingForm } from '@/components/vendor/FirstListingForm';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 4',
@@ -11,11 +14,17 @@ export const dynamic = 'force-dynamic';
 
 export default function Step4Page() {
   return (
-    <OnboardingWizard currentStep={4}>
-      <h2 className="mb-6 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-        Your first listing
-      </h2>
-      <FirstListingForm />
-    </OnboardingWizard>
+    <>
+      <VendorPageHeader title="Your first listing" subtitle="Add one item or service to get started." />
+      <VendorSection>
+        <Container size="md">
+          <AnimatedSection>
+            <OnboardingWizard currentStep={4}>
+              <FirstListingForm />
+            </OnboardingWizard>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+    </>
   );
 }

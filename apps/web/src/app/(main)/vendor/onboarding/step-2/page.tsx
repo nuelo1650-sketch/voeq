@@ -1,6 +1,9 @@
 import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { ContactLocationForm } from '@/components/vendor/ContactLocationForm';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 2',
@@ -11,11 +14,17 @@ export const dynamic = 'force-dynamic';
 
 export default function Step2Page() {
   return (
-    <OnboardingWizard currentStep={2}>
-      <h2 className="mb-6 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-        Contact & location
-      </h2>
-      <ContactLocationForm />
-    </OnboardingWizard>
+    <>
+      <VendorPageHeader title="Contact & location" subtitle="Where can students reach you?" />
+      <VendorSection>
+        <Container size="md">
+          <AnimatedSection>
+            <OnboardingWizard currentStep={2}>
+              <ContactLocationForm />
+            </OnboardingWizard>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+    </>
   );
 }

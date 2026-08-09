@@ -2,6 +2,9 @@ import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { BusinessBasicsForm } from '@/components/vendor/BusinessBasicsForm';
 import { getMyVendor } from '@/lib/vendor-client';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 1',
@@ -19,11 +22,17 @@ export default async function Step1Page() {
   } : undefined;
 
   return (
-    <OnboardingWizard currentStep={1}>
-      <h2 className="mb-6 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-        Business basics
-      </h2>
-      <BusinessBasicsForm initialData={initialData} />
-    </OnboardingWizard>
+    <>
+      <VendorPageHeader title="Business basics" subtitle="Tell students what you offer." />
+      <VendorSection>
+        <Container size="md">
+          <AnimatedSection>
+            <OnboardingWizard currentStep={1}>
+              <BusinessBasicsForm initialData={initialData} />
+            </OnboardingWizard>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+    </>
   );
 }

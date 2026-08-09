@@ -55,15 +55,6 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
     <Section spacing="md">
       <Container size="md">
         <div className="mb-8">
-          <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
-            Set up your vendor profile
-          </h1>
-          <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-            Complete these steps to start receiving messages from students
-          </p>
-        </div>
-
-        <div className="mb-8">
           <ProgressMeter progress={progress} />
         </div>
 
