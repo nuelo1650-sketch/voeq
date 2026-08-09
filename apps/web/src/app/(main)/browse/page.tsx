@@ -172,6 +172,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
               <option value="price_asc">Price: Low to High</option>
               <option value="price_desc">Price: High to Low</option>
               <option value="rating">Highest Rated</option>
+              <option value="popular">Trending this week</option>
               <option value="popular">Most Viewed</option>
             </select>
           </div>

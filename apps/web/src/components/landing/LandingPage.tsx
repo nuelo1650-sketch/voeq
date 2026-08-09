@@ -283,28 +283,7 @@ export default async function LandingPage() {
           </Section>
         )}
 
-        <Section spacing="md" className="bg-forest-900 text-cream-100">
-          <Container size="lg">
-            <AnimatedSection>
-              <div className="mb-6 text-center">
-                <h2 className="font-serif text-3xl font-semibold">Trending this week</h2>
-                <p className="mt-1 text-sm text-cream-100/70">What students are looking at right now</p>
-              </div>
-            </AnimatedSection>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-6">
-              {popularListings.slice(0, 6).map((listing) => (
-                <Link
-                  key={listing.id}
-                  href={`/l/${listing.slug}`}
-                  className="group rounded-xl border border-forest-700 bg-forest-800/50 p-4 transition hover:border-gold-500"
-                >
-                  <p className="text-sm font-medium text-cream-100 group-hover:text-gold-500">{listing.title}</p>
-                  <p className="mt-1 text-xs text-cream-100/60">{listing.campusName}</p>
-                </Link>
-              ))}
-            </div>
-          </Container>
-        </Section>
+
 
         <Section spacing="lg">
           <Container size="lg">
