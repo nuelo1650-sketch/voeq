@@ -18,6 +18,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [me, setMe] = useState<Awaited<ReturnType<typeof getMe>>['user'] | null>(null);
   const [showAgreement, setShowAgreement] = useState(false);
   const [showCampus, setShowCampus] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     getMe()
@@ -44,6 +45,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     setShowCampus(false);
     router.refresh();
   };
+
+  const mobileLinks = [
+    { href: '/browse', label: 'Browse' },
+    { href: '/profile', label: 'Profile' },
+    { href: '/wishlist', label: 'Wishlist' },
+    { href: '/following', label: 'Following' },
+    { href: '/settings', label: 'Settings' },
+  ];
+  const handleMobileNav = () => setMobileOpen(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -91,7 +101,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </Button>
               )}
             </nav>
-          </div>
+          {mobileOpen && (
+            <div className="md:hidden">
+              <div className="space-y-1 border-t border-cream-200 px-4 pb-4 pt-3 dark:border-forest-700">
+                {mobileLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={handleMobileNav}
+                    className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </Container>
       </header>
       <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
