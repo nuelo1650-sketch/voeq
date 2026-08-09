@@ -35,6 +35,7 @@ import { notFoundHandler } from './middleware/notFound';
 
 export function createApp(): Application {
   const app = express();
+  app.set('trust proxy', 1);
 
   app.use(
     helmet({
@@ -47,16 +48,29 @@ export function createApp(): Application {
           connectSrc: ["'self'", env.NEXT_PUBLIC_API_URL ?? env.CORS_ORIGIN],
         },
       },
+      crossOriginEmbedderPolicy: false,
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      noSniff: true,
+      xssFilter: true,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     }),
   );
-  const corsOrigin = env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+  const corsOrigin = env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean);
   const corsOriginValidator = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    if (!origin || corsOrigin.includes(origin)) {
+    if (!origin || origin === 'null' || corsOrigin.includes(origin)) {
       callback(null, true);
       return;
     }
     try {
       if (/\.vercel\.app$/.test(new URL(origin).hostname)) {
+        callback(null, true);
+        return;
+      }
+      if (/\.onrender\.com$/.test(new URL(origin).hostname)) {
         callback(null, true);
         return;
       }
@@ -85,6 +99,26 @@ export function createApp(): Application {
       },
     }),
   );
+  const GLOBAL_RATE_LIMIT_WINDOW = 15 * 60 * 1000;
+  const GLOBAL_RATE_LIMIT_MAX = 200;
+  let globalRequestCount = 0;
+  let globalWindowStart = Date.now();
+  app.use((req, res, next) => {
+    const now = Date.now();
+    if (now - globalWindowStart >= GLOBAL_RATE_LIMIT_WINDOW) {
+      globalRequestCount = 0;
+      globalWindowStart = now;
+    }
+    globalRequestCount++;
+    if (globalRequestCount > GLOBAL_RATE_LIMIT_MAX) {
+      res.status(429).json({
+        error: 'TooManyRequests',
+        message: 'Too many requests, please try again later',
+      });
+      return;
+    }
+    next();
+  });
 
   app.use('/health', healthRouter);
   app.use('/', healthRouter);

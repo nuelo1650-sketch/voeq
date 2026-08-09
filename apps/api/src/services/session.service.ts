@@ -50,14 +50,34 @@ export function getSessionCookieName(): string {
 export function getSessionCookieOptions(): {
   httpOnly: boolean;
   secure: boolean;
-  sameSite: 'lax';
+  sameSite: 'lax' | 'none';
   maxAge: number;
   path: string;
 } {
+  const apiUrl = env.NEXT_PUBLIC_API_URL;
+  const webUrl = env.WEB_URL;
+  let secure = env.NODE_ENV === 'production';
+  let sameSite: 'lax' | 'none' = 'lax';
+
+  if (apiUrl && webUrl) {
+    try {
+      const apiHost = new URL(apiUrl).host;
+      const webHost = new URL(webUrl).host;
+      const isLocalhost = (host: string) => host === 'localhost' || host === '127.0.0.1' || host.startsWith('localhost:');
+      if (!isLocalhost(apiHost) && !isLocalhost(webHost) && apiHost !== webHost) {
+        // Cross-site production: require secure + SameSite=None
+        sameSite = 'none';
+        secure = true;
+      }
+    } catch {
+      // invalid URL, keep defaults
+    }
+  }
+
   return {
     httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure,
+    sameSite,
     maxAge: SESSION_DURATION_SECONDS,
     path: '/',
   };
