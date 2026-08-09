@@ -8,6 +8,8 @@ import { Section } from '@/components/ui/Section';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { HeartIcon } from '@/components/icons';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = {
   title: 'Wishlist',
@@ -23,51 +25,51 @@ export default async function WishlistPage() {
   const { items } = await getWishlist().catch(() => ({ items: [] }));
 
   return (
-    <Section spacing="md">
-      <Container size="lg">
-        <div className="mb-6">
-          <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Wishlist</h1>
-          <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Vendors you&apos;ve saved for later</p>
-        </div>
-
-        {items.length === 0 ? (
-          <EmptyState
-            icon={<HeartIcon className="h-16 w-16 text-forest-700/30 dark:text-cream-100/30" />}
-            title="No saved vendors yet"
-            description="Tap the heart icon on any vendor to save them for later."
-            action={{
-              label: 'Browse vendors',
-              onClick: () => { window.location.href = '/browse'; },
-            }}
-          />
-        ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {items.map((item: any) => {
-              const listing = item.vendor?.listings?.[0];
-              if (!listing) return null;
-              return (
-                <ListingCard
-                  key={item.id}
-                  listing={{
-                    id: listing.id,
-                    slug: listing.slug,
-                    title: listing.title,
-                    description: listing.description,
-                    priceMin: Number(listing.priceMin),
-                    priceMax: listing.priceMax ? Number(listing.priceMax) : null,
-                    photoUrl: listing.photoUrl,
-                    categoryName: listing.categoryName,
-                    categorySlug: listing.categorySlug,
-                    vendorName: item.vendor.businessName,
-                    vendorSlug: item.vendor.slug,
-                    campusName: item.vendor.campus.name,
-                  }}
-                />
-              );
-            })}
-          </div>
-        )}
-      </Container>
-    </Section>
+    <>
+      <VendorPageHeader title="Wishlist" subtitle="Vendors you've saved for later" />
+      <VendorSection>
+        <Container size="lg">
+          <AnimatedSection>
+            {items.length === 0 ? (
+              <EmptyState
+                icon={<HeartIcon className="h-16 w-16 text-forest-700/30 dark:text-cream-100/30" />}
+                title="No saved vendors yet"
+                description="Tap the heart icon on any vendor to save them for later."
+                action={{
+                  label: 'Browse vendors',
+                  onClick: () => { window.location.href = '/browse'; },
+                }}
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {items.map((item: any) => {
+                  const listing = item.vendor?.listings?.[0];
+                  if (!listing) return null;
+                  return (
+                    <ListingCard
+                      key={item.id}
+                      listing={{
+                        id: listing.id,
+                        slug: listing.slug,
+                        title: listing.title,
+                        description: listing.description,
+                        priceMin: Number(listing.priceMin),
+                        priceMax: listing.priceMax ? Number(listing.priceMax) : null,
+                        photoUrl: listing.photoUrl,
+                        categoryName: listing.categoryName,
+                        categorySlug: listing.categorySlug,
+                        vendorName: item.vendor.businessName,
+                        vendorSlug: item.vendor.slug,
+                        campusName: item.vendor.campus.name,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+    </>
   );
 }
