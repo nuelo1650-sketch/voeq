@@ -1,34 +1,35 @@
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
+import type { ReactNode } from 'react';
 
-export function VendorPageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: React.ReactNode }) {
+export function VendorPageHeader({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children?: ReactNode }) {
   return (
-    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
-      <Container size="lg">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50/70 dark:border-forest-700 dark:bg-forest-800">
+      <Container size="xl">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1">
             <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">{title}</h1>
-            {subtitle && <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{subtitle}</p>}
+            {subtitle ? <p className="text-sm text-forest-700/70 dark:text-cream-100/70">{subtitle}</p> : null}
           </div>
-          {children}
+          {children ? <div className="flex items-center gap-2">{children}</div> : null}
         </div>
       </Container>
     </Section>
   );
 }
 
-export function VendorSection({ title, description, children, className = '' }: { title?: string; description?: string; children: React.ReactNode; className?: string }) {
+export function VendorSection({ title, subtitle, children, className }: { title?: string; subtitle?: string; children: ReactNode; className?: string }) {
   return (
-    <Section spacing="lg" className={className}>
-      <Container size="lg">
-        {(title || description) && (
-          <div className="mb-6">
-            {title && <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">{title}</h2>}
-            {description && <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{description}</p>}
+    <Section spacing="md" className={className}>
+      {title ? (
+        <Container size="xl">
+          <div className="mb-4">
+            <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">{title}</h2>
+            {subtitle ? <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{subtitle}</p> : null}
           </div>
-        )}
-        {children}
-      </Container>
+        </Container>
+      ) : null}
+      {children}
     </Section>
   );
 }

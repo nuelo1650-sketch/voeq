@@ -26,7 +26,7 @@ export default async function VendorProfilePage() {
   return (
     <>
       <VendorPageHeader title="Business profile" subtitle="Manage your storefront, contact details, and preferences." />
-      <VendorSection title="Store details" description="Update the information students see on your profile.">
+      <VendorSection title="Store details" subtitle="Update the information students see on your profile.">
         <VendorProfileForm vendor={result.vendor} />
       </VendorSection>
     </>

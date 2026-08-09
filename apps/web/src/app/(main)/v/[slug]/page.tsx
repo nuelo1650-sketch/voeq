@@ -141,7 +141,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
         </Container>
       </VendorSection>
 
-      <VendorSection title="About" description={vendor.description} className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+      <VendorSection title="About" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
         <Container size="lg" className="py-6">
           <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">{vendor.description}</p>
         </Container>
