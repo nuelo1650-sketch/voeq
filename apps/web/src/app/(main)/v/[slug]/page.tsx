@@ -47,7 +47,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
   if (!result) notFound();
 
   const { vendor } = result;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
   const pageUrl = `${siteUrl}/v/${vendor.slug}`;
 
   const vendorBadges = await getVendorBadges(vendor.id).catch(() => ({ badges: [] }));

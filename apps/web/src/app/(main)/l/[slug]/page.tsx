@@ -39,7 +39,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
   if (!result) notFound();
 
   const { listing } = result;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
   const pageUrl = `${siteUrl}/l/${listing.slug}`;
   const priceStr = listing.priceMax
     ? `₦${listing.priceMin.toLocaleString('en-NG')} – ₦${listing.priceMax.toLocaleString('en-NG')}`

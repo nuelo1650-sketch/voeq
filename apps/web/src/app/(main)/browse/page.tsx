@@ -159,7 +159,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
             <select
               defaultValue={query.sort}
               onChange={(e) => {
-                const url = new URL('/browse', typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
+                const url = new URL('/browse', typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL ?? ''));
                 if (params.category) url.searchParams.set('category', params.category);
                 if (params.search) url.searchParams.set('search', params.search);
                 url.searchParams.set('sort', e.target.value);

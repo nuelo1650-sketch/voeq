@@ -10,7 +10,20 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function VendorProfilePage() {
-  const result = await getMyVendor();
-  if (!('vendor' in result)) return null;
+  let result;
+  try {
+    result = await getMyVendor();
+  } catch {
+    result = { error: 'Unauthorized' };
+  }
+  if (!('vendor' in result)) {
+    return (
+      <Section spacing="lg">
+        <Container size="md">
+          <p className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">Please sign in to manage your vendor profile.</p>
+        </Container>
+      </Section>
+    );
+  }
   return <VendorProfileForm vendor={result.vendor} />;
 }
