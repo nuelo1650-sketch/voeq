@@ -1,20 +1,9 @@
 import { type Metadata } from 'next';
-import Link from 'next/link';
 import { type ListListingsParams, type ListListingsResult, getCategories, listListings } from '@/lib/marketplace-client';
 import { getMe } from '@/lib/auth-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
-import { ListingCard } from '@/components/marketplace/ListingCard';
-import { CategoryPill } from '@/components/marketplace/CategoryPill';
-import { Button } from '@/components/ui/Button';
-import { SearchInput } from '@/components/ui/SearchInput';
-import { Badge } from '@/components/ui/Badge';
-import { Select } from '@/components/ui/Select';
-import { Input } from '@/components/ui/Input';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { SearchIcon, XIcon, MapIcon } from '@/components/icons';
-import { AnimatedSection } from '@/components/landing/AnimatedSection';
-import { cn } from '@/lib/utils';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { BrowseClient } from './BrowseClient';
 
 export const metadata: Metadata = {
   title: 'Browse',
@@ -45,18 +34,21 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   if (!campusId) {
     return (
-      <Section spacing="lg">
-        <Container size="md">
-          <p className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">
-            Please select a campus to continue.
-          </p>
-        </Container>
-      </Section>
+      <>
+        <VendorPageHeader title="Browse vendors" subtitle="Please select a campus to continue." />
+        <VendorSection>
+          <Container size="md">
+            <div className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">
+              Please select a campus to continue.
+            </div>
+          </Container>
+        </VendorSection>
+      </>
     );
   }
 
   const trending = params.trending === 'true';
-  const querySort = trending ? 'popular' : ((params.sort ?? 'newest') as ListListingsParams['sort']);
+  const querySort: ListListingsParams['sort'] = trending ? 'popular' : ((params.sort ?? 'newest') as ListListingsParams['sort']);
 
   const query = {
     campusId,
@@ -76,7 +68,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     getCategories().catch(() => ({ categories: [] })),
   ]);
 
-  const { listings, total, facets } = result;
+  const { listings, total } = result;
   const categories = categoriesResult.categories;
   const view = (params.view as 'grid' | 'list' | 'map') ?? 'grid';
 
@@ -91,145 +83,13 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   ].filter(Boolean).length;
 
   return (
-    <Section spacing="md">
-      <Container size="xl">
-        <AnimatedSection>
-          <div className="mb-6">
-            <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
-              {trending ? 'Trending this week' : 'Browse vendors'}
-            </h1>
-            <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
-              {total > 0 ? `${total} ${total === 1 ? 'result' : 'results'}` : 'No results'}
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <div className="mb-6">
-          <SearchInput
-            placeholder="Search vendors, listings, or categories..."
-            defaultValue={params.search ?? ''}
-            className="w-full"
-            size="lg"
-          />
-        </div>
-
-        <AnimatedSection>
-          <div className="-mx-6 mb-6 overflow-x-auto px-6 pb-2">
-            <div className="flex gap-2">
-              <CategoryPill slug="" name="All" iconName="OtherIcon" active={!params.category} href="/browse" />
-              {categories.map((cat) => (
-                <CategoryPill
-                  key={cat.id}
-                  slug={cat.slug}
-                  name={cat.name}
-                  iconName={cat.iconName}
-                  active={params.category === cat.slug}
-                  href={`/browse?category=${cat.slug}`}
-                />
-              ))}
-            </div>
-          </div>
-        </AnimatedSection>
-
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/browse?${new URLSearchParams({ ...(params.category ? { category: params.category } : {}), trending: 'true' }).toString()}`}
-              className={cn(
-                'rounded-full border px-3 py-1 text-xs font-medium transition',
-                trending
-                  ? 'border-gold-500 bg-gold-500/10 text-forest-900 dark:text-cream-100'
-                  : 'border-cream-300 bg-cream-50 text-forest-700 hover:border-gold-500/50 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100',
-              )}
-            >
-              Trending this week
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="hidden text-sm text-forest-700/60 dark:text-cream-100/60 sm:inline">Sort:</span>
-            <select
-              defaultValue={query.sort}
-              onChange={(e) => {
-                const url = new URL('/browse', typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL ?? ''));
-                if (params.category) url.searchParams.set('category', params.category);
-                if (params.search) url.searchParams.set('search', params.search);
-                url.searchParams.set('sort', e.target.value);
-                if (typeof window !== 'undefined') window.location.href = url.toString();
-              }}
-              className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm dark:border-forest-700 dark:bg-forest-800"
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-              <option value="popular">Trending this week</option>
-            </select>
-          </div>
-        </div>
-
-        {activeFilters > 0 && (
-          <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Active filters:</span>
-            {params.search && (
-              <Badge variant="gold">
-                Search: {params.search}
-                <Link href="/browse" className="ml-1">
-                  <XIcon className="h-3 w-3" />
-                </Link>
-              </Badge>
-            )}
-            {params.category && (
-              <Badge variant="gold">
-                Category: {params.category}
-                <Link href="/browse" className="ml-1">
-                  <XIcon className="h-3 w-3" />
-                </Link>
-              </Badge>
-            )}
-            <Link href="/browse" className="text-xs text-forest-700/60 hover:underline dark:text-cream-100/60">
-              Clear all
-            </Link>
-          </div>
-        )}
-
-        {view === 'map' ? (
-          <MapView listings={listings} />
-        ) : listings.length === 0 ? (
-          <AnimatedSection>
-            <EmptyState
-              icon={<SearchIcon className="h-16 w-16 text-forest-700/30 dark:text-cream-100/30" />}
-              title="No results found"
-              description="Try adjusting your filters or search terms"
-              action={{ label: 'Clear filters', onClick: () => { if (typeof window !== 'undefined') window.location.href = '/browse'; } }}
-            />
-          </AnimatedSection>
-        ) : (
-          <AnimatedSection>
-            <div className={cn('grid gap-3 sm:gap-4', view === 'list' ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4')}>
-              {listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-          </AnimatedSection>
-        )}
-      </Container>
-    </Section>
-  );
-}
-
-function MapView({ listings }: { listings: ListListingsResult['listings'] }) {
-  return (
-    <div className="rounded-2xl border border-cream-300 bg-cream-50 p-12 text-center dark:border-forest-700 dark:bg-forest-800">
-      <MapIcon className="mx-auto h-12 w-12 text-forest-700/30 dark:text-cream-100/30" />
-      <h3 className="mt-4 font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">Map view</h3>
-      <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-        Map view shows {listings.length} {listings.length === 1 ? 'vendor' : 'vendors'} on a campus map.
-      </p>
-      <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">
-        Full map implementation coming soon — for now, browse using grid view
-      </p>
-    </div>
+    <BrowseClient
+      listings={listings}
+      categories={categories}
+      total={total}
+      view={view}
+      trending={trending}
+      activeFilters={activeFilters}
+    />
   );
 }

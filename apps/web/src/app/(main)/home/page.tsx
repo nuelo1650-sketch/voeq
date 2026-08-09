@@ -54,9 +54,6 @@ export default async function HomePage() {
           <Container size="lg">
             <div className="text-center">
               <StarIcon className="mx-auto h-12 w-12 text-gold-500" />
-              <h1 className="mt-4 font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
-                Welcome to Voeq
-              </h1>
               <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
                 Discover verified campus vendors and connect via WhatsApp.
               </p>
