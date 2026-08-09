@@ -13,6 +13,7 @@ import { Select } from '@/components/ui/Select';
 import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SearchIcon, XIcon, MapIcon } from '@/components/icons';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -92,12 +93,16 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   return (
     <Section spacing="md">
       <Container size="xl">
-        <div className="mb-6">
-          <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Browse vendors</h1>
-          <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
-            {total > 0 ? `${total} ${total === 1 ? 'result' : 'results'}` : 'No results'}
-          </p>
-        </div>
+        <AnimatedSection>
+          <div className="mb-6">
+            <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
+              {trending ? 'Trending this week' : 'Browse vendors'}
+            </h1>
+            <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
+              {total > 0 ? `${total} ${total === 1 ? 'result' : 'results'}` : 'No results'}
+            </p>
+          </div>
+        </AnimatedSection>
 
         <div className="mb-6">
           <SearchInput
@@ -108,21 +113,23 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           />
         </div>
 
-        <div className="-mx-6 mb-6 overflow-x-auto px-6 pb-2">
-          <div className="flex gap-2">
-            <CategoryPill slug="" name="All" iconName="OtherIcon" active={!params.category} href="/browse" />
-            {categories.map((cat) => (
-              <CategoryPill
-                key={cat.id}
-                slug={cat.slug}
-                name={cat.name}
-                iconName={cat.iconName}
-                active={params.category === cat.slug}
-                href={`/browse?category=${cat.slug}`}
-              />
-            ))}
+        <AnimatedSection>
+          <div className="-mx-6 mb-6 overflow-x-auto px-6 pb-2">
+            <div className="flex gap-2">
+              <CategoryPill slug="" name="All" iconName="OtherIcon" active={!params.category} href="/browse" />
+              {categories.map((cat) => (
+                <CategoryPill
+                  key={cat.id}
+                  slug={cat.slug}
+                  name={cat.name}
+                  iconName={cat.iconName}
+                  active={params.category === cat.slug}
+                  href={`/browse?category=${cat.slug}`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </AnimatedSection>
 
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
@@ -158,7 +165,6 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
               <option value="price_desc">Price: High to Low</option>
               <option value="rating">Highest Rated</option>
               <option value="popular">Trending this week</option>
-              <option value="popular">Most Viewed</option>
             </select>
           </div>
         </div>
@@ -191,18 +197,22 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         {view === 'map' ? (
           <MapView listings={listings} />
         ) : listings.length === 0 ? (
-          <EmptyState
-            icon={<SearchIcon className="h-16 w-16 text-forest-700/30 dark:text-cream-100/30" />}
-            title="No results found"
-            description="Try adjusting your filters or search terms"
-            action={{ label: 'Clear filters', onClick: () => { if (typeof window !== 'undefined') window.location.href = '/browse'; } }}
-          />
+          <AnimatedSection>
+            <EmptyState
+              icon={<SearchIcon className="h-16 w-16 text-forest-700/30 dark:text-cream-100/30" />}
+              title="No results found"
+              description="Try adjusting your filters or search terms"
+              action={{ label: 'Clear filters', onClick: () => { if (typeof window !== 'undefined') window.location.href = '/browse'; } }}
+            />
+          </AnimatedSection>
         ) : (
-          <div className={cn('grid gap-3 sm:gap-4', view === 'list' ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4')}>
-            {listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
+          <AnimatedSection>
+            <div className={cn('grid gap-3 sm:gap-4', view === 'list' ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4')}>
+              {listings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          </AnimatedSection>
         )}
       </Container>
     </Section>

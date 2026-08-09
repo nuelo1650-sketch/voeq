@@ -27,5 +27,11 @@ export default async function VendorProfilePage() {
       </Section>
     );
   }
-  return <VendorProfileForm vendor={result.vendor} />;
+  return (
+    <Section spacing="lg">
+      <Container size="lg">
+        <VendorProfileForm vendor={result.vendor} />
+      </Container>
+    </Section>
+  );
 }
