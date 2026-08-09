@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { signUpWithPassword } from '@/lib/auth-client';
@@ -21,8 +20,7 @@ const signupSchema = z.object({
 
 type SignupInput = z.infer<typeof signupSchema>;
 
-export function SignUpForm() {
-  const router = useRouter();
+export function SignUpForm({ onSuccess }: { onSuccess?: (email: string) => void }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
@@ -36,8 +34,7 @@ export function SignUpForm() {
     setSubmitError(null);
     try {
       await signUpWithPassword(data);
-      const params = new URLSearchParams({ email: data.email });
-      router.push(`/verify-otp?${params.toString()}`);
+      onSuccess?.(data.email);
     } catch (err) {
       const error = err as { error?: string; message?: string };
       setSubmitError(error.message ?? 'Something went wrong. Please try again.');
@@ -47,7 +44,7 @@ export function SignUpForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <Input
-        label="Name"
+        label="Full name"
         type="text"
         autoComplete="name"
         placeholder="Your full name"
@@ -55,7 +52,7 @@ export function SignUpForm() {
         {...register('name')}
       />
       <Input
-        label="Email"
+        label="Campus email"
         type="email"
         autoComplete="email"
         placeholder="you@school.edu.ng"
@@ -72,9 +69,9 @@ export function SignUpForm() {
         {...register('password')}
       />
       {submitError && (
-        <p className="text-sm text-red-600">{submitError}</p>
+        <p className="text-sm text-red-600" role="alert">{submitError}</p>
       )}
-      <Button type="submit" isLoading={isSubmitting} className="w-full">
+      <Button type="submit" isLoading={isSubmitting} fullWidth className="h-12">
         Create account
       </Button>
     </form>

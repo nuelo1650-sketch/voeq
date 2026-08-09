@@ -63,26 +63,28 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   health: HealthIcon,
 };
 
-const CATEGORY_IMAGES: Record<string, string> = {
-  food: 'https://images.unsplash.com/photo-1604329760661-e071dc40a3cd?w=600&auto=format&fit=crop',
-  fashion: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&auto=format&fit=crop',
-  tech: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop',
-  laundry: 'https://images.unsplash.com/photo-1545173168-9f1947eebb8b?w=600&auto=format&fit=crop',
-  beauty: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop',
-  repairs: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&auto=format&fit=crop',
-  photography: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop',
-  'academic-services': 'https://images.unsplash.com/photo-1523050854058-8df90110a7f1?w=600&auto=format&fit=crop',
-  logistics: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=600&auto=format&fit=crop',
-  furniture: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop',
-  'health-wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&auto=format&fit=crop',
-  catering: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=600&auto=format&fit=crop',
-  cleaning: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop',
-  electrical: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&auto=format&fit=crop',
-  plumbing: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&auto=format&fit=crop',
-  tailoring: 'https://images.unsplash.com/photo-1598554747436-9e465d27b124?w=600&auto=format&fit=crop',
-  supermarket: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&auto=format&fit=crop',
-  pharmacy: 'https://images.unsplash.com/photo-1584308666464-793a0126206e?w=600&auto=format&fit=crop',
+const FALLBACK_CATEGORY_IMAGES: Record<string, string> = {
+  food: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+  fashion: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
+  tech: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+  laundry: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+  beauty: 'linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%)',
+  repairs: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+  photography: 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)',
+  'academic-services': 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+  logistics: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)',
+  furniture: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)',
+  'health-wellness': 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+  catering: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
+  cleaning: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+  electrical: 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)',
+  plumbing: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+  tailoring: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)',
+  supermarket: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+  pharmacy: 'linear-gradient(135deg, #ecfeff 0%, #cffafe 100%)',
 };
+
+const CATEGORY_IMAGES = FALLBACK_CATEGORY_IMAGES;
 
 const FAQS = [
   { question: 'Is Voeq free to use?', answer: 'Yes, Voeq is completely free for students. You can browse vendors, save listings, and connect via WhatsApp at no cost.' },
@@ -264,6 +266,8 @@ export default async function LandingPage() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {categories.slice(0, 6).map((cat) => {
                 const Icon = CATEGORY_ICONS[cat.slug];
+                const rawImage = CATEGORY_IMAGES[cat.slug] ?? '/Logo.png';
+                const isGradient = rawImage.startsWith('linear-gradient');
                 return (
                   <Link
                     key={cat.id}
@@ -271,13 +275,20 @@ export default async function LandingPage() {
                     className="group flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
                   >
                     <div className="relative h-32 w-full overflow-hidden sm:h-40">
-                      <Image
-                        src={CATEGORY_IMAGES[cat.slug] ?? '/Logo.png'}
-                        alt={cat.name}
-                        fill
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                        sizes="(min-width: 640px) 200px, 50vw"
-                      />
+                      {isGradient ? (
+                        <div
+                          className="h-full w-full"
+                          style={{ background: rawImage }}
+                        />
+                      ) : (
+                        <Image
+                          src={rawImage}
+                          alt={cat.name}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                          sizes="(min-width: 640px) 200px, 50vw"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
                     <div className="flex items-center gap-2 p-4">
