@@ -2,6 +2,8 @@ import { type Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { ComingSoonBadge } from '@/components/phase2/ComingSoonBadge';
+import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -10,15 +12,19 @@ export const metadata: Metadata = {
 
 export default function EventsPage() {
   return (
-    <Section spacing="md">
-      <Container size="md">
-        <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
-          Events <ComingSoonBadge />
-        </h1>
-        <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-          Discover campus events, workshops, and meetups. Coming soon.
-        </p>
-      </Container>
-    </Section>
+    <>
+      <VendorPageHeader title="Events" subtitle="Discover campus events, workshops, and meetups." />
+      <VendorSection>
+        <Container size="md">
+          <AnimatedSection>
+            <div className="flex items-center gap-2">
+              <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Events</h1>
+              <ComingSoonBadge />
+            </div>
+            <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">This experience is coming soon.</p>
+          </AnimatedSection>
+        </Container>
+      </VendorSection>
+    </>
   );
 }
