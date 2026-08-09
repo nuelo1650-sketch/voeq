@@ -26,7 +26,6 @@ import {
   StarIcon,
   WhatsAppIcon,
   MapIcon,
-  TrendingUpIcon,
 } from '@/components/icons';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import Image from 'next/image';
@@ -165,7 +164,7 @@ export default async function LandingPage() {
 
       <main>
         <Section spacing="xl" className="relative overflow-hidden">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10 dark:from-forest-900/40" />
           <Container size="lg">
             <AnimatedSection>
               <div className="mx-auto max-w-3xl text-center">
@@ -245,8 +244,8 @@ export default async function LandingPage() {
                 <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Find what you need, fast</p>
               </div>
             </AnimatedSection>
-            <div className="-mx-6 mb-8 overflow-x-auto px-6 pb-2">
-              <div className="flex gap-2">
+            <div className="-mx-6 mb-8 border-b border-gold-500/15 px-6 pb-4 dark:border-gold-500/10">
+              <div className="flex gap-2 overflow-x-auto">
                 <Link href="/browse">
                   <Badge variant="default" className="cursor-pointer px-4 py-2 text-sm">All</Badge>
                 </Link>
