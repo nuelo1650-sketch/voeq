@@ -100,8 +100,28 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                   Sign out
                 </Button>
               )}
+              <button
+                type="button"
+                className="md:hidden rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                aria-label="Toggle menu"
+                onClick={() => setMobileOpen((open) => !open)}
+              >
+                {mobileOpen ? (
+                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                ) : (
+                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
+                  </svg>
+                )}
+              </button>
             </nav>
-          {mobileOpen && (
+          </div>
+          {mobileOpen ? (
             <div className="md:hidden">
               <div className="space-y-1 border-t border-cream-200 px-4 pb-4 pt-3 dark:border-forest-700">
                 {mobileLinks.map((link) => (
@@ -116,7 +136,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
         </Container>
       </header>
       <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>

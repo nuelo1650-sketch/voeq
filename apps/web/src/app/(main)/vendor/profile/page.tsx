@@ -1,6 +1,8 @@
 import { type Metadata } from 'next';
 import { getMyVendor } from '@/lib/vendor-client';
 import { VendorProfileForm } from '@/components/vendor/VendorProfileForm';
+import { Container } from '@/components/ui/Container';
+import { Section } from '@/components/ui/Section';
 
 export const metadata: Metadata = {
   title: 'Edit business profile',
