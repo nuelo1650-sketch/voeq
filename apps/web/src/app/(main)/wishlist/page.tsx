@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { getMe } from '@/lib/auth-client';
 import { getWishlist } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { HeartIcon } from '@/components/icons';

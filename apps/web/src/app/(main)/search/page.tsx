@@ -1,7 +1,6 @@
 import { type Metadata } from 'next';
 import { search } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { VendorCard } from '@/components/marketplace/VendorCard';
 import { EmptyState } from '@/components/ui/EmptyState';

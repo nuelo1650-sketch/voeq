@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { getMe } from '@/lib/auth-client';
 import { getMyVendor } from '@/lib/vendor-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';

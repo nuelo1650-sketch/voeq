@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { getMe } from '@/lib/auth-client';
 import { getFollowing } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { CheckIcon } from '@/components/icons';

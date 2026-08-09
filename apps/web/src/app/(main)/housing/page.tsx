@@ -1,6 +1,5 @@
 import { type Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { ComingSoonBadge } from '@/components/phase2/ComingSoonBadge';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';

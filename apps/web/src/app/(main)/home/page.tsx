@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { getMe } from '@/lib/auth-client';
 import { listListings, getCategories } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -50,7 +49,8 @@ export default async function HomePage() {
   if (!me?.user) {
     return (
       <>
-        <Section spacing="lg">
+        <VendorPageHeader title="Welcome to Voeq" subtitle="Discover verified campus vendors and connect via WhatsApp." />
+        <VendorSection className="bg-cream-50 dark:bg-forest-800">
           <Container size="lg">
             <div className="text-center">
               <StarIcon className="mx-auto h-12 w-12 text-gold-500" />
@@ -70,9 +70,9 @@ export default async function HomePage() {
               </div>
             </div>
           </Container>
-        </Section>
+        </VendorSection>
 
-        <Section spacing="md" className="border-t border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+        <VendorSection className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
           <Container size="lg">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               {[
@@ -88,7 +88,7 @@ export default async function HomePage() {
               ))}
             </div>
           </Container>
-        </Section>
+        </VendorSection>
       </>
     );
   }
