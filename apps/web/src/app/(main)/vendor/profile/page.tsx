@@ -1,5 +1,5 @@
 import { type Metadata } from 'next';
-import { getMyVendor } from '@/lib/vendor-client';
+import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 import { VendorProfileForm } from '@/components/vendor/VendorProfileForm';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 

@@ -1,8 +1,8 @@
 import { type Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getMe } from '@/lib/auth-client';
-import { listListings, getCategories } from '@/lib/marketplace-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
+import { serverListListings as listListings, serverGetCategories as getCategories } from '@/lib/marketplace-server';
 import { Container } from '@/components/ui/Container';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
@@ -199,7 +199,7 @@ export default async function HomePage() {
                 </p>
                 <div className="mt-6">
                   <Button asChild>
-                    <Link href="/request">Request a vendor</Link>
+                    <Link href="/become-vendor">Request a vendor</Link>
                   </Button>
                 </div>
               </div>

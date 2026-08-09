@@ -1,10 +1,10 @@
 import { type Metadata } from 'next';
-import { getMe } from '@/lib/auth-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
 import { Container } from '@/components/ui/Container';
 import { ProfileForm } from '@/components/marketplace/ProfileForm';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 import { Button } from '@/components/ui/Button';
-import { signOut } from '@/lib/auth-client';
+import { serverSignOut as signOut } from '@/lib/auth-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 

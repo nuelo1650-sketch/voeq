@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { BusinessBasicsForm } from '@/components/vendor/BusinessBasicsForm';
-import { getMyVendor } from '@/lib/vendor-client';
+import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { Container } from '@/components/ui/Container';

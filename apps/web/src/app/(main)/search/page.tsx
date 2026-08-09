@@ -1,12 +1,12 @@
 import { type Metadata } from 'next';
-import { search } from '@/lib/marketplace-client';
+import { serverSearch as search } from '@/lib/marketplace-server';
 import { Container } from '@/components/ui/Container';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { VendorCard } from '@/components/marketplace/VendorCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EmptySearch } from '@/components/illustrations';
 import { CampusContextBar } from '@/components/marketplace/CampusContextBar';
-import { getMe } from '@/lib/auth-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
