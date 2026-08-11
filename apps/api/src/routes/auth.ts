@@ -1,10 +1,13 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
+import { createHash } from 'crypto';
 import {
   SignupWithPasswordSchema,
   VerifyOtpSchema,
   SignInWithPasswordSchema,
   RequestMagicLinkSchema,
   AcceptAgreementSchema,
+  RequestPasswordResetSchema,
+  ConsumePasswordResetSchema,
 } from '../schemas/auth';
 import {
   signUpWithPassword,
@@ -13,11 +16,13 @@ import {
   requestMagicLink,
   consumeMagicLink,
   acceptAgreement,
+  requestPasswordReset,
+  consumePasswordReset,
 } from '../services/auth.service';
 import { rateLimit } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
-import { getSessionCookieName, getSessionCookieOptions } from '../services/session.service';
+import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions } from '../services/session.service';
 import { env } from '../config/env';
 import { prisma } from '../lib/db';
 import { issueSession } from '../services/session.service';
@@ -151,6 +156,52 @@ authRouter.post('/signout', (_req: Request, res: Response) => {
 });
 
 authRouter.post(
+  '/password-reset/request',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'pw-reset-req' }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = RequestPasswordResetSchema.parse(req.body);
+      const result = await requestPasswordReset(input, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'],
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+authRouter.post(
+  '/password-reset/consume',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'pw-reset-consume' }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = ConsumePasswordResetSchema.parse(req.body);
+      const result = await consumePasswordReset(input);
+      if (!result) {
+        res.status(401).json({ error: 'InvalidOrExpiredToken' });
+        return;
+      }
+      res.cookie(getSessionCookieName(), result.sessionToken, getSessionCookieOptions());
+      res.status(200).json({
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          name: result.user.name,
+          role: result.user.role,
+          emailVerified: result.user.emailVerified,
+          agreementAcceptedAt: result.user.agreementAcceptedAt,
+          defaultCampusId: result.user.defaultCampusId,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+authRouter.post(
   '/accept-agreement',
   requireAuth,
   rateLimit({ windowMs: 60 * 60 * 1000, max: 10, keyPrefix: 'agreement' }),
@@ -169,7 +220,7 @@ authRouter.post(
 );
 
 authRouter.get('/google', (_req: Request, res: Response) => {
-  const redirectUri = `${env.WEB_URL ?? 'http://localhost:3000'}/api/auth/callback/google`;
+  const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
   const params = new URLSearchParams({
     client_id: env.AUTH_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -188,7 +239,7 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       res.status(400).json({ error: 'MissingCode' });
       return;
     }
-    const redirectUri = `${env.WEB_URL ?? 'http://localhost:3000'}/api/auth/callback/google`;
+    const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -247,8 +298,29 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       role: user.role,
     });
     res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    const webUrl = env.WEB_URL ?? 'http://localhost:3000';
+    const webUrl = env.WEB_URL;
     res.redirect(`${webUrl}/home`);
+  } catch (error) {
+    next(error);
+  }
+});
+
+authRouter.post('/logout-all', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
+  try {
+    const cookieName = getSessionCookieName();
+    const token = req.cookies?.[cookieName];
+    const tokenHash = token ? createHash('sha256').update(token).digest('hex') : '';
+
+    const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+    let deletedCount = 0;
+    if (user) {
+      // Delete all server-persisted sessions for this user except the current one.
+      deletedCount = await revokeAllUserSessions(user.id, tokenHash);
+    }
+
+    // Clear the current session cookie (logout this device too).
+    res.clearCookie(cookieName, { path: '/' });
+    res.status(200).json({ loggedOut: true, revokedSessions: deletedCount });
   } catch (error) {
     next(error);
   }

@@ -39,6 +39,7 @@ Thumbs.db
 
 # Prisma
 packages/db/prisma/migrations/dev.db*
+apps/api/generated/
 
 # Coverage
 coverage/

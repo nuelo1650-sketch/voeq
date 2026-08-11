@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
-import { type ListListingsParams, type ListListingsResult, getCategories, listListings } from '@/lib/marketplace-client';
-import { getMe } from '@/lib/auth-client';
+import { type ListListingsParams, type ListListingsResult } from '@/lib/marketplace-client';
+import { serverGetCategories as getCategories, serverListListings as listListings } from '@/lib/marketplace-server';
+import { serverGetMe as getMe } from '@/lib/auth-server';
 import { Container } from '@/components/ui/Container';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { BrowseClient } from './BrowseClient';

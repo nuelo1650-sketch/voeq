@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PreferencesForm } from '@/components/user/PreferencesForm';
 import { DeleteAccountSection } from '@/components/user/DeleteAccountSection';
-import { getMe } from '@/lib/auth-client';
-import { getPreferences } from '@/lib/user-client';
-import { getMyDisputes } from '@/lib/marketplace-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
+import { serverGetPreferences as getPreferences } from '@/lib/user-server';
+import { serverGetMyDisputes as getMyDisputes } from '@/lib/marketplace-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 

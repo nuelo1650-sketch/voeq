@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { getMyVendor } from '@/lib/vendor-client';
+import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding',

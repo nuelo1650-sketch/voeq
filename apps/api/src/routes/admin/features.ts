@@ -29,7 +29,7 @@ featuresRouter.patch('/:key', async (req: AdminRequest, res: Response, next: Nex
       res.status(404).json({ error: 'NotFound' });
       return;
     }
-    const safeValue = input.value as unknown as Prisma.InputJsonValue;
+    const safeValue = input.value as any;
     const updated = await prisma.featureFlag.update({
       where: { key: old.key },
       data: { value: safeValue, description: input.description, updatedBy: req.userId },

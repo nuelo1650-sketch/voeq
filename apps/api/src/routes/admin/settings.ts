@@ -27,7 +27,7 @@ settingsRouter.get('/', async (_req: AdminRequest, res: Response, next: NextFunc
 settingsRouter.patch('/', async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const input = updateSchema.parse(req.body);
-    const safeValue = input as unknown as Prisma.InputJsonValue;
+    const safeValue = input as any;
     const updated = await prisma.featureFlag.upsert({
       where: { key: 'site_settings' },
       create: { key: 'site_settings', value: safeValue, updatedBy: req.userId },

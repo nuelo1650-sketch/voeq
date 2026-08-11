@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getMe } from '@/lib/auth-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { ImpersonationBanner } from '@/components/admin/ImpersonationBanner';
 

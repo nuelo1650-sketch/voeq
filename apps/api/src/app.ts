@@ -61,23 +61,17 @@ export function createApp(): Application {
   );
   const corsOrigin = env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean);
   const corsOriginValidator = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    if (!origin || origin === 'null' || corsOrigin.includes(origin)) {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) {
       callback(null, true);
       return;
     }
-    try {
-      if (/\.vercel\.app$/.test(new URL(origin).hostname)) {
-        callback(null, true);
-        return;
-      }
-      if (/\.onrender\.com$/.test(new URL(origin).hostname)) {
-        callback(null, true);
-        return;
-      }
-    } catch {
-      // ignore malformed origins
+    // Allow only explicitly configured origins
+    if (corsOrigin.includes(origin)) {
+      callback(null, true);
+      return;
     }
-    callback(new Error('Not allowed by CORS'));
+    callback(new Error(`CORS: origin ${origin} not allowed`));
   };
   app.use(
     cors({
@@ -99,24 +93,45 @@ export function createApp(): Application {
       },
     }),
   );
-  const GLOBAL_RATE_LIMIT_WINDOW = 15 * 60 * 1000;
-  const GLOBAL_RATE_LIMIT_MAX = 200;
-  let globalRequestCount = 0;
-  let globalWindowStart = Date.now();
-  app.use((req, res, next) => {
+  const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+  const RATE_LIMIT_MAX_REQUESTS = 100; // 100 requests per 15 min per IP
+
+  const ipRequestCounts = new Map<string, { count: number; resetAt: number }>();
+
+  // Periodic cleanup of expired entries (prevent memory leak)
+  const rateLimitCleanup = setInterval(() => {
     const now = Date.now();
-    if (now - globalWindowStart >= GLOBAL_RATE_LIMIT_WINDOW) {
-      globalRequestCount = 0;
-      globalWindowStart = now;
+    for (const [ip, data] of ipRequestCounts.entries()) {
+      if (data.resetAt < now) ipRequestCounts.delete(ip);
     }
-    globalRequestCount++;
-    if (globalRequestCount > GLOBAL_RATE_LIMIT_MAX) {
+  }, 5 * 60 * 1000); // cleanup every 5 minutes
+  // Don't keep the event loop alive solely for the cleanup timer
+  if (typeof rateLimitCleanup.unref === 'function') rateLimitCleanup.unref();
+
+  app.use((req, res, next) => {
+    const ip = req.ip ?? 'unknown';
+    const now = Date.now();
+
+    let record = ipRequestCounts.get(ip);
+
+    if (!record || record.resetAt < now) {
+      record = { count: 0, resetAt: now + RATE_LIMIT_WINDOW };
+      ipRequestCounts.set(ip, record);
+    }
+
+    record.count++;
+
+    if (record.count > RATE_LIMIT_MAX_REQUESTS) {
+      const retryAfter = Math.ceil((record.resetAt - now) / 1000);
+      res.setHeader('Retry-After', retryAfter.toString());
       res.status(429).json({
         error: 'TooManyRequests',
-        message: 'Too many requests, please try again later',
+        message: 'Rate limit exceeded. Try again later.',
+        retryAfter,
       });
       return;
     }
+
     next();
   });
 

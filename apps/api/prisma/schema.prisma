@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma-client"
 }
 
 datasource db {
@@ -131,6 +132,11 @@ enum AuthTokenType {
   magic_link
 }
 
+enum AuthTokenPurpose {
+  signin
+  password_reset
+}
+
 // ============================================================================
 // USERS & AUTH
 // ============================================================================
@@ -246,16 +252,17 @@ model VerificationToken {
 // ============================================================================
 
 model AuthToken {
-  id         String        @id @default(cuid())
+  id         String             @id @default(cuid())
   email      String
-  tokenHash  String        @unique
+  tokenHash  String             @unique
   type       AuthTokenType
+  purpose    AuthTokenPurpose?
   userId     String?
   expiresAt  DateTime
   consumedAt DateTime?
   ipAddress  String?
   userAgent  String?
-  createdAt  DateTime      @default(now())
+  createdAt  DateTime           @default(now())
 
   @@index([email, type])
   @@index([expiresAt])

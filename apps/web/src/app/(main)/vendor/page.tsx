@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
-import { getMyVendor, getMyAnalytics, getMyListings } from '@/lib/vendor-client';
+import { serverGetMyVendor as getMyVendor, serverGetMyAnalytics as getMyAnalytics, serverGetMyListings as getMyListings } from '@/lib/vendor-server';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { ArrowRightIcon, ChevronRightIcon, CheckIcon, StarIcon, ShareIcon } from '@/components/icons';

@@ -4,12 +4,13 @@ import { resolve, join } from 'path';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const nextConfig = {
+  output: 'standalone',
+  outputFileTracingRoot: join(__dirname, '../../'),
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
-    serverComponentsHmrCache: false,
   },
   images: {
     remotePatterns: [
@@ -18,9 +19,15 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
+    unoptimized: false,
   },
   transpilePackages: ['@voeq/shared', '@voeq/ui'],
   webpack: (config) => {
@@ -28,13 +35,7 @@ const nextConfig = {
     return config;
   },
   async redirects() {
-    return [
-      { source: '/about', destination: '/public-group/about', permanent: true },
-      { source: '/for-vendors', destination: '/public-group/for-vendors', permanent: true },
-      { source: '/privacy', destination: '/public-group/privacy', permanent: true },
-      { source: '/terms', destination: '/public-group/terms', permanent: true },
-      { source: '/vendor-agreement', destination: '/public-group/vendor-agreement', permanent: true },
-    ];
+    return [];
   },
   async headers() {
     return [

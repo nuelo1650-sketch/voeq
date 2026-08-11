@@ -418,7 +418,7 @@ vendorRouter.put(
   requireAuth,
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
-      const { step, data } = req.body as { step: string; data: Prisma.InputJsonValue };
+      const { step, data } = req.body as { step: string; data: unknown };
 
       const user = await prisma.user.findUnique({ where: { id: req.userId! } });
       if (!user) {
@@ -426,12 +426,12 @@ vendorRouter.put(
         return;
       }
 
-      const existingDrafts = ((user.drafts ?? {}) as Prisma.InputJsonValue) as Record<string, Prisma.InputJsonValue>;
+      const existingDrafts = ((user.drafts ?? {}) as unknown) as Record<string, unknown>;
       const updatedDrafts = { ...existingDrafts, [step]: data };
 
       await prisma.user.update({
         where: { id: req.userId! },
-        data: { drafts: updatedDrafts as Prisma.InputJsonValue },
+        data: { drafts: updatedDrafts as any },
       });
 
       res.status(200).json({ saved: true });

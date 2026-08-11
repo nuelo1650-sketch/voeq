@@ -1,8 +1,8 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getMe } from '@/lib/auth-client';
-import { getWishlist } from '@/lib/marketplace-client';
+import { serverGetMe as getMe } from '@/lib/auth-server';
+import { serverGetWishlist as getWishlist } from '@/lib/marketplace-server';
 import { Container } from '@/components/ui/Container';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { EmptyState } from '@/components/ui/EmptyState';

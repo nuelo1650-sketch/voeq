@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { signInWithPassword, requestMagicLink, signInWithGoogle } from '@/lib/auth-client';
+import { signInWithPassword, signInWithGoogle } from '@/lib/auth-client';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 export function SignInForm() {
   const searchParams = useSearchParams();
@@ -16,7 +17,6 @@ export function SignInForm() {
   const [error, setError] = useState<string | null>(searchParams.get('error') || null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [magicSent, setMagicSent] = useState(false);
 
   const handlePasswordSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,21 +35,6 @@ export function SignInForm() {
     }
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      await requestMagicLink({ email });
-      setMagicSent(true);
-    } catch (err: unknown) {
-      const apiError = err as { error?: string; message?: string };
-      setError(apiError.error || apiError.message || 'Failed to send magic link');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogle = async () => {
     setGoogleLoading(true);
     setError(null);
@@ -59,29 +44,6 @@ export function SignInForm() {
       setGoogleLoading(false);
     }
   };
-
-  if (magicSent) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-6"
-      >
-        <div className="text-center">
-          <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">Check your email</h2>
-          <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-            We sent you a sign-in link. Click it to continue.
-          </p>
-          <p className="mt-2 text-xs text-forest-700/60 dark:text-cream-100/60">
-            The link expires in 15 minutes and can only be used once.
-          </p>
-        </div>
-        <Button variant="secondary" fullWidth onClick={() => setMagicSent(false)}>
-          Back to sign in
-        </Button>
-      </motion.div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -113,15 +75,24 @@ export function SignInForm() {
           autoComplete="email"
           placeholder="you@university.edu.ng"
         />
-        <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-          helperText={error ? undefined : 'Use the password you created during signup.'}
-        />
+        <div className="space-y-1.5">
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+          />
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-forest-700/70 underline-offset-2 hover:text-forest-900 hover:underline dark:text-cream-100/70 dark:hover:text-cream-100"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
         <Button
           type="submit"
           variant="primary"
@@ -131,32 +102,6 @@ export function SignInForm() {
         >
           {loading ? 'Signing in…' : 'Sign in'}
         </Button>
-      </form>
-
-      <AuthDivider />
-
-      <form onSubmit={handleMagicLink} className="space-y-4">
-        <Input
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoComplete="email"
-          placeholder="you@university.edu.ng"
-        />
-        <Button
-          type="submit"
-          variant="secondary"
-          fullWidth
-          disabled={loading || googleLoading}
-          className="h-12"
-        >
-          {loading ? 'Sending link…' : 'Send magic link'}
-        </Button>
-        <p className="text-center text-xs text-forest-700/60 dark:text-cream-100/60">
-          No password? We&apos;ll send you a secure sign-in link.
-        </p>
       </form>
 
       <p className="text-center text-sm text-forest-700/70 dark:text-cream-100/70">

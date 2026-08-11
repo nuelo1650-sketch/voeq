@@ -303,3 +303,5 @@ export async function getMyDisputes(): Promise<{ disputes: any[] }> {
 export async function getVendorOpenStatus(slug: string): Promise<{ isOpen: boolean; hours?: any }> {
   return api(`/api/vendors/${slug}/is-open`);
 }
+
+

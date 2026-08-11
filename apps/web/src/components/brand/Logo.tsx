@@ -19,14 +19,14 @@ export function Logo({ size = 'md', className }: LogoProps) {
   const { width, height } = sizeMap[size];
 
   return (
-    <img
+    <Image
       src="/Name.png"
       alt="Voeq"
       width={width}
       height={height}
       className={cn('object-contain brightness-0 dark:brightness-0 dark:invert', className)}
-      loading="eager"
-      decoding="async"
+      priority={size === 'md' || size === 'lg'}
+      quality={100}
     />
   );
 }
