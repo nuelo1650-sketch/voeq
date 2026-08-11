@@ -4,6 +4,7 @@ import { hashPassword, verifyPassword, validatePasswordStrength } from './passwo
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
 import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail } from './email.service';
 import { issueSession } from './session.service';
+import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
 import { env } from '../config/env';
 
@@ -144,7 +145,7 @@ export async function requestMagicLink(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_URL ?? 'http://localhost:3000';
+  const webUrl = env.WEB_URL;
   const url = `${webUrl}/auth-callback?token=${encodeURIComponent(token)}`;
   await sendMagicLinkEmail({ to: input.email, url });
   return { linkSent: true };
@@ -198,7 +199,7 @@ export async function requestPasswordReset(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_URL ?? 'http://localhost:3000';
+  const webUrl = env.WEB_URL;
   const url = `${webUrl}/reset-password?token=${encodeURIComponent(token)}`;
   await sendPasswordResetEmail({ to: input.email, url });
   return { linkSent: true };
@@ -239,6 +240,11 @@ export async function consumePasswordReset(params: {
     email: user.email,
     role: user.role,
   });
+
+  // Revoke all DB-backed sessions (e.g. admin impersonation) on password reset.
+  // Standard auth uses stateless JWTs, so callers should also invalidate the old
+  // JWT client-side; this clears any server-persisted sessions for the user.
+  await revokeAllUserSessions(user.id);
 
   return { sessionToken, user: updated };
 }

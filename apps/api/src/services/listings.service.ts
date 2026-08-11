@@ -50,7 +50,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
   const offset = (page - 1) * limit;
   const sort = params.sort ?? 'newest';
 
-  const vendorFilter: Prisma.VendorWhereInput = { status: 'live', deletedAt: null };
+  const vendorFilter: any = { status: 'live', deletedAt: null };
   if (params.campusId) {
     vendorFilter.campusId = params.campusId;
   }
@@ -61,7 +61,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
     vendorFilter.ratingAvg = { gte: params.minRating };
   }
 
-  const where: Prisma.ListingWhereInput = {
+  const where: any = {
     status: 'active',
     deletedAt: null,
     vendor: vendorFilter,
@@ -86,7 +86,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
     if (params.maxPrice !== undefined) where.priceMin.lte = params.maxPrice;
   }
 
-  const orderBy: Prisma.ListingOrderByWithRelationInput =
+  const orderBy: any =
     sort === 'oldest' ? { createdAt: 'asc' } :
     sort === 'price_asc' ? { priceMin: 'asc' } :
     sort === 'price_desc' ? { priceMin: 'desc' } :

@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
       subtitle={
         submitted
           ? 'We sent a password reset link to your inbox.'
-          : 'Enter your email and we&apos;ll send you a link to reset your password.'
+          : "Enter your email and we'll send you a link to reset your password."
       }
     >
       <div className="px-6 pb-6 pt-8 md:px-8 md:pb-8 md:pt-10">
@@ -109,7 +109,7 @@ export default function ForgotPasswordPage() {
               <div className="space-y-3 text-sm text-forest-700/70 dark:text-cream-100/70">
                 <p>
                   <strong className="font-medium text-forest-900 dark:text-cream-100">
-                    Didn&apos;t get the email?
+                    Didn\u0027t get the email?
                   </strong>{' '}
                   Check your spam folder, or{' '}
                   <button

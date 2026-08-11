@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { env } from '../config/env';
+import { prisma } from '../lib/db';
 import type { UserRole } from '../lib/db';
 
 const secret = new TextEncoder().encode(env.AUTH_SECRET);
@@ -81,4 +82,29 @@ export function getSessionCookieOptions(): {
     maxAge: SESSION_DURATION_SECONDS,
     path: '/',
   };
+}
+
+/**
+ * Revoke a specific session by token hash
+ */
+export async function revokeSession(tokenHash: string): Promise<void> {
+  await prisma.session.deleteMany({ where: { tokenHash } });
+}
+
+/**
+ * Revoke all sessions for a user (logout everywhere).
+ * Used by password reset, account deletion, suspicious activity.
+ * Pass exceptTokenHash to keep one session (e.g. the caller's current one) alive.
+ */
+export async function revokeAllUserSessions(
+  userId: string,
+  exceptTokenHash?: string,
+): Promise<number> {
+  const result = await prisma.session.deleteMany({
+    where: {
+      userId,
+      ...(exceptTokenHash ? { tokenHash: { not: exceptTokenHash } } : {}),
+    },
+  });
+  return result.count;
 }

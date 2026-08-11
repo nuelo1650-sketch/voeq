@@ -1,4 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
+import { createHash } from 'crypto';
 import {
   SignupWithPasswordSchema,
   VerifyOtpSchema,
@@ -21,7 +22,7 @@ import {
 import { rateLimit } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
-import { getSessionCookieName, getSessionCookieOptions } from '../services/session.service';
+import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions } from '../services/session.service';
 import { env } from '../config/env';
 import { prisma } from '../lib/db';
 import { issueSession } from '../services/session.service';
@@ -219,7 +220,7 @@ authRouter.post(
 );
 
 authRouter.get('/google', (_req: Request, res: Response) => {
-  const redirectUri = `${env.WEB_URL ?? 'http://localhost:3000'}/api/auth/callback/google`;
+  const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
   const params = new URLSearchParams({
     client_id: env.AUTH_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -238,7 +239,7 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       res.status(400).json({ error: 'MissingCode' });
       return;
     }
-    const redirectUri = `${env.WEB_URL ?? 'http://localhost:3000'}/api/auth/callback/google`;
+    const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -297,8 +298,29 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       role: user.role,
     });
     res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    const webUrl = env.WEB_URL ?? 'http://localhost:3000';
+    const webUrl = env.WEB_URL;
     res.redirect(`${webUrl}/home`);
+  } catch (error) {
+    next(error);
+  }
+});
+
+authRouter.post('/logout-all', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
+  try {
+    const cookieName = getSessionCookieName();
+    const token = req.cookies?.[cookieName];
+    const tokenHash = token ? createHash('sha256').update(token).digest('hex') : '';
+
+    const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+    let deletedCount = 0;
+    if (user) {
+      // Delete all server-persisted sessions for this user except the current one.
+      deletedCount = await revokeAllUserSessions(user.id, tokenHash);
+    }
+
+    // Clear the current session cookie (logout this device too).
+    res.clearCookie(cookieName, { path: '/' });
+    res.status(200).json({ loggedOut: true, revokedSessions: deletedCount });
   } catch (error) {
     next(error);
   }

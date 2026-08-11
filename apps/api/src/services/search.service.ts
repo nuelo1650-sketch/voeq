@@ -59,7 +59,7 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
     .map((t) => `${t}:*`)
     .join(' & ');
 
-  const listingWhere: Prisma.ListingWhereInput = {
+  const listingWhere: any = {
     status: 'active',
     deletedAt: null,
     vendor: {
@@ -113,8 +113,8 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
         AND v.status = 'live'
         AND v."deletedAt" IS NULL
         AND l."searchVector" @@ to_tsquery('english', ${tsQuery})
-        ${campusId ? Prisma.sql`AND v."campusId" = ${campusId}` : Prisma.empty}
-        ${categorySlug ? Prisma.sql`AND c.slug = ${categorySlug}` : Prisma.empty}
+        ${campusId ? `AND v."campusId" = '${campusId}'` : ''}
+        ${categorySlug ? `AND c.slug = '${categorySlug}'` : ''}
       ORDER BY rank DESC, l."createdAt" DESC
       LIMIT ${limit} OFFSET ${offset}
     `,
@@ -128,8 +128,8 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
         AND v.status = 'live'
         AND v."deletedAt" IS NULL
         AND l."searchVector" @@ to_tsquery('english', ${tsQuery})
-        ${campusId ? Prisma.sql`AND v."campusId" = ${campusId}` : Prisma.empty}
-        ${categorySlug ? Prisma.sql`AND c.slug = ${categorySlug}` : Prisma.empty}
+        ${campusId ? `AND v."campusId" = '${campusId}'` : ''}
+        ${categorySlug ? `AND c.slug = '${categorySlug}'` : ''}
     `,
     prisma.$queryRaw<Array<{
       id: string;
@@ -157,7 +157,7 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
       WHERE v.status = 'live'
         AND v."deletedAt" IS NULL
         AND v."searchVector" @@ to_tsquery('english', ${tsQuery})
-        ${campusId ? Prisma.sql`AND v."campusId" = ${campusId}` : Prisma.empty}
+        ${campusId ? `AND v."campusId" = '${campusId}'` : ''}
       ORDER BY rank DESC, v."createdAt" DESC
       LIMIT 5
     `,
@@ -167,7 +167,7 @@ export async function searchAll(params: SearchParams): Promise<SearchResults> {
       WHERE v.status = 'live'
         AND v."deletedAt" IS NULL
         AND v."searchVector" @@ to_tsquery('english', ${tsQuery})
-        ${campusId ? Prisma.sql`AND v."campusId" = ${campusId}` : Prisma.empty}
+        ${campusId ? `AND v."campusId" = '${campusId}'` : ''}
     `,
   ]);
 
