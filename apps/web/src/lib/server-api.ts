@@ -3,7 +3,12 @@
 import { cookies } from 'next/headers';
 import { ApiException, type ApiError } from './api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+if (!API_URL) {
+  throw new Error(
+    'NEXT_PUBLIC_API_URL is not set. Add it to .env.local (local) and to the Vercel project environment variables (production).',
+  );
+}
 
 /**
  * Server-component variant of `api()`. Forwards the incoming request's cookies

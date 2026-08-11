@@ -1,4 +1,10 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+if (!API_URL) {
+  // Client-side: don't crash the bundle, but surface the misconfiguration loudly.
+  console.error(
+    '[api] NEXT_PUBLIC_API_URL is not set — API calls will fail. Add it to the Vercel project environment variables.',
+  );
+}
 
 export interface ApiError {
   error: string;
