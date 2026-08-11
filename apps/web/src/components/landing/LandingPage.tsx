@@ -28,6 +28,7 @@ import {
   MapIcon,
 } from '@/components/icons';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { AnnouncementBar } from '@/components/landing/AnnouncementBar';
 import Image from 'next/image';
 import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
@@ -124,12 +125,7 @@ export default async function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
-      <div className="bg-forest-700 text-cream-100 py-3 px-4 text-center text-sm relative">
-        <span>🎉 Voeq is live at NMU — find vendors now</span>
-        <button className="absolute right-4 top-1/2 -translate-y-1/2 text-cream-100/70 hover:text-cream-100" aria-label="Dismiss">
-          ×
-        </button>
-      </div>
+      <AnnouncementBar />
 
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
@@ -146,6 +142,9 @@ export default async function LandingPage() {
               <ThemeToggle />
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/signin">Sign in</Link>
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/signup">Sign up</Link>
               </Button>
               <Button variant="primary" size="sm" asChild>
                 <Link href="/become-vendor">List your business</Link>

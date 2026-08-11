@@ -16,7 +16,8 @@ export function GoogleButton({ isLoading, onClick, text = 'Continue with Google'
       size="md"
       isLoading={isLoading}
       onClick={onClick}
-      className="w-full"
+      fullWidth
+      className="h-12"
     >
       <span className="flex items-center justify-center gap-3">
         <svg width="20" height="20" viewBox="0 0 24 24">
