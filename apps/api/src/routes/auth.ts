@@ -5,6 +5,8 @@ import {
   SignInWithPasswordSchema,
   RequestMagicLinkSchema,
   AcceptAgreementSchema,
+  RequestPasswordResetSchema,
+  ConsumePasswordResetSchema,
 } from '../schemas/auth';
 import {
   signUpWithPassword,
@@ -13,6 +15,8 @@ import {
   requestMagicLink,
   consumeMagicLink,
   acceptAgreement,
+  requestPasswordReset,
+  consumePasswordReset,
 } from '../services/auth.service';
 import { rateLimit } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
@@ -149,6 +153,52 @@ authRouter.post('/signout', (_req: Request, res: Response) => {
   res.clearCookie(getSessionCookieName(), { path: '/' });
   res.status(200).json({ signedOut: true });
 });
+
+authRouter.post(
+  '/password-reset/request',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'pw-reset-req' }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = RequestPasswordResetSchema.parse(req.body);
+      const result = await requestPasswordReset(input, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'],
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+authRouter.post(
+  '/password-reset/consume',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'pw-reset-consume' }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = ConsumePasswordResetSchema.parse(req.body);
+      const result = await consumePasswordReset(input);
+      if (!result) {
+        res.status(401).json({ error: 'InvalidOrExpiredToken' });
+        return;
+      }
+      res.cookie(getSessionCookieName(), result.sessionToken, getSessionCookieOptions());
+      res.status(200).json({
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          name: result.user.name,
+          role: result.user.role,
+          emailVerified: result.user.emailVerified,
+          agreementAcceptedAt: result.user.agreementAcceptedAt,
+          defaultCampusId: result.user.defaultCampusId,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 authRouter.post(
   '/accept-agreement',

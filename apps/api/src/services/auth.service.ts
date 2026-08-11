@@ -2,7 +2,7 @@ import { prisma } from '../lib/db';
 import type { User } from '../lib/db';
 import { hashPassword, verifyPassword, validatePasswordStrength } from './password.service';
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
-import { sendOtpEmail, sendMagicLinkEmail } from './email.service';
+import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail } from './email.service';
 import { issueSession } from './session.service';
 import { logger } from '../config/logger';
 import { env } from '../config/env';
@@ -137,6 +137,7 @@ export async function requestMagicLink(
     email: input.email,
     token,
     type: 'magic_link',
+    purpose: 'signin',
     expiresInMs: MAGIC_LINK_EXPIRY_MS,
     userId: user.id,
     ipAddress: ctx.ipAddress,
@@ -152,7 +153,7 @@ export async function requestMagicLink(
 export async function consumeMagicLink(
   token: string,
 ): Promise<{ sessionToken: string; user: User } | null> {
-  const result = await consumeToken({ token, type: 'magic_link' });
+  const result = await consumeToken({ token, type: 'magic_link', purpose: 'signin' });
   if (!result) return null;
 
   const user = await prisma.user.findUnique({ where: { email: result.email } });
@@ -161,6 +162,73 @@ export async function consumeMagicLink(
   const updated = await prisma.user.update({
     where: { id: user.id },
     data: {
+      lastSignInAt: new Date(),
+      emailVerified: user.emailVerified ?? new Date(),
+    },
+  });
+
+  const sessionToken = await issueSession({
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  return { sessionToken, user: updated };
+}
+
+export async function requestPasswordReset(
+  input: { email: string },
+  ctx: RequestContext,
+): Promise<{ linkSent: true }> {
+  const user = await prisma.user.findUnique({ where: { email: input.email } });
+  if (!user) {
+    logger.info({ email: input.email }, 'Password reset requested for non-existent account');
+    return { linkSent: true };
+  }
+
+  const token = generateMagicToken();
+  await storeToken({
+    email: input.email,
+    token,
+    type: 'magic_link',
+    purpose: 'password_reset',
+    expiresInMs: MAGIC_LINK_EXPIRY_MS,
+    userId: user.id,
+    ipAddress: ctx.ipAddress,
+    userAgent: ctx.userAgent,
+  });
+
+  const webUrl = env.WEB_URL ?? 'http://localhost:3000';
+  const url = `${webUrl}/reset-password?token=${encodeURIComponent(token)}`;
+  await sendPasswordResetEmail({ to: input.email, url });
+  return { linkSent: true };
+}
+
+export async function consumePasswordReset(params: {
+  token: string;
+  newPassword: string;
+}): Promise<{ sessionToken: string; user: User } | null> {
+  const strength = validatePasswordStrength(params.newPassword);
+  if (!strength.valid) {
+    throw new Error(strength.reason ?? 'Invalid password');
+  }
+
+  const result = await consumeToken({
+    token: params.token,
+    type: 'magic_link',
+    purpose: 'password_reset',
+  });
+  if (!result) return null;
+
+  const user = await prisma.user.findUnique({ where: { email: result.email } });
+  if (!user) return null;
+
+  const passwordHash = await hashPassword(params.newPassword);
+  const updated = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      passwordHash,
+      hasPassword: true,
       lastSignInAt: new Date(),
       emailVerified: user.emailVerified ?? new Date(),
     },

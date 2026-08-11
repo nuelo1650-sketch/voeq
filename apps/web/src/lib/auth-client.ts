@@ -87,6 +87,23 @@ export async function updateProfile(input: { name?: string; image?: string }): P
   });
 }
 
+export async function requestPasswordReset(input: { email: string }): Promise<{ linkSent: true }> {
+  return api<{ linkSent: true }>('/api/auth/password-reset/request', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function consumePasswordReset(input: {
+  token: string;
+  newPassword: string;
+}): Promise<{ user: AuthUser }> {
+  return api<{ user: AuthUser }>('/api/auth/password-reset/consume', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
 export async function getCurrentAgreements(): Promise<{
   tos: { version: string; title: string; content: string } | null;
   privacy: { version: string; title: string; content: string } | null;

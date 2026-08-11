@@ -1,6 +1,6 @@
 import { randomBytes, randomInt, createHash } from 'node:crypto';
 import { prisma } from '../lib/db';
-import type { AuthTokenType } from '../lib/db';
+import type { AuthTokenType, AuthTokenPurpose } from '../lib/db';
 
 export function generateOtp(): string {
   return randomInt(100000, 1000000).toString();
@@ -18,6 +18,7 @@ export async function storeToken(params: {
   email: string;
   token: string;
   type: AuthTokenType;
+  purpose?: AuthTokenPurpose;
   expiresInMs: number;
   userId?: string;
   ipAddress?: string;
@@ -28,6 +29,7 @@ export async function storeToken(params: {
       email: params.email.toLowerCase(),
       tokenHash: hashToken(params.token),
       type: params.type,
+      purpose: params.purpose,
       expiresAt: new Date(Date.now() + params.expiresInMs),
       userId: params.userId,
       ipAddress: params.ipAddress,
@@ -39,6 +41,7 @@ export async function storeToken(params: {
 export async function consumeToken(params: {
   token: string;
   type: AuthTokenType;
+  purpose?: AuthTokenPurpose;
 }): Promise<{ email: string; userId: string | null } | null> {
   const tokenHash = hashToken(params.token);
   const record = await prisma.authToken.findUnique({
@@ -47,6 +50,7 @@ export async function consumeToken(params: {
 
   if (!record) return null;
   if (record.type !== params.type) return null;
+  if (params.purpose && record.purpose !== params.purpose) return null;
   if (record.consumedAt !== null) return null;
   if (record.expiresAt < new Date()) return null;
 
