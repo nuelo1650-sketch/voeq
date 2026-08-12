@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { getNotifications } from '@/lib/marketplace-client';
 import { getMe } from '@/lib/auth-client';
 
-export function NotificationBell() {
+export function NotificationBell({ className }: { className?: string }) {
   const [unread, setUnread] = useState(0);
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Array<{ id: string; title: string; body: string; vendorSlug: string }>>([]);
@@ -37,7 +37,7 @@ export function NotificationBell() {
   }, []);
 
   return (
-    <div className="relative" ref={ref}>
+    <div className={`relative ${className ?? ''}`} ref={ref}>
       <button
         type="button"
         onClick={() => setOpen(!open)}

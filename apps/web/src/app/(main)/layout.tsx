@@ -74,36 +74,34 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Container size="lg">
           <div className="flex h-16 items-center justify-between">
             <Link href="/home" aria-label="Voeq home" className="flex items-center gap-2">
-              <Logo size="md" />
+              <Logo size="lg" />
               <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="flex items-center gap-2">
+              <Link
+                href="/browse"
+                className="rounded-md px-2 py-1.5 text-sm font-medium text-forest-700 hover:bg-cream-200 hover:text-forest-900 dark:text-cream-100 dark:hover:bg-forest-800"
+              >
+                Browse
+              </Link>
               {me && (
-                <>
-                  <Link
-                    href="/browse"
-                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 md:inline-block dark:text-cream-100 dark:hover:text-white"
-                  >
-                    Browse
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 md:inline-block dark:text-cream-100 dark:hover:text-white"
-                  >
-                    Profile
-                  </Link>
-                </>
+                <Link
+                  href="/profile"
+                  className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 md:inline-block dark:text-cream-100 dark:hover:text-white"
+                >
+                  Profile
+                </Link>
               )}
               <ThemeToggle />
-              {me && <NotificationBell />}
+              {me && <NotificationBell className="hidden md:inline-flex" />}
               {me && (
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <Button variant="ghost" size="sm" className="hidden md:inline-flex" onClick={handleSignOut}>
                   Sign out
                 </Button>
               )}
               <button
                 type="button"
-                className="md:hidden rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                className="rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
                 aria-label="Toggle menu"
                 onClick={() => setMobileOpen((open) => !open)}
               >
@@ -126,16 +124,28 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="md:hidden">
               <div className="space-y-1 border-t border-cream-200 px-4 pb-4 pt-3 dark:border-forest-700">
                 {me ? (
-                  mobileLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={handleMobileNav}
-                      className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                  <>
+                    {mobileLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={handleMobileNav}
+                        className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleMobileNav();
+                        handleSignOut();
+                      }}
+                      className="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-cream-200 dark:hover:bg-forest-800"
                     >
-                      {link.label}
-                    </Link>
-                  ))
+                      Sign out
+                    </button>
+                  </>
                 ) : (
                   <div className="flex flex-col gap-2 pt-1">
                     <Link

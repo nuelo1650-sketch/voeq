@@ -16,7 +16,7 @@ export function AuthShell({ children, title, subtitle }: { children: React.React
         {/* Left brand column - desktop only */}
         <div className="hidden md:block md:w-[45%] lg:w-1/2">
           <div className="mb-6 flex items-center gap-3 lg:mb-8">
-            <Logo size="md" />
+            <Logo size="lg" />
             <span className="text-xl font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
           </div>
           <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 lg:text-4xl">
@@ -50,7 +50,7 @@ export function AuthShell({ children, title, subtitle }: { children: React.React
         <div className="w-full md:w-[55%] lg:w-1/2">
           <div className="mb-4 flex items-center justify-between md:hidden">
             <div className="flex items-center gap-2">
-              <Logo size="md" />
+              <Logo size="lg" />
               <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </div>
             <ThemeToggle />

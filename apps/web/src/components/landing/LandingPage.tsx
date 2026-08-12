@@ -154,6 +154,12 @@ export default async function LandingPage() {
               <Link href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">About</Link>
             </nav>
             <div className="flex items-center gap-2 md:hidden">
+              <Link
+                href="/browse"
+                className="rounded-md px-2 py-1.5 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+              >
+                Browse
+              </Link>
               <ThemeToggle />
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/signin">Sign in</Link>

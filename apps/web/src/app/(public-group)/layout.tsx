@@ -13,7 +13,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <Container size="lg">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" aria-label="Voeq home" className="flex items-center gap-2">
-              <Logo size="md" />
+              <Logo size="lg" />
               <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
@@ -39,7 +39,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div>
               <Link href="/" aria-label="Voeq home">
-                <Logo size="md" />
+                <Logo size="lg" />
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">The campus marketplace for Nigerian students.</p>
               <p className="mt-2 text-sm text-cream-100/70">Built by students, for students.</p>

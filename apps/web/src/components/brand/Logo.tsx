@@ -10,10 +10,10 @@ interface LogoProps {
 }
 
 const heightClass: Record<LogoSize, string> = {
-  sm: 'h-8',
-  md: 'h-10',
-  lg: 'h-12',
-  xl: 'h-14',
+  sm: 'h-9',
+  md: 'h-11',
+  lg: 'h-14',
+  xl: 'h-16',
 };
 
 // Always visible: forest in light mode, cream in dark mode.
