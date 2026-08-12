@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'voeq_announcement_dismissed';
 
-export function AnnouncementBar() {
+export function AnnouncementBar({ messages }: { messages?: string[] }) {
   const [visible, setVisible] = useState(true);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     try {
@@ -16,6 +17,14 @@ export function AnnouncementBar() {
       // localStorage unavailable (SSR / privacy mode)
     }
   }, []);
+
+  useEffect(() => {
+    if (!visible || !messages || messages.length <= 1) return;
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % messages.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [visible, messages]);
 
   const handleDismiss = () => {
     setVisible(false);
@@ -28,9 +37,15 @@ export function AnnouncementBar() {
 
   if (!visible) return null;
 
+  const text = messages && messages.length > 0
+    ? messages[index % messages.length]
+    : '🎉 Voeq is live at NMU — find vendors now';
+
   return (
-    <div className="bg-forest-700 text-cream-100 py-3 px-4 text-center text-sm relative">
-      <span>🎉 Voeq is live at NMU — find vendors now</span>
+    <div className="bg-forest-700 text-cream-100 py-3 px-4 text-center text-sm relative overflow-hidden">
+      <span key={index} className="inline-block animate-[fade-in_0.5s_ease-out]">
+        {text}
+      </span>
       <button
         type="button"
         onClick={handleDismiss}

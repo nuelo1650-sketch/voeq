@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCategories, listListings } from '@/lib/marketplace-client';
+import { getCategories, listListings, getStats, getInstitutions } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SearchInput } from '@/components/ui/SearchInput';
@@ -34,7 +34,7 @@ import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJso
 
 export const metadata: Metadata = buildMetadata({
   title: 'Voeq — Find. Connect. Grow.',
-  description: 'Discover verified campus vendors on Voeq. Browse food, tech, fashion, and 20+ categories. Connect directly via WhatsApp. Built for Nigerian students at 100+ universities.',
+  description: 'Discover verified campus vendors on Voeq. Reach every student on campus, free to start with no upfront cost. Built for Nigerian students.',
   path: '/',
   keywords: [
     'campus vendors Nigeria',
@@ -90,30 +90,44 @@ const FAQS = [
   { question: 'Is Voeq free to use?', answer: 'Yes, Voeq is completely free for students. You can browse vendors, save listings, and connect via WhatsApp at no cost.' },
   { question: 'How do I contact a vendor?', answer: 'Every vendor profile has a "Chat on WhatsApp" button. Click it to start a conversation directly with the vendor.' },
   { question: 'Are vendors verified?', answer: 'Yes. Vendors go through a verification process including campus presence confirmation and profile review.' },
-  { question: 'Which campuses are supported?', answer: 'Voeq supports 100+ Nigerian universities. If your institution is not listed, you can submit it and we will add it within 24 hours.' },
+  { question: 'Which campuses are supported?', answer: 'Voeq launches university by university across Nigeria. Check the homepage for the latest campuses we have gone live at, and if your institution is not listed yet, you can submit it and we will prioritise adding it.' },
   { question: 'Can I become a vendor?', answer: 'Absolutely. Sign up as a vendor, complete your business profile, add your first listing, and start receiving messages from students immediately.' },
   { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2, Voeq will integrate secure payments with buyer protection.' },
 ];
 
 const CAMPUSES = ['NMU', 'UNILAG', 'UI', 'OAU', 'UNIBEN', 'UNIPORT', 'UNICAL', 'UNILORIN', 'FUTMINNA', 'FUTO'];
 
-const STATS = [
-  { number: '100+', label: 'Universities' },
-  { number: '20+', label: 'Categories' },
-  { number: 'Free', label: 'For students' },
-  { number: 'Direct', label: 'WhatsApp connect' },
+const STATS_BASE = [
+  { key: 'institutions', label: 'Universities' },
+  { key: 'categories', label: 'Categories' },
+  { key: 'vendors', label: 'Verified vendors' },
+  { key: 'listings', label: 'Active listings' },
 ];
 
 export default async function LandingPage() {
-  const [categoriesResult, recentListingsResult, popularListingsResult] = await Promise.all([
+  const [categoriesResult, recentListingsResult, popularListingsResult, statsResult, institutionsResult] = await Promise.all([
     getCategories().catch(() => ({ categories: [] })),
     listListings({ sort: 'newest', limit: 12 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
     listListings({ sort: 'newest', limit: 6 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
+    getStats().catch(() => ({ institutions: 0, categories: 0, vendors: 0, listings: 0 })),
+    getInstitutions().catch(() => ({ institutions: [] })),
   ]);
 
   const categories = categoriesResult.categories ?? [];
   const recentListings = recentListingsResult.listings ?? [];
   const popularListings = popularListingsResult.listings ?? [];
+  const stats = statsResult;
+
+  const STATS = STATS_BASE.map((s) => ({
+    number: String(stats[s.key as keyof typeof stats] ?? 0),
+    label: s.label,
+  }));
+
+  const universityCount = stats.institutions;
+
+  const launchMessages = (institutionsResult.institutions ?? [])
+    .slice(0, 8)
+    .map((inst) => `🎉 Voeq is live at ${inst.name} — find vendors now`);
 
   const orgJsonLd = buildOrganizationJsonLd();
   const websiteJsonLd = buildWebSiteJsonLd();
@@ -125,14 +139,14 @@ export default async function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
-      <AnnouncementBar />
+      <AnnouncementBar messages={launchMessages} />
 
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
-              <Logo size="lg" />
-              <span className="ml-2 text-xl font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
+              <Logo size="xl" />
+              <span className="ml-2 text-2xl font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
@@ -191,7 +205,7 @@ export default async function LandingPage() {
                   Discover verified campus vendors
                 </h1>
                 <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
-                  Find food, tech, fashion, and 20+ categories of trusted vendors on your campus. Connect directly via WhatsApp.
+                  Reach every student on campus. Free to start, no upfront cost.
                 </p>
                 <div className="mt-10">
                   <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
@@ -211,7 +225,7 @@ export default async function LandingPage() {
                   })}
                 </div>
                 <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
-                  Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">100+ Nigerian universities</span>
+                  Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">{universityCount}+ Nigerian universities</span>
                 </p>
               </div>
             </AnimatedSection>

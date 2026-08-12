@@ -29,7 +29,7 @@ export default function SignUpPage() {
   return (
     <AuthShell
       title="Create your account"
-      subtitle="Join Voeq to discover campus vendors, save listings, and connect directly."
+      subtitle="Be one of the first to try Voeq at NMU."
     >
       <div className="px-6 pb-6 pt-8 md:px-8 md:pb-8 md:pt-10">
         <div className="space-y-6">

@@ -21,6 +21,7 @@ import { testRouter } from './routes/test';
 import { wishlistRouter } from './routes/wishlist';
 import { followRouter } from './routes/follow';
 import { notificationsRouter } from './routes/notifications';
+import { statsRouter } from './routes/stats';
 import { vendorRouter } from './routes/vendor';
 import { uploadRouter } from './routes/upload';
 import { apiRouter } from './routes';
@@ -154,6 +155,7 @@ export function createApp(): Application {
   app.use('/api/wishlist', wishlistRouter);
   app.use('/api/follow', followRouter);
   app.use('/api/notifications', notificationsRouter);
+  app.use('/api/stats', statsRouter);
   app.use('/api/disputes', disputesRouter);
   app.use('/api/preferences', preferencesRouter);
   app.use('/api', apiRouter);

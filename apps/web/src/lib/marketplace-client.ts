@@ -1,5 +1,21 @@
 import { api } from './api';
 
+export interface SiteStats {
+  institutions: number;
+  categories: number;
+  vendors: number;
+  listings: number;
+}
+
+export async function getStats(): Promise<SiteStats> {
+  try {
+    const data = await api<{ stats: SiteStats }>('/api/stats');
+    return data.stats;
+  } catch {
+    return { institutions: 0, categories: 0, vendors: 0, listings: 0 };
+  }
+}
+
 export interface ListingSummary {
   id: string;
   slug: string;
@@ -175,6 +191,21 @@ export interface CategorySummary {
 
 export async function getCategories(): Promise<{ categories: CategorySummary[] }> {
   return api<{ categories: CategorySummary[] }>('/api/categories');
+}
+
+export interface InstitutionSummary {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+}
+
+export async function getInstitutions(): Promise<{ institutions: InstitutionSummary[] }> {
+  try {
+    return await api<{ institutions: InstitutionSummary[] }>('/api/institutions');
+  } catch {
+    return { institutions: [] };
+  }
 }
 
 export interface WishlistItemSummary {
