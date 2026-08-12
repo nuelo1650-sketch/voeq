@@ -43,6 +43,7 @@ export interface ListListingsParams {
   maxPrice?: number;
   minRating?: number;
   verifiedOnly?: boolean;
+  featured?: boolean;
   lat?: number;
   lng?: number;
   radiusKm?: number;
@@ -71,6 +72,7 @@ export async function listListings(params: ListListingsParams = {}): Promise<Lis
   if (params.maxPrice !== undefined) searchParams.set('maxPrice', String(params.maxPrice));
   if (params.minRating !== undefined) searchParams.set('minRating', String(params.minRating));
   if (params.verifiedOnly) searchParams.set('verifiedOnly', 'true');
+  if (params.featured) searchParams.set('featured', 'true');
   if (params.lat !== undefined) searchParams.set('lat', String(params.lat));
   if (params.lng !== undefined) searchParams.set('lng', String(params.lng));
   if (params.radiusKm !== undefined) searchParams.set('radiusKm', String(params.radiusKm));

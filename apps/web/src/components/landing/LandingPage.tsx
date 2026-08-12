@@ -1,13 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCategories, listListings, getStats, getInstitutions } from '@/lib/marketplace-client';
+import { getCategories, getInstitutions } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ListingCard } from '@/components/marketplace/ListingCard';
-import { Logo } from '@/components/brand/Logo';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 import {
   FoodIcon,
@@ -29,12 +28,13 @@ import {
 } from '@/components/icons';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { AnnouncementBar } from '@/components/landing/AnnouncementBar';
-import Image from 'next/image';
+import { ListingShowcase } from '@/components/landing/ListingShowcase';
 import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
   title: 'Voeq — Find. Connect. Grow.',
-  description: 'Discover verified campus vendors on Voeq. Reach every student on campus, free to start with no upfront cost. Built for Nigerian students.',
+  description:
+    'Voeq is the campus marketplace where Nigerian students discover verified vendors and chat directly on WhatsApp — and where vendors reach every student on their campus for free.',
   path: '/',
   keywords: [
     'campus vendors Nigeria',
@@ -63,28 +63,12 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   health: HealthIcon,
 };
 
-const FALLBACK_CATEGORY_IMAGES: Record<string, string> = {
-  food: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-  fashion: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
-  tech: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-  laundry: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
-  beauty: 'linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%)',
-  repairs: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
-  photography: 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)',
-  'academic-services': 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-  logistics: 'linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)',
-  furniture: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)',
-  'health-wellness': 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-  catering: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
-  cleaning: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-  electrical: 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)',
-  plumbing: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-  tailoring: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)',
-  supermarket: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-  pharmacy: 'linear-gradient(135deg, #ecfeff 0%, #cffafe 100%)',
-};
-
-const CATEGORY_IMAGES = FALLBACK_CATEGORY_IMAGES;
+const TRUST_PILLARS = [
+  { icon: CheckIcon, title: 'Verified campus vendors', body: 'Every vendor is confirmed present on the campus they serve.' },
+  { icon: WhatsAppIcon, title: 'Direct WhatsApp, no middleman', body: 'Message vendors directly. No platform fees, no commissions.' },
+  { icon: StarIcon, title: 'Ratings & reviews', body: 'Real feedback from real students, so you always know who you are dealing with.' },
+  { icon: MapIcon, title: 'Built for Nigerian students', body: 'Designed for campus life — fast, simple, and mobile-first.' },
+];
 
 const FAQS = [
   { question: 'Is Voeq free to use?', answer: 'Yes, Voeq is completely free for students. You can browse vendors, save listings, and connect via WhatsApp at no cost.' },
@@ -95,39 +79,14 @@ const FAQS = [
   { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2, Voeq will integrate secure payments with buyer protection.' },
 ];
 
-const CAMPUSES = ['NMU', 'UNILAG', 'UI', 'OAU', 'UNIBEN', 'UNIPORT', 'UNICAL', 'UNILORIN', 'FUTMINNA', 'FUTO'];
-
-const STATS_BASE = [
-  { key: 'institutions', label: 'Universities' },
-  { key: 'categories', label: 'Categories' },
-  { key: 'vendors', label: 'Verified vendors' },
-  { key: 'listings', label: 'Active listings' },
-];
-
 export default async function LandingPage() {
-  const [categoriesResult, recentListingsResult, popularListingsResult, statsResult, institutionsResult] = await Promise.all([
+  const [categoriesResult, institutionsResult] = await Promise.all([
     getCategories().catch(() => ({ categories: [] })),
-    listListings({ sort: 'newest', limit: 12 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
-    listListings({ sort: 'newest', limit: 6 }).catch(() => ({ listings: [], total: 0, page: 1, totalPages: 1 })),
-    getStats().catch(() => ({ institutions: 0, categories: 0, vendors: 0, listings: 0 })),
     getInstitutions().catch(() => ({ institutions: [] })),
   ]);
 
   const categories = categoriesResult.categories ?? [];
-  const recentListings = recentListingsResult.listings ?? [];
-  const popularListings = popularListingsResult.listings ?? [];
-  const stats = statsResult;
-
-  const STATS = STATS_BASE.map((s) => ({
-    number: String(stats[s.key as keyof typeof stats] ?? 0),
-    label: s.label,
-  }));
-
-  const universityCount = stats.institutions;
-
-  const launchMessages = (institutionsResult.institutions ?? [])
-    .slice(0, 8)
-    .map((inst) => `🎉 Voeq is live at ${inst.name} — find vendors now`);
+  const institutions = institutionsResult.institutions ?? [];
 
   const orgJsonLd = buildOrganizationJsonLd();
   const websiteJsonLd = buildWebSiteJsonLd();
@@ -139,14 +98,20 @@ export default async function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
-      <AnnouncementBar messages={launchMessages} />
+      <AnnouncementBar messages={[]} />
 
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
-              <Logo size="xl" />
-              <span className="ml-2 text-2xl font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/Name.png"
+                alt="Voeq"
+                className="h-9 w-auto sm:h-11"
+                width={120}
+                height={44}
+              />
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
@@ -201,6 +166,7 @@ export default async function LandingPage() {
       </header>
 
       <main>
+        {/* HERO — search + category chips as the primary action */}
         <Section spacing="xl" className="relative overflow-hidden">
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-700/5 via-transparent to-gold-500/10 dark:from-forest-900/40" />
           <Container size="lg">
@@ -208,17 +174,17 @@ export default async function LandingPage() {
               <div className="mx-auto max-w-3xl text-center">
                 <Badge variant="gold" className="mb-6">Find. Connect. Grow.</Badge>
                 <h1 className="font-serif text-4xl font-semibold tracking-tight text-forest-900 dark:text-cream-100 sm:text-5xl lg:text-6xl text-balance">
-                  Discover verified campus vendors
+                  The campus marketplace for Nigerian students
                 </h1>
                 <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80 sm:text-xl text-pretty">
-                  Reach every student on campus. Free to start, no upfront cost.
+                  Discover verified vendors on your campus and chat with them directly on WhatsApp — or list your own business for free.
                 </p>
                 <div className="mt-10">
                   <SearchInput size="lg" placeholder="Search vendors, services, or categories" className="mx-auto max-w-2xl" />
                 </div>
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
                   <span className="text-sm text-forest-700/60 dark:text-cream-100/60">Popular:</span>
-                  {categories.slice(0, 4).map((cat) => {
+                  {categories.slice(0, 5).map((cat) => {
                     const Icon = CATEGORY_ICONS[cat.slug];
                     return (
                       <Link key={cat.id} href={`/browse?category=${cat.slug}`}>
@@ -230,51 +196,88 @@ export default async function LandingPage() {
                     );
                   })}
                 </div>
-                <p className="mt-12 text-sm text-forest-700/60 dark:text-cream-100/60">
-                  Used by students at <span className="font-semibold text-forest-900 dark:text-cream-100">{universityCount}+ Nigerian universities</span>
-                </p>
               </div>
             </AnimatedSection>
           </Container>
         </Section>
 
+        {/* DUAL AUDIENCE SPLIT — buyers and vendors, equal weight */}
         <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
           <Container size="lg">
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {STATS.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">{stat.number}</div>
-                  <div className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{stat.label}</div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* Buyers */}
+              <div className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest-700 text-cream-100">
+                    <StarIcon className="h-5 w-5" />
+                  </span>
+                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">I&apos;m a student</h3>
+                </div>
+                <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
+                  Find verified campus vendors for food, fashion, tech repairs, laundry and more.
+                  See real ratings, message vendors directly on WhatsApp, and pay zero platform fees.
+                </p>
+                <Button variant="primary" size="md" className="mt-5" asChild>
+                  <Link href="/browse">Browse vendors <ArrowRightIcon className="h-4 w-4" /></Link>
+                </Button>
+              </div>
+              {/* Vendors */}
+              <div className="rounded-3xl border border-gold-500/30 bg-cream-50 p-7 dark:border-gold-500/20 dark:bg-forest-900">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-600 text-white">
+                    <WhatsAppIcon className="h-5 w-5" />
+                  </span>
+                  <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">I&apos;m a vendor</h3>
+                </div>
+                <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
+                  List free, reach students on your campus, and sell directly over WhatsApp.
+                  No commissions, no middleman — your storefront goes live in minutes.
+                </p>
+                <Button variant="gold" size="md" className="mt-5" asChild>
+                  <Link href="/become-vendor">List your business <ArrowRightIcon className="h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </div>
+          </Container>
+        </Section>
+
+        {/* LIVE LISTINGS SHOWCASE — one section, rotating tabs, real images */}
+        <Section spacing="lg">
+          <Container size="lg">
+            <AnimatedSection>
+              <div className="mb-8 text-center">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Live on Voeq</h2>
+                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Real listings from campus vendors — refreshing automatically</p>
+              </div>
+            </AnimatedSection>
+            <ListingShowcase />
+            <div className="mt-8 text-center">
+              <Link href="/browse">
+                <Button variant="outline" rightIcon={<ArrowRightIcon className="h-4 w-4" />}>Explore all listings</Button>
+              </Link>
+            </div>
+          </Container>
+        </Section>
+
+        {/* TRUST STRIP — values, not vanity metrics (never goes stale) */}
+        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+          <Container size="lg">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {TRUST_PILLARS.map((p) => (
+                <div key={p.title} className="flex flex-col items-start">
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-forest-700/10 text-forest-700 dark:bg-gold-500/15 dark:text-gold-500">
+                    <p.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="font-serif text-base font-semibold text-forest-900 dark:text-cream-100">{p.title}</h3>
+                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{p.body}</p>
                 </div>
               ))}
             </div>
           </Container>
         </Section>
 
-        {recentListings.length > 0 && (
-          <Section spacing="lg">
-            <Container size="lg">
-              <AnimatedSection>
-                <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Recently joined</h2>
-                    <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">New vendors and listings on Voeq</p>
-                  </div>
-                  <Link href="/browse?sort=newest" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                    View all →
-                  </Link>
-                </div>
-              </AnimatedSection>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-                {recentListings.slice(0, 8).map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
-                ))}
-              </div>
-            </Container>
-          </Section>
-        )}
-
-        <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
+        {/* BROWSE BY CATEGORY */}
+        <Section spacing="lg">
           <Container size="lg">
             <AnimatedSection>
               <div className="mb-6">
@@ -303,35 +306,14 @@ export default async function LandingPage() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {categories.slice(0, 6).map((cat) => {
                 const Icon = CATEGORY_ICONS[cat.slug];
-                const rawImage = CATEGORY_IMAGES[cat.slug] ?? '/Logo.png';
-                const isGradient = rawImage.startsWith('linear-gradient');
                 return (
                   <Link
                     key={cat.id}
                     href={`/browse?category=${cat.slug}`}
-                    className="group flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
+                    className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
                   >
-                    <div className="relative h-32 w-full overflow-hidden sm:h-40">
-                      {isGradient ? (
-                        <div
-                          className="h-full w-full"
-                          style={{ background: rawImage }}
-                        />
-                      ) : (
-                        <Image
-                          src={rawImage}
-                          alt={cat.name}
-                          fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="(min-width: 640px) 200px, 50vw"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    </div>
-                    <div className="flex items-center gap-2 p-4">
-                      {Icon && <Icon className="h-5 w-5 text-forest-700 dark:text-cream-100" />}
-                      <span className="text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
-                    </div>
+                    {Icon && <Icon className="h-7 w-7 text-forest-700 dark:text-cream-100" />}
+                    <span className="text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
                   </Link>
                 );
               })}
@@ -344,31 +326,7 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
-        {popularListings.length > 0 && (
-          <Section spacing="lg">
-            <Container size="lg">
-              <AnimatedSection>
-                <div className="mb-6 flex items-center justify-between">
-                  <div>
-                    <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Popular on Voeq</h2>
-                    <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Hand-picked by our team</p>
-                  </div>
-                  <Link href="/browse" className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
-                    View all →
-                  </Link>
-                </div>
-              </AnimatedSection>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-                {popularListings.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
-                ))}
-              </div>
-            </Container>
-          </Section>
-        )}
-
-
-
+        {/* HOW IT WORKS */}
         <Section spacing="lg">
           <Container size="lg">
             <AnimatedSection>
@@ -395,6 +353,7 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
+        {/* VALUE PROPS */}
         <Section spacing="md" className="bg-cream-50 dark:bg-forest-800">
           <Container size="lg">
             <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
@@ -417,6 +376,7 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
+        {/* GROW YOUR BUSINESS (vendor CTA) */}
         <Section spacing="lg" className="bg-forest-900 text-cream-100">
           <Container size="lg">
             <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
@@ -452,6 +412,7 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
+        {/* GET STARTED */}
         <Section spacing="lg">
           <Container size="lg">
             <AnimatedSection>
@@ -471,22 +432,28 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
+        {/* COMING SOON CAMPUSES — from DB */}
         <Section spacing="lg" className="bg-cream-50 dark:bg-forest-800">
           <Container size="md">
             <AnimatedSection>
               <div className="text-center">
                 <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Coming soon to campuses near you</h2>
-                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Launching at NMU, expanding to UNILAG, UI, OAU, and more</p>
+                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">Launching university by university across Nigeria</p>
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-forest-700/60 dark:text-cream-100/60">
-                  {CAMPUSES.map((campus) => (
-                    <span key={campus} className="text-xs font-medium">{campus}</span>
-                  ))}
+                  {institutions.length > 0
+                    ? institutions.slice(0, 12).map((inst: { name: string }) => (
+                        <span key={inst.name} className="text-xs font-medium">{inst.name}</span>
+                      ))
+                    : ['NMU', 'UNILAG', 'UI', 'OAU', 'UNIBEN', 'UNIPORT'].map((c) => (
+                        <span key={c} className="text-xs font-medium">{c}</span>
+                      ))}
                 </div>
               </div>
             </AnimatedSection>
           </Container>
         </Section>
 
+        {/* FAQ */}
         <Section spacing="lg" className="border-y border-gold-500/20 bg-cream-50 dark:bg-forest-800">
           <Container size="md">
             <AnimatedSection>
@@ -518,8 +485,8 @@ export default async function LandingPage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Voeq home" className="flex items-center gap-2">
-                <Logo size="md" />
-                <span className="text-lg font-semibold tracking-tight text-cream-100">Voeq</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/Name.png" alt="Voeq" className="h-8 w-auto" width={110} height={40} />
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
               <p className="mt-2 text-sm text-cream-100/50">The campus marketplace for Nigerian students.</p>

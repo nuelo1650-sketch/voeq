@@ -13,6 +13,7 @@ export interface ListListingsParams {
   maxPrice?: number;
   minRating?: number;
   verifiedOnly?: boolean;
+  featured?: boolean;
   lat?: number;
   lng?: number;
   radiusKm?: number;
@@ -69,6 +70,10 @@ export async function listListings(params: ListListingsParams): Promise<ListList
 
   if (params.categorySlug) {
     where.category = { slug: params.categorySlug };
+  }
+
+  if (params.featured) {
+    where.isFeatured = true;
   }
 
   if (params.search) {

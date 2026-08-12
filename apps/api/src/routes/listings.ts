@@ -14,6 +14,7 @@ const listQuerySchema = z.object({
   maxPrice: z.coerce.number().nonnegative().optional(),
   minRating: z.coerce.number().min(1).max(5).optional(),
   verifiedOnly: z.coerce.boolean().optional(),
+  featured: z.coerce.boolean().optional(),
   sort: z.enum(['newest', 'oldest', 'price_asc', 'price_desc', 'rating', 'popular']).default('newest'),
   lat: z.coerce.number().optional(),
   lng: z.coerce.number().optional(),
