@@ -4,7 +4,7 @@ import { logger } from '../config/logger';
 
 const resend = new Resend(env.RESEND_API_KEY);
 
-const LOGO_URL = 'https://voeq.ng/Name.png';
+const LOGO_URL = 'https://voeq.ng/brand/voeq-wordmark.svg';
 
 const emailHeader = `
   <div style="text-align: center; margin: 0 0 24px;">

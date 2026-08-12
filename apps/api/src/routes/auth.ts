@@ -235,7 +235,7 @@ authRouter.post(
 );
 
 authRouter.get('/google', (_req: Request, res: Response) => {
-  const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
+  const redirectUri = `${env.WEB_URL}/api/auth/google/callback`;
   const params = new URLSearchParams({
     client_id: env.AUTH_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -254,7 +254,7 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       res.status(400).json({ error: 'MissingCode' });
       return;
     }
-    const redirectUri = `${env.WEB_URL}/api/auth/callback/google`;
+    const redirectUri = `${env.WEB_URL}/api/auth/google/callback`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
