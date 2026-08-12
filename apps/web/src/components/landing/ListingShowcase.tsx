@@ -90,12 +90,12 @@ export function ListingShowcase() {
       <div className="min-h-[320px]">
         {loading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square animate-pulse rounded-2xl bg-cream-200 dark:bg-forest-800"
-              />
-            ))}
+          {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="aspect-square animate-pulse rounded-2xl bg-cream-200/70 dark:bg-forest-800/60"
+          />
+          ))}
           </div>
         ) : listings.length === 0 ? (
           <p className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">
