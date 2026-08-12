@@ -534,6 +534,7 @@ export default async function LandingPage() {
               <ul className="space-y-2 text-sm text-cream-100/70">
                 <li><Link href="/about" className="hover:text-gold-500">About</Link></li>
                 <li><a href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</a></li>
+                <li><a href="mailto:support@voeq.ng" className="hover:text-gold-500">Support</a></li>
                 <li><Link href="/press" className="hover:text-gold-500">Press</Link></li>
                 <li><Link href="/careers" className="hover:text-gold-500">Careers</Link></li>
               </ul>

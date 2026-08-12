@@ -57,6 +57,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               <ul className="space-y-2 text-sm text-cream-100/70">
                 <li><a href="/about" className="hover:text-gold-500">About</a></li>
                 <li><a href="mailto:hello@voeq.ng" className="hover:text-gold-500">Contact</a></li>
+                <li><a href="mailto:support@voeq.ng" className="hover:text-gold-500">Support</a></li>
               </ul>
             </div>
             <div>

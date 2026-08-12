@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { PriceRange } from './PriceRange';
-import { WhatsAppIcon } from '@/components/icons';
 import type { ListingSummary } from '@/lib/marketplace-client';
 
 interface ListingCardProps {
@@ -32,8 +31,11 @@ export function ListingCard({ listing, className }: ListingCardProps) {
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-forest-700/30 dark:text-cream-100/30">
-            <WhatsAppIcon className="h-12 w-12" />
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-gradient-to-br from-forest-700 to-forest-900 text-cream-100/40 dark:from-forest-800 dark:to-forest-950">
+            <span className="font-serif text-4xl font-semibold text-cream-100/30">
+              {listing.title?.charAt(0)?.toUpperCase() ?? 'V'}
+            </span>
+            <span className="text-[10px] uppercase tracking-wide">No photo yet</span>
           </div>
         )}
         {listing.isFlashDeal && (
