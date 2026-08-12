@@ -10,12 +10,13 @@ interface LogoProps {
 }
 
 const heightClass: Record<LogoSize, string> = {
-  sm: 'h-7',
-  md: 'h-8',
-  lg: 'h-9',
-  xl: 'h-11',
+  sm: 'h-8',
+  md: 'h-10',
+  lg: 'h-12',
+  xl: 'h-14',
 };
 
+// Always visible: forest in light mode, cream in dark mode.
 const toneClass: Record<LogoTone, string> = {
   auto: 'text-forest-900 dark:text-cream-100',
   light: 'text-cream-100',
@@ -28,6 +29,7 @@ export function Logo({ size = 'md', tone = 'auto', className }: LogoProps) {
       viewBox="0 0 415 175"
       role="img"
       aria-label="Voeq"
+      fill="currentColor"
       className={cn('w-auto object-contain', heightClass[size], toneClass[tone], className)}
     >
       <g fill="none" stroke="currentColor" strokeWidth={20} strokeLinecap="round" strokeLinejoin="round">

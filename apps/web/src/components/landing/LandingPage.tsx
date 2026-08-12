@@ -131,14 +131,20 @@ export default async function LandingPage() {
         <Container size="lg">
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
-              <Logo size="md" />
-              <span className="sr-only">Voeq</span>
+              <Logo size="lg" />
+              <span className="ml-2 text-xl font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
               <Link href="/for-vendors" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">For Vendors</Link>
               <Link href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">About</Link>
             </nav>
+            <div className="flex items-center gap-2 md:hidden">
+              <ThemeToggle />
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/signin">Sign in</Link>
+              </Button>
+            </div>
             <div className="hidden items-center gap-2 md:flex">
               <ThemeToggle />
               <Button variant="ghost" size="sm" asChild>
@@ -491,8 +497,9 @@ export default async function LandingPage() {
         <Container size="lg">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" aria-label="Voeq home">
-                <Logo size="sm" />
+              <Link href="/" aria-label="Voeq home" className="flex items-center gap-2">
+                <Logo size="md" />
+                <span className="text-lg font-semibold tracking-tight text-cream-100">Voeq</span>
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
               <p className="mt-2 text-sm text-cream-100/50">The campus marketplace for Nigerian students.</p>

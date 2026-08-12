@@ -71,8 +71,9 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
                   <path d="M4 7h16M4 12h16M4 17h16" />
                 </svg>
               </button>
-              <Link href="/vendor" className="flex items-center">
-                <Logo size="sm" />
+              <Link href="/vendor" className="flex items-center gap-2">
+                <Logo size="md" />
+                <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
               </Link>
             </div>
             <div className="flex items-center gap-2">
