@@ -1,4 +1,6 @@
-import Image from 'next/image';
+'use client';
+
+import { useTheme } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
 type LogoSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -9,24 +11,24 @@ interface LogoProps {
 }
 
 const sizeMap: Record<LogoSize, { width: number; height: number }> = {
-  sm: { width: 140, height: 42 },
-  md: { width: 180, height: 54 },
-  lg: { width: 220, height: 66 },
-  xl: { width: 280, height: 84 },
+  sm: { width: 110, height: 26 },
+  md: { width: 150, height: 36 },
+  lg: { width: 190, height: 46 },
+  xl: { width: 240, height: 58 },
 };
 
 export function Logo({ size = 'md', className }: LogoProps) {
+  const { theme } = useTheme();
   const { width, height } = sizeMap[size];
+  const src = theme === 'dark' ? '/brand/voeq-wordmark-dark.svg' : '/brand/voeq-wordmark.svg';
 
   return (
-    <Image
-      src="/Name.png"
+    <img
+      src={src}
       alt="Voeq"
       width={width}
       height={height}
-      className={cn('object-contain brightness-0 dark:brightness-0 dark:invert', className)}
-      priority={size === 'md' || size === 'lg'}
-      quality={100}
+      className={cn('object-contain', className)}
     />
   );
 }

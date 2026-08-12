@@ -81,13 +81,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <>
                   <Link
                     href="/browse"
-                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
+                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 md:inline-block dark:text-cream-100 dark:hover:text-white"
                   >
                     Browse
                   </Link>
                   <Link
                     href="/profile"
-                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 sm:inline-block dark:text-cream-100 dark:hover:text-white"
+                    className="hidden text-sm font-medium text-forest-700 hover:text-forest-900 md:inline-block dark:text-cream-100 dark:hover:text-white"
                   >
                     Profile
                   </Link>
@@ -124,16 +124,35 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {mobileOpen ? (
             <div className="md:hidden">
               <div className="space-y-1 border-t border-cream-200 px-4 pb-4 pt-3 dark:border-forest-700">
-                {mobileLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={handleMobileNav}
-                    className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {me ? (
+                  mobileLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={handleMobileNav}
+                      className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                    >
+                      {link.label}
+                    </Link>
+                  ))
+                ) : (
+                  <div className="flex flex-col gap-2 pt-1">
+                    <Link
+                      href="/signin"
+                      onClick={handleMobileNav}
+                      className="block rounded-md bg-forest-700 px-3 py-2 text-center text-sm font-medium text-cream-100 hover:bg-forest-800"
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={handleMobileNav}
+                      className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           ) : null}

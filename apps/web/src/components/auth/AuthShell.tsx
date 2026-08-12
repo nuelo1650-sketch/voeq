@@ -54,6 +54,17 @@ export function AuthShell({ children, title, subtitle }: { children: React.React
           <div className="overflow-hidden rounded-2xl border border-cream-300 bg-white/80 shadow-xl backdrop-blur transition dark:border-forest-700 dark:bg-forest-800/80 sm:rounded-3xl">
             {children}
           </div>
+          <div className="mt-4 rounded-2xl border border-gold-500/30 bg-gold-500/5 px-4 py-3 text-center dark:border-gold-400/30 dark:bg-gold-400/5">
+            <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
+              Are you a vendor?{' '}
+              <a
+                href="/become-vendor"
+                className="font-semibold text-forest-900 underline underline-offset-2 transition hover:text-gold-600 dark:text-cream-100 dark:hover:text-gold-400"
+              >
+                List your business on Voeq
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
