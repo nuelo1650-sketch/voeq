@@ -17,7 +17,7 @@ export default function AboutPage() {
           About Voeq
         </h1>
         <p className="mt-4 font-serif text-2xl text-gold-600 dark:text-gold-500">
-          Voeq — pronounced &quot;voke.&quot;
+          Find. Connect. Grow.
         </p>
         <div className="mt-12 space-y-6 text-lg text-forest-700/80 dark:text-cream-100/80">
           <p>

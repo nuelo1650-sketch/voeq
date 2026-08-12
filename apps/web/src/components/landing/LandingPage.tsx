@@ -129,16 +129,16 @@ export default async function LandingPage() {
 
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
-          <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <Logo size="sm" />
+          <div className="flex h-16 items-center justify-between gap-3">
+            <Link href="/" className="flex items-center" aria-label="Voeq home">
+              <Logo size="md" />
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
               <Link href="/for-vendors" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">For Vendors</Link>
               <Link href="/about" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">About</Link>
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 md:flex">
               <ThemeToggle />
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/signin">Sign in</Link>
@@ -150,13 +150,25 @@ export default async function LandingPage() {
                 <Link href="/become-vendor">List your business</Link>
               </Button>
             </div>
-            <button className="md:hidden" aria-label="Open menu">
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="4" y1="6" x2="20" y2="6" />
-                <line x1="4" y1="12" x2="20" y2="12" />
-                <line x1="4" y1="18" x2="20" y2="18" />
-              </svg>
-            </button>
+            {/* Mobile menu (native <details>, no JS needed) */}
+            <details className="group relative md:hidden">
+              <summary className="flex list-none items-center gap-2 rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800" aria-label="Open menu">
+                <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+              </summary>
+              <div className="absolute right-0 z-50 mt-2 w-56 space-y-1 rounded-2xl border border-cream-200 bg-cream-50 p-3 shadow-xl dark:border-forest-700 dark:bg-forest-800">
+                <Link href="/browse" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Browse</Link>
+                <Link href="/for-vendors" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">For Vendors</Link>
+                <Link href="/about" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">About</Link>
+                <div className="my-2 border-t border-cream-200 dark:border-forest-700" />
+                <Link href="/signin" className="block rounded-md bg-forest-700 px-3 py-2 text-center text-sm font-medium text-cream-100 hover:bg-forest-800">Sign in</Link>
+                <Link href="/signup" className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Sign up</Link>
+                <Link href="/become-vendor" className="block rounded-md px-3 py-2 text-center text-sm font-medium text-gold-700 hover:bg-cream-200 dark:text-gold-400 dark:hover:bg-forest-700">List your business</Link>
+              </div>
+            </details>
           </div>
         </Container>
       </header>
