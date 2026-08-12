@@ -30,18 +30,15 @@ interface ModerationResult {
  */
 export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
   try {
-    const dataUrl = `data:image/jpeg;base64,${buffer.toString('base64')}`;
+    const form = new FormData();
+    form.append('models', 'nudity-2.0,violence,offensive');
+    form.append('api_user', env.SIGHTENGINE_USER);
+    form.append('api_secret', env.SIGHTENGINE_SECRET);
+    form.append('media', buffer.toString('base64'));
 
-    const params = new URLSearchParams({
-      models: 'nudity-2.0,violence,offensive',
-      api_user: env.SIGHTENGINE_USER,
-      api_secret: env.SIGHTENGINE_SECRET,
-    });
-
-    const res = await fetch(`https://api.sightengine.com/1.0/check.json?${params.toString()}`, {
+    const res = await fetch('https://api.sightengine.com/1.0/check.json', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ media: dataUrl }),
+      body: form,
     });
 
     if (!res.ok) {
