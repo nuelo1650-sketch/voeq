@@ -41,7 +41,7 @@ export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
     const res = await fetch(`https://api.sightengine.com/1.0/check.json?${params.toString()}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ data: dataUrl }),
+      body: new URLSearchParams({ media: dataUrl }),
     });
 
     if (!res.ok) {
