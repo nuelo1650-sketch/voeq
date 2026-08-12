@@ -2,7 +2,7 @@ import { prisma } from '../lib/db';
 import type { User } from '../lib/db';
 import { hashPassword, verifyPassword, validatePasswordStrength } from './password.service';
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
-import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail } from './email.service';
+import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email.service';
 import { issueSession } from './session.service';
 import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
@@ -66,13 +66,19 @@ export async function signUpWithPassword(
     userAgent: ctx.userAgent,
   });
 
-  // Don't block account creation on email delivery failures (e.g. missing/invalid
-  // RESEND_API_KEY). The OTP is stored regardless so verification can still proceed
-  // via dev-log fallback or a later successful send.
+  // Don't block account creation on email delivery failures, but make a real
+  // attempt to deliver the OTP (with one retry for transient Resend blips) so
+  // the user gets the code on first signup rather than needing "resend".
   try {
     await sendOtpEmail({ to: input.email, otp });
   } catch (err) {
-    logger.warn({ email: input.email, err }, 'Failed to send OTP email during signup; continuing');
+    logger.warn({ email: input.email, err }, 'OTP send failed on first try; retrying once');
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      await sendOtpEmail({ to: input.email, otp });
+    } catch (err2) {
+      logger.error({ email: input.email, err: err2 }, 'Failed to send OTP email during signup after retry');
+    }
   }
   return { otpSent: true };
 }
@@ -94,6 +100,15 @@ export async function verifyOtp(
     where: { id: user.id },
     data: { emailVerified: new Date() },
   });
+
+  // Send a welcome email the first time an account is verified.
+  if (!user.emailVerified) {
+    try {
+      await sendWelcomeEmail({ to: user.email, name: user.name });
+    } catch {
+      // welcome email is best-effort
+    }
+  }
 
   const sessionToken = await issueSession({
     sub: user.id,
@@ -171,7 +186,7 @@ export async function requestMagicLink(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_URL;
+  const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
   const url = `${webUrl}/auth-callback?token=${encodeURIComponent(token)}`;
   await sendMagicLinkEmail({ to: input.email, url });
   return { linkSent: true };
@@ -225,7 +240,7 @@ export async function requestPasswordReset(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_URL;
+  const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
   const url = `${webUrl}/reset-password?token=${encodeURIComponent(token)}`;
   await sendPasswordResetEmail({ to: input.email, url });
   return { linkSent: true };

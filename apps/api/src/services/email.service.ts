@@ -112,6 +112,35 @@ export async function sendMagicLinkEmail({ to, url }: MagicLinkEmailParams): Pro
   }
 }
 
+export async function sendWelcomeEmail({ to, name }: { to: string; name?: string | null }): Promise<void> {
+  try {
+    await resend.emails.send({
+      from: env.RESEND_FROM_EMAIL,
+      to,
+      subject: 'Welcome to Voeq',
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
+          ${emailHeader}
+          <h1 style="color: #0F3D2E; font-size: 24px; margin: 0 0 24px;">Welcome to Voeq${name ? `, ${name}` : ''}!</h1>
+          <p style="color: #1A1A1A; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
+            Your account is verified. Voeq is the campus marketplace where Nigerian students find trusted vendors
+            for food, fashion, tech repairs, laundry, and more — and chat with them directly on WhatsApp.
+          </p>
+          <a href="${env.WEB_APP_URL ?? env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq.ng'}/browse" style="display: inline-block; background: #0F3D2E; color: #F7F5F0; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 16px; font-weight: 500; margin: 0 0 24px;">
+            Browse vendors
+          </a>
+          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0;">
+            Need a hand? Reply to this email or reach us at <a href="mailto:support@voeq.ng" style="color: #0F3D2E;">support@voeq.ng</a>.
+          </p>
+          ${emailFooter}
+        </div>
+      `,
+    });
+  } catch (error) {
+    logger.error({ error, to }, 'Failed to send welcome email');
+  }
+}
+
 export async function sendPasswordResetEmail({ to, url }: PasswordResetEmailParams): Promise<void> {
   try {
     await resend.emails.send({

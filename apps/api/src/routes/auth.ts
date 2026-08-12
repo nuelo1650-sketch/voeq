@@ -313,7 +313,7 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       role: user.role,
     });
     res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    const webUrl = env.WEB_URL;
+    const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
     res.redirect(`${webUrl}/home`);
   } catch (error) {
     next(error);

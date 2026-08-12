@@ -28,6 +28,7 @@ export const envSchema = z.object({
   AUTH_TRUST_HOST: z.coerce.boolean().default(true),
   NEXTAUTH_URL: z.string().url().optional(),
   WEB_URL: z.string().url().optional(),
+  WEB_APP_URL: z.string().url().optional(),
   RESEND_API_KEY: z.string().min(1),
   RESEND_FROM_EMAIL: z.string().email(),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
