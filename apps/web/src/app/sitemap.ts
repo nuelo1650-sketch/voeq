@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq-web.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq.ng';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

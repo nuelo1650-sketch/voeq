@@ -65,7 +65,8 @@ export async function signOut(): Promise<{ signedOut: true }> {
 }
 
 export async function signInWithGoogle(): Promise<never> {
-  window.location.href = '/api/auth/google';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+  window.location.href = `${API_URL}/api/auth/google`;
   return Promise.reject(new Error('Redirecting to Google'));
 }
 
