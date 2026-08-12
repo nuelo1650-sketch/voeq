@@ -34,7 +34,7 @@ export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
     form.append('models', 'nudity-2.0,violence,offensive');
     form.append('api_user', env.SIGHTENGINE_USER);
     form.append('api_secret', env.SIGHTENGINE_SECRET);
-    form.append('media', buffer, 'image.png');
+    form.append('media', new Blob([buffer], { type: 'image/png' }), 'image.png');
 
     const res = await fetch('https://api.sightengine.com/1.0/check.json', {
       method: 'POST',
