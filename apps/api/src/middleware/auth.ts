@@ -1,8 +1,10 @@
 import type { Request, Response, NextFunction } from 'express';
 import { jwtVerify } from 'jose';
 import { env } from '../config/env';
+import { getSessionCookieName } from '../services/session.service';
 
 const secret = new TextEncoder().encode(env.AUTH_SECRET);
+const SESSION_COOKIE = getSessionCookieName();
 
 export interface AuthedRequest extends Request {
   userId?: string;
@@ -15,7 +17,7 @@ export async function requireAuth(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const token = req.cookies?.['voeq_session'];
+  const token = req.cookies?.[SESSION_COOKIE];
   if (!token) {
     res.status(401).json({ error: 'Unauthorized', message: 'No session' });
     return;
@@ -39,7 +41,7 @@ export async function optionalAuth(
   _res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const token = req.cookies?.['voeq_session'];
+  const token = req.cookies?.[SESSION_COOKIE];
   if (!token) {
     next();
     return;
