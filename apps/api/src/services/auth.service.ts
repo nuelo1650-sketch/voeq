@@ -97,6 +97,25 @@ export async function verifyOtp(
   return { sessionToken, user: updated };
 }
 
+export async function resendOtp(input: { email: string }): Promise<{ otpSent: true }> {
+  const user = await prisma.user.findUnique({ where: { email: input.email } });
+  if (!user) {
+    // Avoid account enumeration: pretend success even if no account exists.
+    return { otpSent: true };
+  }
+
+  const otp = generateOtp();
+  await storeToken({
+    email: input.email,
+    token: otp,
+    type: 'otp',
+    expiresInMs: OTP_EXPIRY_MS,
+  });
+
+  await sendOtpEmail({ to: input.email, otp });
+  return { otpSent: true };
+}
+
 export async function signInWithPassword(
   input: { email: string; password: string },
 ): Promise<{ sessionToken: string; user: User } | null> {

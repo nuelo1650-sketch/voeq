@@ -18,6 +18,7 @@ import {
   acceptAgreement,
   requestPasswordReset,
   consumePasswordReset,
+  resendOtp,
 } from '../services/auth.service';
 import { rateLimit } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
@@ -65,6 +66,20 @@ authRouter.post(
           defaultCampusId: result.user.defaultCampusId,
         },
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+authRouter.post(
+  '/resend-otp',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp' }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const input = RequestMagicLinkSchema.parse(req.body);
+      await resendOtp({ email: input.email });
+      res.status(200).json({ otpSent: true });
     } catch (error) {
       next(error);
     }

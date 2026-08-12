@@ -29,6 +29,13 @@ export async function verifyOtp(input: { email: string; otp: string }): Promise<
   });
 }
 
+export async function resendOtp(input: { email: string }): Promise<{ otpSent: true }> {
+  return api<{ otpSent: true }>('/api/auth/resend-otp', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
 export async function signInWithPassword(input: {
   email: string;
   password: string;
