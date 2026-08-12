@@ -37,6 +37,15 @@ interface PasswordResetEmailParams {
 }
 
 export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
+  if (!env.RESEND_API_KEY) {
+    // Dev fallback: no email provider configured. Surface the OTP in logs so
+    // local/onboarding flows still work without a transactional email service.
+    logger.warn({ to, otp }, 'RESEND_API_KEY not set — OTP not emailed (dev fallback)');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[DEV OTP] ${to} -> ${otp}`);
+    }
+    return;
+  }
   try {
     await resend.emails.send({
       from: env.RESEND_FROM_EMAIL,

@@ -17,7 +17,7 @@ const SECTIONS = [
 type SectionKey = (typeof SECTIONS)[number]['key'];
 
 interface HomeCarouselProps {
-  campusId: string;
+  campusId?: string;
 }
 
 export function HomeCarousel({ campusId }: HomeCarouselProps) {

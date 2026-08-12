@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { serverGetMe as getMe } from '@/lib/auth-server';
 import { serverListListings as listListings, serverGetCategories as getCategories } from '@/lib/marketplace-server';
+import type { ListingSummary } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
@@ -91,16 +92,7 @@ export default async function HomePage() {
   }
 
   const user = me.user;
-  const campusId = user.defaultCampusId;
-
-  if (!campusId) {
-    redirect('/select-campus');
-  }
-
-  const firstName = user.name?.split(' ')[0] ?? 'there';
-  const greeting = getGreeting();
-  const campusName = user.defaultCampus?.name ?? 'your campus';
-  const institutionName = user.defaultCampus?.institution.name ?? '';
+  const campusId = user.defaultCampusId ?? undefined;
 
   const [recentResult, popularResult, categoriesResult] = await Promise.all([
     listListings({ campusId, sort: 'newest', limit: 8 }).catch(() => ({ listings: [] })),
@@ -112,6 +104,78 @@ export default async function HomePage() {
   const popularListings = popularResult.listings;
   const categories = categoriesResult.categories;
 
+  const firstName = user.name?.split(' ')[0] ?? 'there';
+  const greeting = getGreeting();
+  const campusName = user.defaultCampus?.name ?? 'your campus';
+  const institutionName = user.defaultCampus?.institution.name ?? '';
+
+  if (!campusId) {
+    // No campus selected yet — don't bounce. Show all-campus content with a soft nudge.
+    return (
+      <>
+        <CampusContextBar campusId={undefined} campusName="" institutionName="" />
+        <VendorPageHeader
+          title={`${greeting}, ${firstName}`}
+          subtitle="Pick your campus to see vendors near you."
+        />
+        <VendorSection className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+          <Container size="md">
+            <div className="rounded-xl border border-gold-500/30 bg-gold-500/5 px-4 py-3 text-sm text-forest-900 dark:text-cream-100">
+              Tip: select your campus from the menu to tailor vendors and listings to your school.
+            </div>
+          </Container>
+        </VendorSection>
+        <HomeBody
+          campusId={undefined}
+          categories={categories}
+          recentListings={recentListings}
+          popularListings={popularListings}
+          user={user}
+          firstName={firstName}
+          greeting={greeting}
+          campusName=""
+          institutionName=""
+        />
+      </>
+    );
+  }
+
+  return (
+    <HomeBody
+      campusId={campusId}
+      campusName={campusName}
+      institutionName={institutionName}
+      greeting={greeting}
+      firstName={firstName}
+      categories={categories}
+      recentListings={recentListings}
+      popularListings={popularListings}
+      user={user}
+    />
+  );
+}
+
+function HomeBody({
+  campusId,
+  campusName,
+  institutionName,
+  greeting,
+  firstName,
+  categories,
+  recentListings,
+  popularListings,
+  user,
+}: {
+  campusId: string | undefined;
+  campusName: string;
+  institutionName: string;
+  greeting: string;
+  firstName: string;
+  categories: { id: string; name: string; slug: string; iconName: string; listingCount: number }[];
+  recentListings: ListingSummary[];
+  popularListings: ListingSummary[];
+  user: { role: string; name?: string | null; defaultCampus?: { name: string; institution: { name: string } } | null };
+}) {
   return (
     <>
       <CampusContextBar
