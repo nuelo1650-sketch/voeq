@@ -132,6 +132,7 @@ export default async function LandingPage() {
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
               <Logo size="md" />
+              <span className="sr-only">Voeq</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>

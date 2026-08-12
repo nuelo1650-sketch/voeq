@@ -1,5 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
-  <text x="0" y="38" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="42" font-weight="600" letter-spacing="-1.5">
-    <tspan fill="#0F3D2E">voe</tspan><tspan fill="#C9A24B">q</tspan>
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 415 175" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Voeq">
+  <!-- v -->
+  <path d="M25 35 L65 130 L105 35" />
+  <!-- o -->
+  <circle cx="155" cy="82" r="40" />
+  <!-- e (open at right, crossbar) -->
+  <path d="M287.1 67 A40 40 0 1 1 287.1 97" />
+  <line x1="214" y1="82" x2="287" y2="82" />
+  <!-- q (bowl + angled flat-cut descender) -->
+  <circle cx="345" cy="82" r="40" />
+  <path d="M335 118 L355 118 L395 168 L375 148 Z" fill="currentColor" stroke="none" />
 </svg>
