@@ -66,7 +66,14 @@ export async function signUpWithPassword(
     userAgent: ctx.userAgent,
   });
 
-  await sendOtpEmail({ to: input.email, otp });
+  // Don't block account creation on email delivery failures (e.g. missing/invalid
+  // RESEND_API_KEY). The OTP is stored regardless so verification can still proceed
+  // via dev-log fallback or a later successful send.
+  try {
+    await sendOtpEmail({ to: input.email, otp });
+  } catch (err) {
+    logger.warn({ email: input.email, err }, 'Failed to send OTP email during signup; continuing');
+  }
   return { otpSent: true };
 }
 
