@@ -25,7 +25,7 @@ export default function AuthCallbackPage() {
         setMessage('Signed in successfully. Redirecting…');
         const dest = resolvePostAuthDestination(res.user);
         setTimeout(() => {
-          window.location.href = dest;
+          window.location.replace(dest);
         }, 1200);
       })
       .catch(() => {
@@ -37,6 +37,9 @@ export default function AuthCallbackPage() {
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
       <div className="text-center">
+        {status === 'loading' && (
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-cream-300 border-t-forest-700 dark:border-forest-700 dark:border-t-cream-100" />
+        )}
         <p className={`text-sm ${status === 'error' ? 'text-red-600' : 'text-forest-700/70'}`}>{message}</p>
         {status === 'error' && (
           <a href="/signin" className="mt-4 inline-block text-sm text-forest-900 underline">Back to sign in</a>

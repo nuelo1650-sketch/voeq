@@ -28,6 +28,7 @@ export async function signUpWithPassword(
     password: string;
     agreedToTerms?: boolean;
     agreementVersion?: string;
+    intent?: 'buyer' | 'vendor';
   },
   ctx: RequestContext,
 ): Promise<{ otpSent: true }> {
@@ -35,6 +36,8 @@ export async function signUpWithPassword(
   if (!strength.valid) {
     throw new Error(strength.reason ?? 'Invalid password');
   }
+
+  const isVendorIntent = input.intent === 'vendor';
 
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
   if (existing && existing.hasPassword && existing.emailVerified) {
@@ -61,6 +64,11 @@ export async function signUpWithPassword(
         name: input.name,
         passwordHash,
         hasPassword: true,
+        // Promote to vendor context only if this is a fresh (unverified) account
+        // being (re)registered with vendor intent; never demote an existing role.
+        ...(isVendorIntent && existing.role === 'buyer'
+          ? { role: 'vendor', currentContext: 'vendor' }
+          : {}),
         ...agreementData,
       },
     });
@@ -71,9 +79,9 @@ export async function signUpWithPassword(
         name: input.name,
         passwordHash,
         hasPassword: true,
-        role: 'buyer',
+        role: isVendorIntent ? 'vendor' : 'buyer',
         status: 'active',
-        currentContext: 'buyer',
+        currentContext: isVendorIntent ? 'vendor' : 'buyer',
         ...agreementData,
       },
     });

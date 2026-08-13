@@ -1,6 +1,6 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
-import { type AdminRequest } from '../../middleware/admin';
+import { type AdminRequest, requirePermission } from '../../middleware/admin';
 import { logAdminAction } from '../../middleware/audit';
 import { prisma } from '../../lib/db';
 
@@ -74,7 +74,7 @@ vendorsRouter.get('/:id', async (req: AdminRequest, res: Response, next: NextFun
   }
 });
 
-vendorsRouter.post('/:id/verify', async (req: AdminRequest, res: Response, next: NextFunction) => {
+vendorsRouter.post('/:id/verify', requirePermission('vendor.verify'), async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const vendor = await prisma.vendor.findUnique({ where: { id: req.params.id ?? '' } });
     if (!vendor) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { StepIndicator } from './StepIndicator';
 import { ProgressMeter } from './ProgressMeter';
 import { getMyVendor } from '@/lib/vendor-client';
@@ -22,6 +23,7 @@ const STEPS = [
 ];
 
 export function OnboardingWizard({ children, currentStep }: OnboardingWizardProps) {
+  const router = useRouter();
   const [vendor, setVendor] = useState<VendorProfile | null>(null);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -32,10 +34,17 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
         if ('vendor' in res) {
           setVendor(res.vendor);
           setProgress(res.progress);
+          // Guard: don't let users jump ahead of their actual progress.
+          if (res.vendor.status !== 'live') {
+            const actualStep = Math.min(5, Math.max(1, Math.floor(res.progress / 20) + 1));
+            if (currentStep > actualStep) {
+              router.replace(`/vendor/onboarding/step-${actualStep}`);
+            }
+          }
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [currentStep, router]);
 
   const steps = STEPS.map((s) => ({
     ...s,

@@ -7,6 +7,10 @@ export const SignupWithPasswordSchema = z.object({
   // Consent: the user must explicitly accept the TOS/privacy policy at signup.
   agreedToTerms: z.literal(true),
   agreementVersion: z.string().min(1),
+  // Optional signup intent. Drives the user's starting role so the
+  // "I'm a vendor" toggle actually routes them into the vendor pipeline
+  // (become-vendor → onboarding) instead of being silently dropped to buyer.
+  intent: z.enum(['buyer', 'vendor']).optional(),
 });
 
 export const VerifyOtpSchema = z.object({

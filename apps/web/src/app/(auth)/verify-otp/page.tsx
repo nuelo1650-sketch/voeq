@@ -102,7 +102,7 @@ export default function VerifyOtpPage() {
         setVerified(true);
         const dest = resolvePostAuthDestination(result.user);
         setTimeout(() => {
-          window.location.href = dest;
+          window.location.replace(dest);
         }, 1200);
       }
     } catch (err: unknown) {
@@ -176,9 +176,11 @@ export default function VerifyOtpPage() {
         <input
           type="email"
           value={email}
+          readOnly
+          aria-readonly="true"
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="mb-6 w-full rounded-xl border border-cream-300 bg-cream-50 px-4 py-2.5 text-center text-sm text-forest-900 outline-none transition focus:border-forest-700 focus:ring-2 focus:ring-forest-700/20 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100"
+          className="mb-6 w-full rounded-xl border border-cream-300 bg-cream-100/60 px-4 py-2.5 text-center text-sm text-forest-900 outline-none dark:border-forest-700 dark:bg-forest-900/60 dark:text-cream-100"
           aria-label="Email address"
         />
 

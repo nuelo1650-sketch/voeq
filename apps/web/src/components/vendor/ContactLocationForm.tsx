@@ -8,14 +8,15 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
+import { getMyVendor } from '@/lib/vendor-client';
 import { upsertVendor } from '@/lib/vendor-client';
 import { DraftBanner } from './DraftBanner';
 import { Modal } from '@/components/ui/Modal';
 import { CheckIcon } from '@/components/icons';
 
 const schema = z.object({
-  whatsappNumber: z.string().regex(/^\+?[1-9]\d{6,14}$/, 'Use E.164 format (e.g. +234****5678)'),
-  publicPhone: z.string().regex(/^\+?[1-9]\d{6,14}$/).optional().or(z.literal('')),
+  whatsappNumber: z.string().regex(/^\+234[789]\d{9}$/, 'Use Nigerian format: +234 followed by 10 digits starting with 7, 8, or 9'),
+  publicPhone: z.string().regex(/^\+234[789]\d{9}$/).optional().or(z.literal('')),
   institutionId: z.string().min(1, 'Required'),
   campusId: z.string().min(1, 'Required'),
   websiteUrl: z.string().url().optional().or(z.literal('')),
@@ -56,10 +57,24 @@ export function ContactLocationForm() {
     Promise.all([
       api<{ user: { whatsappNumber?: string; publicPhone?: string } }>('/api/users/me'),
       api<{ institutions: Institution[] }>('/api/institutions'),
-    ]).then(([userData, instData]) => {
-      setInitialData({
-        whatsappNumber: userData.user.whatsappNumber ?? '',
-        publicPhone: userData.user.publicPhone ?? '',
+      getMyVendor().catch(() => null),
+    ]).then(([userData, instData, vendorResult]) => {
+      const vendor = vendorResult && 'vendor' in vendorResult ? vendorResult.vendor : null;
+      const values: Partial<FormData> = {
+        whatsappNumber: userData.user.whatsappNumber ?? vendor?.whatsappNumber ?? '',
+        publicPhone: userData.user.publicPhone ?? vendor?.publicPhone ?? '',
+        institutionId: vendor?.institution?.id ?? '',
+        campusId: vendor?.campus?.id ?? '',
+        websiteUrl: vendor?.websiteUrl ?? '',
+        instagramHandle: vendor?.instagramHandle ?? '',
+        tiktokHandle: vendor?.tiktokHandle ?? '',
+        twitterHandle: vendor?.twitterHandle ?? '',
+        facebookPage: vendor?.facebookPage ?? '',
+        linkedinProfile: vendor?.linkedinProfile ?? '',
+      };
+      setInitialData(values);
+      (Object.keys(values) as Array<keyof FormData>).forEach((key) => {
+        setValue(key, values[key] ?? '', { shouldValidate: false });
       });
       setInstitutions(instData.institutions);
     });
@@ -185,17 +200,32 @@ export function ContactLocationForm() {
             autoFocus
           />
           <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700">
-            {filteredInstitutions.map((inst) => (
-              <button
-                key={inst.id}
-                type="button"
-                onClick={() => handleSelectInstitution(inst)}
-                className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700"
-              >
-                {inst.name}
-              </button>
-            ))}
+            {filteredInstitutions.length > 0 ? (
+              filteredInstitutions.map((inst) => (
+                <button
+                  key={inst.id}
+                  type="button"
+                  onClick={() => handleSelectInstitution(inst)}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700"
+                >
+                  {inst.name}
+                </button>
+              ))
+            ) : (
+              <p className="px-4 py-6 text-center text-sm text-forest-700/60 dark:text-cream-100/60">
+                No institutions match &ldquo;{query}&rdquo;.
+              </p>
+            )}
           </div>
+          <p className="text-center text-xs text-forest-700/60 dark:text-cream-100/60">
+            Can&apos;t find your institution?{' '}
+            <a
+              href="mailto:support@voeq.ng?subject=Institution%20request&body=I%20would%20like%20to%20add%20my%20institution%20to%20Voeq.%20Name%3A%20"
+              className="font-semibold text-forest-900 underline underline-offset-2 dark:text-cream-100"
+            >
+              Request to add it
+            </a>
+          </p>
         </div>
       </Modal>
 

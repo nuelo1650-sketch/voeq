@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { signUpWithPassword, getCurrentAgreements } from '@/lib/auth-client';
+import { signUpWithPassword, getCurrentAgreements, formatAuthError } from '@/lib/auth-client';
 
 const signupSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
@@ -24,7 +24,7 @@ const signupSchema = z.object({
 
 type SignupInput = z.infer<typeof signupSchema>;
 
-export function SignUpForm({ onSuccess }: { onSuccess?: (email: string) => void }) {
+export function SignUpForm({ onSuccess, intent = 'buyer' }: { onSuccess?: (email: string) => void; intent?: 'buyer' | 'vendor' }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [agreementVersion, setAgreementVersion] = useState<string>('1.0');
 
@@ -60,11 +60,12 @@ export function SignUpForm({ onSuccess }: { onSuccess?: (email: string) => void 
         password: data.password,
         agreedToTerms: true,
         agreementVersion,
+        intent,
       });
       onSuccess?.(data.email);
     } catch (err) {
       const error = err as { error?: string; message?: string };
-      setSubmitError(error.message ?? 'Something went wrong. Please try again.');
+      setSubmitError(formatAuthError(error));
     }
   };
 
@@ -89,6 +90,7 @@ export function SignUpForm({ onSuccess }: { onSuccess?: (email: string) => void 
       <Input
         label="Password"
         type="password"
+        revealable
         autoComplete="new-password"
         placeholder="At least 8 characters"
         helperText="Must include a letter and a number"

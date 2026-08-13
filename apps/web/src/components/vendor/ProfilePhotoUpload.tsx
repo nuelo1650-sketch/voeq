@@ -44,6 +44,10 @@ export function ProfilePhotoUpload() {
     }
   };
 
+  const handleSkip = () => {
+    router.push('/vendor/onboarding/step-4');
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -68,10 +72,20 @@ export function ProfilePhotoUpload() {
         <Button type="button" variant="ghost" onClick={() => router.push('/vendor/onboarding/step-2')}>
           Back
         </Button>
-        <Button onClick={handleContinue} isLoading={saving} disabled={!photo}>
-          Continue
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button type="button" variant="ghost" onClick={handleSkip}>
+            Skip for now
+          </Button>
+          <Button onClick={handleContinue} isLoading={saving} disabled={!photo}>
+            Continue
+          </Button>
+        </div>
       </div>
+      {!photo && (
+        <p className="text-right text-xs text-forest-700/60 dark:text-cream-100/60">
+          Upload a photo to continue, or skip and add one later.
+        </p>
+      )}
     </div>
   );
 }

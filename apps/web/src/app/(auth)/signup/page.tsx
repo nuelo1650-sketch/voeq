@@ -23,7 +23,7 @@ export default function SignUpPage() {
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(intent);
     } catch {
       setGoogleLoading(false);
     }
@@ -76,7 +76,7 @@ export default function SignUpPage() {
 
           <GoogleButton isLoading={googleLoading} onClick={handleGoogle} />
           <AuthDivider />
-          <SignUpForm onSuccess={handleSuccess} />
+          <SignUpForm onSuccess={handleSuccess} intent={intent} />
           <p className="text-center text-sm text-forest-700/70 dark:text-cream-100/70">
             Already have an account?{' '}
             <a

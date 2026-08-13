@@ -19,6 +19,7 @@ export async function signUpWithPassword(input: {
   password: string;
   agreedToTerms: true;
   agreementVersion: string;
+  intent?: 'buyer' | 'vendor';
 }): Promise<{ otpSent: true }> {
   return api<{ otpSent: true }>('/api/auth/signup/password', {
     method: 'POST',
@@ -68,9 +69,11 @@ export async function signOut(): Promise<{ signedOut: true }> {
   return api<{ signedOut: true }>('/api/auth/signout', { method: 'POST' });
 }
 
-export async function signInWithGoogle(): Promise<never> {
+export async function signInWithGoogle(intent?: 'buyer' | 'vendor'): Promise<never> {
   const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
-  window.location.href = `${API_URL}/api/auth/google`;
+  const params = new URLSearchParams({ callback: '/auth-callback' });
+  if (intent) params.set('intent', intent);
+  window.location.href = `${API_URL}/api/auth/google?${params.toString()}`;
   return Promise.reject(new Error('Redirecting to Google'));
 }
 
@@ -122,4 +125,29 @@ export async function getCurrentAgreements(): Promise<{
   vendorAgreement: { version: string; title: string; content: string } | null;
 }> {
   return api('/api/agreements/current');
+}
+
+/** Maps raw API error codes/messages to user-friendly copy. */
+export function formatAuthError(err: unknown): string {
+  const e = err as { error?: string; message?: string };
+  const code = e?.error || e?.message || '';
+  switch (code) {
+    case 'InvalidCredentials':
+      return 'Incorrect email or password. Please try again.';
+    case 'InvalidOrExpiredToken':
+      return 'This link is invalid or has expired.';
+    case 'EmailMismatch':
+      return 'The email does not match this account.';
+    case 'TooManyRequests':
+      return 'Too many attempts. Please wait a few minutes and try again.';
+    case 'UserNotFound':
+      return 'No account found with that email.';
+    case 'AlreadyVerified':
+      return 'This email is already verified. You can sign in.';
+    case 'oauth':
+      return 'Google sign-in failed. Please try again.';
+    default:
+      if (/network/i.test(code)) return 'Network error. Please check your connection and try again.';
+      return e?.message || e?.error || 'Something went wrong. Please try again.';
+  }
 }

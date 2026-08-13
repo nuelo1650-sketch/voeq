@@ -14,7 +14,10 @@ export default async function OnboardingPage() {
   if (result && 'vendor' in result) {
     const { vendor } = result;
     if (vendor.status === 'live') redirect('/vendor');
-    const step = Math.min(5, Math.max(1, Math.floor(vendor.onboardingProgress / 20) + 1));
+    const progress = typeof vendor.onboardingProgress === 'number' && !Number.isNaN(vendor.onboardingProgress)
+      ? vendor.onboardingProgress
+      : 0;
+    const step = Math.min(5, Math.max(1, Math.floor(progress / 20) + 1));
     redirect(`/vendor/onboarding/step-${step}`);
   }
 

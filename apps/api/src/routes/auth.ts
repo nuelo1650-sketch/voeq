@@ -253,6 +253,7 @@ authRouter.post(
 
 authRouter.get('/google', (_req: Request, res: Response) => {
   const redirectUri = `${env.WEB_URL}/api/auth/google/callback`;
+  const intent = (_req.query.intent as string) || 'buyer';
   const params = new URLSearchParams({
     client_id: env.AUTH_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -260,6 +261,8 @@ authRouter.get('/google', (_req: Request, res: Response) => {
     scope: 'openid email profile',
     access_type: 'offline',
     prompt: 'consent',
+    // Carry intent through the OAuth round-trip via state (URL-encoded).
+    state: encodeURIComponent(JSON.stringify({ intent })),
   });
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
 });
@@ -270,6 +273,17 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
     if (!code) {
       res.status(400).json({ error: 'MissingCode' });
       return;
+    }
+    // Recover signup intent from OAuth state (set on the /google entry route).
+    let intent: 'buyer' | 'vendor' = 'buyer';
+    try {
+      const stateRaw = req.query.state as string;
+      if (stateRaw) {
+        const parsed = JSON.parse(decodeURIComponent(stateRaw)) as { intent?: string };
+        if (parsed.intent === 'vendor') intent = 'vendor';
+      }
+    } catch {
+      // ignore malformed state; default to buyer
     }
     const redirectUri = `${env.WEB_URL}/api/auth/google/callback`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -306,9 +320,9 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           name: profile.name ?? null,
           image: profile.picture ?? null,
           hasGoogle: true,
-          role: 'buyer',
+          role: intent === 'vendor' ? 'vendor' : 'buyer',
           status: 'active',
-          currentContext: 'buyer',
+          currentContext: intent === 'vendor' ? 'vendor' : 'buyer',
           emailVerified: new Date(),
           agreementVersion: CURRENT_AGREEMENT_VERSION,
           agreementAcceptedAt: new Date(),

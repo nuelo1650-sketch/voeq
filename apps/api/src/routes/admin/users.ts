@@ -1,6 +1,11 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
-import { requireSuperAdmin, type AdminRequest } from '../../middleware/admin';
+import {
+  requirePermission,
+  requireSuperAdmin,
+  type AdminRequest,
+  canActOnUser,
+} from '../../middleware/admin';
 import { logAdminAction } from '../../middleware/audit';
 import { prisma } from '../../lib/db';
 
@@ -10,11 +15,11 @@ const listQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(50),
   search: z.string().optional(),
-  role: z.enum(['buyer', 'vendor', 'admin', 'super_admin']).optional(),
-  status: z.enum(['active', 'suspended']).optional(),
+  role: z.enum(['buyer', 'vendor', 'moderator', 'admin', 'super_admin']).optional(),
+  status: z.enum(['active', 'suspended', 'banned']).optional(),
 });
 
-usersRouter.get('/', async (req: AdminRequest, res: Response, next: NextFunction) => {
+usersRouter.get('/', requirePermission('user.moderate'), async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const params = listQuerySchema.parse(req.query);
     const where: Record<string, unknown> = { deletedAt: null };
@@ -55,7 +60,7 @@ usersRouter.get('/', async (req: AdminRequest, res: Response, next: NextFunction
   }
 });
 
-usersRouter.get('/:id', async (req: AdminRequest, res: Response, next: NextFunction) => {
+usersRouter.get('/:id', requirePermission('user.moderate'), async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.params.id ?? '' },
@@ -82,16 +87,21 @@ usersRouter.get('/:id', async (req: AdminRequest, res: Response, next: NextFunct
 });
 
 const changeRoleSchema = z.object({
-  role: z.enum(['buyer', 'vendor', 'admin', 'super_admin']),
+  role: z.enum(['buyer', 'vendor', 'moderator', 'admin', 'super_admin']),
   confirm: z.literal('CHANGE ROLE'),
 });
 
+// Only super-admin may change roles, and never demote/promote another super-admin.
 usersRouter.post('/:id/change-role', requireSuperAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const input = changeRoleSchema.parse(req.body);
     const oldUser = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
     if (!oldUser) {
       res.status(404).json({ error: 'NotFound' });
+      return;
+    }
+    if (oldUser.role === 'super_admin' && input.role !== 'super_admin') {
+      res.status(403).json({ error: 'CannotDemoteSuperAdmin' });
       return;
     }
 
@@ -111,20 +121,21 @@ usersRouter.post('/:id/change-role', requireSuperAdmin, async (req: AdminRequest
   }
 });
 
-const suspendSchema = z.object({
+const moderationReasonSchema = z.object({
   reason: z.string().min(10).max(500),
 });
 
-usersRouter.post('/:id/suspend', async (req: AdminRequest, res: Response, next: NextFunction) => {
+// Suspend (temporary). Moderators + admins.
+usersRouter.post('/:id/suspend', requirePermission('user.moderate'), async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
-    const input = suspendSchema.parse(req.body);
+    const input = moderationReasonSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
     if (!user) {
       res.status(404).json({ error: 'NotFound' });
       return;
     }
-    if (user.role === 'super_admin') {
-      res.status(403).json({ error: 'CannotSuspendSuperAdmin' });
+    if (!canActOnUser(req.userRole, user.role)) {
+      res.status(403).json({ error: 'Forbidden', message: 'You cannot moderate this account.' });
       return;
     }
 
@@ -132,14 +143,59 @@ usersRouter.post('/:id/suspend', async (req: AdminRequest, res: Response, next: 
       where: { id: user.id },
       data: { status: 'suspended' },
     });
-
     await prisma.session.deleteMany({ where: { userId: user.id } });
 
-    await logAdminAction(req, 'user.suspended', 'user', user.id, {
-      reason: input.reason,
-      email: user.email,
-    });
+    await logAdminAction(req, 'user.suspended', 'user', user.id, { reason: input.reason, email: user.email });
+    res.status(200).json({ user: updated });
+  } catch (error) {
+    next(error);
+  }
+});
 
+// Ban (severe). Moderators + admins.
+usersRouter.post('/:id/ban', requirePermission('user.ban'), async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const input = moderationReasonSchema.parse(req.body);
+    const user = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
+    if (!user) {
+      res.status(404).json({ error: 'NotFound' });
+      return;
+    }
+    if (!canActOnUser(req.userRole, user.role)) {
+      res.status(403).json({ error: 'Forbidden', message: 'You cannot moderate this account.' });
+      return;
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: { status: 'banned' },
+    });
+    await prisma.session.deleteMany({ where: { userId: user.id } });
+
+    await logAdminAction(req, 'user.banned', 'user', user.id, { reason: input.reason, email: user.email });
+    res.status(200).json({ user: updated });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Reinstate a suspended/banned user back to active.
+usersRouter.post('/:id/reinstate', requirePermission('user.moderate'), async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
+    if (!user) {
+      res.status(404).json({ error: 'NotFound' });
+      return;
+    }
+    if (!canActOnUser(req.userRole, user.role)) {
+      res.status(403).json({ error: 'Forbidden', message: 'You cannot moderate this account.' });
+      return;
+    }
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: { status: 'active' },
+    });
+    await logAdminAction(req, 'user.reinstated', 'user', user.id, { from: user.status, email: user.email });
     res.status(200).json({ user: updated });
   } catch (error) {
     next(error);
@@ -150,7 +206,34 @@ const hardDeleteSchema = z.object({
   confirmEmail: z.string().email(),
 });
 
-usersRouter.delete('/:id', requireSuperAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
+// Soft-delete by default (reversible, preserves audit history). Moderators + admins.
+usersRouter.delete('/:id', requirePermission('user.moderate'), async (req: AdminRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
+    if (!user) {
+      res.status(404).json({ error: 'NotFound' });
+      return;
+    }
+    if (!canActOnUser(req.userRole, user.role)) {
+      res.status(403).json({ error: 'Forbidden', message: 'You cannot delete this account.' });
+      return;
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: { deletedAt: new Date(), status: 'suspended' },
+    });
+
+    await prisma.session.deleteMany({ where: { userId: user.id } });
+    await logAdminAction(req, 'user.soft_deleted', 'user', user.id, { email: user.email, name: user.name });
+    res.status(200).json({ user: updated, deleted: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// True erasure — super-admin only, email-confirmed. Use for GDPR/legal removal.
+usersRouter.delete('/:id/erase', requireSuperAdmin, async (req: AdminRequest, res: Response, next: NextFunction) => {
   try {
     const input = hardDeleteSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { id: req.params.id ?? '' } });
@@ -168,12 +251,7 @@ usersRouter.delete('/:id', requireSuperAdmin, async (req: AdminRequest, res: Res
     }
 
     await prisma.user.delete({ where: { id: user.id } });
-
-    await logAdminAction(req, 'user.hard_deleted', 'user', user.id, {
-      email: user.email,
-      name: user.name,
-    });
-
+    await logAdminAction(req, 'user.hard_deleted', 'user', user.id, { email: user.email, name: user.name });
     res.status(200).json({ deleted: true });
   } catch (error) {
     next(error);

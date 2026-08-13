@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
-import { upsertVendor } from '@/lib/vendor-client';
+import { upsertVendor, getDrafts } from '@/lib/vendor-client';
 import { DraftBanner } from './DraftBanner';
 
 const schema = z.object({
@@ -24,6 +25,21 @@ interface BusinessBasicsFormProps {
 
 export function BusinessBasicsForm({ initialData }: BusinessBasicsFormProps) {
   const router = useRouter();
+  const [defaultValues, setDefaultValues] = useState<Partial<FormData>>(initialData ?? {});
+
+  // Restore any autosaved draft over the persisted vendor data so work in
+  // progress isn't lost when the user returns to this step.
+  useEffect(() => {
+    getDrafts()
+      .then((res) => {
+        const draft = res.drafts?.['step-1'] as Partial<FormData> | undefined;
+        if (draft && typeof draft === 'object') {
+          setDefaultValues((prev) => ({ ...prev, ...draft }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -31,7 +47,7 @@ export function BusinessBasicsForm({ initialData }: BusinessBasicsFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: initialData,
+    defaultValues,
   });
 
   const onSubmit = async (data: FormData) => {

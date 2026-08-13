@@ -13,6 +13,7 @@ import { api } from '@/lib/api';
 import { ImageUploader } from './ImageUploader';
 import { DraftBanner } from './DraftBanner';
 import { cn } from '@/lib/utils';
+import type { UploadResult } from '@/lib/upload-client';
 
 const MAX_CATEGORIES = 5;
 
@@ -109,10 +110,24 @@ export function FirstListingForm() {
     router.push('/vendor/onboarding/step-5');
   };
 
-  const handlePhotoAdd = (result: { publicId: string; url: string; width: number; height: number } | null) => {
+  const handlePhotoAdd = (result: UploadResult | null) => {
     if (result) {
       setPhotos((prev) => [...prev, { ...result, displayOrder: prev.length }]);
     }
+  };
+
+  const movePhoto = (index: number, dir: -1 | 1) => {
+    setPhotos((prev) => {
+      const target = index + dir;
+      if (target < 0 || target >= prev.length) return prev;
+      const a = prev[index];
+      const b = prev[target];
+      if (!a || !b) return prev;
+      const next = [...prev];
+      next[index] = b;
+      next[target] = a;
+      return next.map((p, i) => ({ ...p, displayOrder: i }));
+    });
   };
 
   return (
@@ -205,16 +220,42 @@ export function FirstListingForm() {
           <p className="text-xs text-forest-700/60 dark:text-cream-100/60 mb-3">Add at least 1 photo (max 8). Use real photos of your work.</p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {photos.map((p, i) => (
-              <div key={i} className="relative aspect-square">
+              <div key={p.publicId + i} className="relative aspect-square">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.url} alt={`Photo ${i + 1}`} className="h-full w-full rounded-lg object-cover" />
                 <button
                   type="button"
                   onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
                   className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-forest-900/80 text-cream-100 text-xs"
+                  aria-label="Remove photo"
                 >
                   ×
                 </button>
+                <div className="absolute bottom-1 left-1 flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => movePhoto(i, -1)}
+                    disabled={i === 0}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-forest-900/80 text-cream-100 text-xs disabled:opacity-30"
+                    aria-label="Move left"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => movePhoto(i, 1)}
+                    disabled={i === photos.length - 1}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-forest-900/80 text-cream-100 text-xs disabled:opacity-30"
+                    aria-label="Move right"
+                  >
+                    ›
+                  </button>
+                </div>
+                {i === 0 && (
+                  <span className="absolute inset-x-0 bottom-1 mx-auto w-fit rounded-full bg-gold-500/90 px-2 py-0.5 text-[10px] font-semibold text-forest-900">
+                    Cover
+                  </span>
+                )}
               </div>
             ))}
             {photos.length < 8 && (

@@ -8,6 +8,7 @@ import { AuthShell } from '@/components/auth/AuthShell';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { consumePasswordReset } from '@/lib/auth-client';
+import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,7 +60,7 @@ export default function ResetPasswordPage() {
         newPassword: data.newPassword,
       });
       if (result.user) {
-        window.location.replace('/home');
+        window.location.replace(resolvePostAuthDestination(result.user));
       }
     } catch (err: unknown) {
       const apiError = err as { error?: string; message?: string };
@@ -119,6 +120,7 @@ export default function ResetPasswordPage() {
               <Input
                 label="New password"
                 type="password"
+                revealable
                 autoComplete="new-password"
                 placeholder="At least 8 characters"
                 helperText="Must include a letter and a number"
@@ -128,6 +130,7 @@ export default function ResetPasswordPage() {
               <Input
                 label="Confirm new password"
                 type="password"
+                revealable
                 autoComplete="new-password"
                 placeholder="Re-enter password"
                 error={errors.confirmPassword?.message}

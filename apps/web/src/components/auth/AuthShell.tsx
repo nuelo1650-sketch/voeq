@@ -19,14 +19,15 @@ const container = {
 
 export function AuthShell({ children, title, subtitle }: { children: ReactNode; title: string; subtitle?: string }) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-cream-50 dark:bg-forest-900">
-      {/* Layered brand background: forest depth + gold spotlight */}
+    <div className="relative min-h-screen w-full overflow-hidden bg-cream-50 text-forest-900 dark:bg-forest-900 dark:text-cream-100">
+      {/* Layered brand background: responds to theme so the toggle changes the
+          whole page (not just the card). Forest depth in dark, cream/forest in light. */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-forest-900 via-forest-800 to-[#0a2b20] dark:from-forest-950 dark:via-forest-900 dark:to-[#061a13]" />
         <div className="absolute -left-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-gold-500/10 blur-3xl dark:bg-gold-500/15" />
         <div className="absolute -right-24 top-1/4 h-[26rem] w-[26rem] rounded-full bg-forest-500/10 blur-3xl dark:bg-forest-400/10" />
         <div
-          className="absolute inset-0 opacity-[0.05] dark:opacity-[0.07]"
+          className="absolute inset-0 opacity-0 dark:opacity-[0.07]"
           style={{
             backgroundImage: 'radial-gradient(rgba(247,245,240,0.6) 1px, transparent 1px)',
             backgroundSize: '22px 22px',
@@ -48,14 +49,14 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
           </motion.div>
           <motion.h1
             variants={item}
-            className="font-serif text-3xl font-semibold text-cream-100 lg:text-4xl"
+            className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 lg:text-4xl"
           >
             {title}
           </motion.h1>
           {subtitle && (
             <motion.p
               variants={item}
-              className="mt-3 text-base text-cream-100/80 lg:mt-4 lg:text-lg"
+              className="mt-3 text-base text-forest-700/80 dark:text-cream-100/80 lg:mt-4 lg:text-lg"
             >
               {subtitle}
             </motion.p>
@@ -66,8 +67,8 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
               'Browse listings with transparent pricing',
               'Connect directly via WhatsApp',
             ].map((text, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm text-cream-100/70">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold-500/15 text-xs font-semibold text-gold-500 lg:h-8 lg:w-8">
+              <div key={i} className="flex items-center gap-3 text-sm text-forest-700/70 dark:text-cream-100/70">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold-500/15 text-xs font-semibold text-gold-600 dark:text-gold-500 lg:h-8 lg:w-8">
                   {i + 1}
                 </span>
                 {text}
@@ -76,7 +77,7 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
           </motion.div>
           <motion.div variants={item} className="mt-8 lg:mt-10">
             <ThreadSeam />
-            <p className="mt-4 text-xs text-cream-100/50">
+            <p className="mt-4 text-xs text-forest-700/50 dark:text-cream-100/50">
               Trusted by students across Nigerian universities.
             </p>
           </motion.div>

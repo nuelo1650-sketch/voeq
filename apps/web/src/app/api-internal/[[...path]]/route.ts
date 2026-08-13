@@ -17,7 +17,10 @@ async function handler(req: NextRequest, ctx: { params: Promise<{ path?: string[
     return NextResponse.json({ error: 'API_URL not configured' }, { status: 500 });
   }
   const { path } = await ctx.params;
-  const upstream = `${API_URL.replace(/\/$/, '')}/api/${path?.join('/') ?? ''}${req.nextUrl.search}`;
+  // Callers already pass the full path including the leading /api (e.g.
+  // api('/api/auth/signin') -> /api-internal/api/auth/signin). Forward as-is;
+  // do NOT prepend another /api/ or the upstream receives /api/api/... and 404s.
+  const upstream = `${API_URL.replace(/\/$/, '')}/${path?.join('/') ?? ''}${req.nextUrl.search}`;
 
   const cookie = req.headers.get('cookie') ?? '';
   const headersToSend: Record<string, string> = {

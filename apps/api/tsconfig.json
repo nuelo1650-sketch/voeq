@@ -19,7 +19,8 @@
     "declaration": true,
     "sourceMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@prisma/client": ["./generated/prisma-client"]
     }
   },
   "include": ["src/**/*"],

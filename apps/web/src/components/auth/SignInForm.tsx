@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { signInWithPassword, signInWithGoogle } from '@/lib/auth-client';
+import { signInWithPassword, signInWithGoogle, formatAuthError } from '@/lib/auth-client';
 import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -30,7 +30,7 @@ export function SignInForm() {
       }
     } catch (err: unknown) {
       const apiError = err as { error?: string; message?: string };
-      setError(apiError.error || apiError.message || 'Sign in failed');
+      setError(formatAuthError(apiError));
     } finally {
       setLoading(false);
     }
@@ -80,6 +80,7 @@ export function SignInForm() {
           <Input
             label="Password"
             type="password"
+            revealable
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
