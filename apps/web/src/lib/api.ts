@@ -29,8 +29,13 @@ export async function api<T = unknown>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  // In the browser, route through the same-origin /api-internal proxy so the
+  // session Set-Cookie is delivered from voeq.ng and scoped to it (the API runs
+  // on a separate domain and cannot set a voeq.ng cookie directly). This is what
+  // makes getMe() work on server components. Server-side stays on the absolute URL.
+  const base = typeof window !== 'undefined' ? '/api-internal' : API_URL;
   try {
-    const res = await fetch(`${API_URL}${path}`, {
+    const res = await fetch(`${base}${path}`, {
       ...options,
       credentials: 'include',
       headers: {

@@ -37,13 +37,22 @@ async function handler(req: NextRequest, ctx: { params: Promise<{ path?: string[
 
   const upstreamRes = await fetch(upstream, init);
   const responseHeaders = new Headers();
-  // Pass through JSON/content-type and the Set-Cookie from upstream. The browser
-  // will scope Set-Cookie to voeq.ng because this response originates there.
+  // Pass through content-type. For Set-Cookie, strip any Domain attribute so the
+  // browser scopes the session cookie to voeq.ng (the proxy response host), since
+  // the API cannot set a voeq.ng cookie directly from its own domain.
+  const setCookie = upstreamRes.headers.get('set-cookie');
   upstreamRes.headers.forEach((value, key) => {
-    if (key.toLowerCase() === 'content-type' || key.toLowerCase() === 'set-cookie') {
+    if (key.toLowerCase() === 'content-type') {
       responseHeaders.set(key, value);
     }
   });
+  if (setCookie) {
+    const rewritten = setCookie
+      .split(',')
+      .map((c) => c.replace(/;\s*domain=[^;]+/i, '').trim())
+      .join(', ');
+    responseHeaders.set('Set-Cookie', rewritten);
+  }
 
   const text = await upstreamRes.text();
   return new NextResponse(text || null, {
