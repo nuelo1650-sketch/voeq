@@ -18,26 +18,25 @@ const heightClass: Record<LogoSize, string> = {
 };
 
 /**
- * Renders the Voeq wordmark (Name.png). Dark logo on light backgrounds,
- * white logo on dark ones — so it stays visible in navbars and dark footers.
+ * Renders the Voeq wordmark (Name.png: black text on transparent).
+ * Name.png is black, so we invert it to white on dark backgrounds via CSS.
+ * This keeps a single asset (no swap, no white box) and stays crisp at any size.
  */
 export function Logo({ size = 'md', tone = 'auto', className }: LogoProps) {
-  const cls = cn('w-auto object-contain', heightClass[size], className);
+  const invert =
+    tone === 'light'
+      ? 'invert' // always on a dark background
+      : tone === 'dark'
+        ? '' // light background, keep black
+        : 'dark:invert'; // auto: invert only in dark mode
 
-  if (tone === 'light') {
-    // Rendered on a dark background → use white logo.
-    return <img src="/Name-white.png" alt="Voeq" width={240} height={160} className={cls} />;
-  }
-  if (tone === 'dark') {
-    // Rendered on a light background → use dark logo.
-    return <img src="/Name.png" alt="Voeq" width={240} height={160} className={cls} />;
-  }
-
-  // auto: show dark on light mode, white on dark mode.
   return (
-    <>
-      <img src="/Name.png" alt="Voeq" width={240} height={160} className={cn(cls, 'dark:hidden')} />
-      <img src="/Name-white.png" alt="Voeq" width={240} height={160} className={cn(cls, 'hidden dark:block')} />
-    </>
+    <img
+      src="/Name.png"
+      alt="Voeq"
+      width={240}
+      height={160}
+      className={cn('w-auto object-contain', heightClass[size], invert, className)}
+    />
   );
 }
