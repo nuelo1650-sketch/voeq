@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyOtp, resendOtp } from '@/lib/auth-client';
+import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 import { Button } from '@/components/ui/Button';
 import { AuthShell } from '@/components/auth/AuthShell';
 
@@ -99,8 +100,9 @@ export default function VerifyOtpPage() {
       const result = await verifyOtp({ email, otp: code });
       if (result.user) {
         setVerified(true);
+        const dest = resolvePostAuthDestination(result.user);
         setTimeout(() => {
-          window.location.href = intent === 'vendor' ? '/vendor/onboarding/step-1' : '/home';
+          window.location.href = dest;
         }, 1200);
       }
     } catch (err: unknown) {

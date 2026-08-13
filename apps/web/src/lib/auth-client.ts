@@ -9,6 +9,7 @@ export interface AuthUser {
   agreementAcceptedAt: Date | null;
   defaultCampusId: string | null;
   image?: string | null;
+  vendorStatus: 'incomplete' | 'pending' | 'live' | 'rejected' | 'suspended' | null;
 }
 
 export async function signUpWithPassword(input: {

@@ -8,8 +8,12 @@ export const categoriesRouter: ReturnType<typeof Router> = Router();
 const updateSchema = z.object({
   name: z.string().min(1).max(50).optional(),
   iconName: z.string().min(1).max(50).optional(),
+  description: z.string().max(500).optional(),
   displayOrder: z.number().int().nonnegative().optional(),
   isActive: z.boolean().optional(),
+  isOfficial: z.boolean().optional(),
+  imageUrl: z.string().url().optional(),
+  imagePublicId: z.string().max(200).optional(),
 });
 
 categoriesRouter.get('/', async (_req: AdminRequest, res: Response, next: NextFunction) => {

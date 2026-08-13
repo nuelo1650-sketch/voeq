@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { consumeMagicLink } from '@/lib/auth-client';
+import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,11 +20,12 @@ export default function AuthCallbackPage() {
     }
 
     consumeMagicLink(token)
-      .then(() => {
+      .then((res) => {
         setStatus('success');
         setMessage('Signed in successfully. Redirecting…');
+        const dest = resolvePostAuthDestination(res.user);
         setTimeout(() => {
-          window.location.href = '/home';
+          window.location.href = dest;
         }, 1200);
       })
       .catch(() => {

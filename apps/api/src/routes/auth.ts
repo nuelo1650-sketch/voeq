@@ -56,6 +56,10 @@ authRouter.post(
     try {
       const input = VerifyOtpSchema.parse(req.body);
       const result = await verifyOtp(input);
+      const vendor = await prisma.vendor.findUnique({
+        where: { userId: result.user.id },
+        select: { status: true },
+      });
       res.cookie(getSessionCookieName(), result.sessionToken, getSessionCookieOptions());
       res.status(200).json({
         user: {
@@ -66,6 +70,7 @@ authRouter.post(
           emailVerified: result.user.emailVerified,
           agreementAcceptedAt: result.user.agreementAcceptedAt,
           defaultCampusId: result.user.defaultCampusId,
+          vendorStatus: vendor?.status ?? null,
         },
       });
     } catch (error) {
@@ -99,6 +104,10 @@ authRouter.post(
         res.status(401).json({ error: 'InvalidCredentials' });
         return;
       }
+      const vendor = await prisma.vendor.findUnique({
+        where: { userId: result.user.id },
+        select: { status: true },
+      });
       res.cookie(getSessionCookieName(), result.sessionToken, getSessionCookieOptions());
       res.status(200).json({
         user: {
@@ -109,6 +118,7 @@ authRouter.post(
           emailVerified: result.user.emailVerified,
           agreementAcceptedAt: result.user.agreementAcceptedAt,
           defaultCampusId: result.user.defaultCampusId,
+          vendorStatus: vendor?.status ?? null,
         },
       });
     } catch (error) {
@@ -149,6 +159,10 @@ authRouter.post(
         res.status(401).json({ error: 'InvalidOrExpiredToken' });
         return;
       }
+      const vendor = await prisma.vendor.findUnique({
+        where: { userId: result.user.id },
+        select: { status: true },
+      });
       res.cookie(getSessionCookieName(), result.sessionToken, getSessionCookieOptions());
       res.status(200).json({
         user: {
@@ -159,6 +173,7 @@ authRouter.post(
           emailVerified: result.user.emailVerified,
           agreementAcceptedAt: result.user.agreementAcceptedAt,
           defaultCampusId: result.user.defaultCampusId,
+          vendorStatus: vendor?.status ?? null,
         },
       });
     } catch (error) {
@@ -323,8 +338,20 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       email: user.email,
       role: user.role,
     });
+    const vendor = await prisma.vendor.findUnique({
+      where: { userId: user.id },
+      select: { status: true },
+    });
+    const dest =
+      user.role === 'vendor'
+        ? vendor?.status === 'live'
+          ? '/vendor'
+          : '/vendor/onboarding/step-1'
+        : user.role === 'admin' || user.role === 'super_admin'
+          ? '/admin'
+          : '/home';
     res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    res.redirect(`${webAppUrl}/home`);
+    res.redirect(`${webAppUrl}${dest}`);
   } catch (error) {
     // Never emit a raw API error page to the browser. Send the user back to
     // the web app with an error flag so the UI can show a friendly message.

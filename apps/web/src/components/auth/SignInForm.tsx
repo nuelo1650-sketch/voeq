@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { signInWithPassword, signInWithGoogle } from '@/lib/auth-client';
+import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AuthDivider } from '@/components/auth/AuthDivider';
@@ -25,7 +26,7 @@ export function SignInForm() {
     try {
       const result = await signInWithPassword({ email, password });
       if (result.user) {
-        window.location.replace('/home');
+        window.location.replace(resolvePostAuthDestination(result.user));
       }
     } catch (err: unknown) {
       const apiError = err as { error?: string; message?: string };
