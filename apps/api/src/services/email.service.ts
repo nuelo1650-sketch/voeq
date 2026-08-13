@@ -19,11 +19,12 @@ const BRAND = {
 
 const emailShell = (inner: string): string => `
   <div style="background:${BRAND.cream}; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-    <div style="max-width: 480px; margin: 0 auto; background: #FFFFFF; border: 1px solid ${BRAND.border}; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(15,61,46,0.06);">
-      <div style="padding: 28px 28px 0; text-align: center;">
-        <img src="${BRAND.logoUrl}" alt="Voeq" width="132" style="height: auto; width: 132px;" />
+    <div style="max-width: 480px; margin: 0 auto; background: #FFFFFF; border: 1px solid ${BRAND.border}; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 32px rgba(15,61,46,0.10);">
+      <div style="background: linear-gradient(135deg, #0F3D2E 0%, #15503B 55%, #0F3D2E 100%); padding: 30px 28px 26px; text-align: center;">
+        <img src="${BRAND.logoUrl}" alt="Voeq" width="140" style="height: auto; width: 140px;" />
+        <div style="margin: 16px auto 0; height: 2px; width: 64px; background: ${BRAND.gold}; border-radius: 2px;"></div>
       </div>
-      <div style="padding: 24px 28px 28px;">
+      <div style="padding: 28px 28px 24px;">
         ${inner}
       </div>
       <div style="padding: 20px 28px; border-top: 1px solid ${BRAND.border}; text-align: center; background: #FCFBF8;">
@@ -43,7 +44,18 @@ const body = (text: string): string =>
   `<p style="color:${BRAND.ink}; font-size: 15px; line-height: 23px; margin: 0 0 20px;">${text}</p>`;
 
 const button = (href: string, label: string): string =>
-  `<a href="${href}" style="display:inline-block; background:${BRAND.forest}; color:${BRAND.cream}; text-decoration:none; padding:13px 26px; border-radius:999px; font-size:15px; font-weight:600;">${label}</a>`;
+  `<a href="${href}" style="display:inline-block; background:${BRAND.forest}; color:${BRAND.cream}; text-decoration:none; padding:13px 28px; border-radius:999px; font-size:15px; font-weight:600; box-shadow:0 6px 18px rgba(15,61,46,0.25);">${label}</a>`;
+
+const otpTiles = (otp: string): string => {
+  const tiles = otp
+    .split('')
+    .map(
+      (d) =>
+        `<span style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:48px; background:${BRAND.cream}; border:1px solid ${BRAND.gold}; border-radius:10px; color:${BRAND.forest}; font-size:24px; font-weight:700; font-family:'Geist Mono', ui-monospace, monospace;">${d}</span>`,
+    )
+    .join('<span style="width:8px;"></span>');
+  return `<div style="display:flex; justify-content:center; gap:0; margin:0 0 8px;">${tiles}</div>`;
+};
 
 const note = (text: string): string =>
   `<p style="color:${BRAND.muted}; font-size: 13px; line-height: 19px; margin: 16px 0 0;">${text}</p>`;
@@ -79,9 +91,7 @@ export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
       html: emailShell(`
         ${heading('Your verification code')}
         ${body('Enter this code to verify your email and finish setting up your Voeq account.')}
-        <div style="background:${BRAND.cream}; border:1px solid ${BRAND.border}; border-radius:12px; padding:22px; text-align:center; margin:0 0 8px;">
-          <span style="color:${BRAND.forest}; font-size:30px; font-weight:700; letter-spacing:6px; font-family:'Geist Mono', ui-monospace, monospace;">${otp}</span>
-        </div>
+        ${otpTiles(otp)}
         ${note('This code expires in 10 minutes. If you didn’t request this, you can safely ignore the email.')}
       `),
     });
