@@ -23,7 +23,9 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
       {/* Layered brand background: responds to theme so the toggle changes the
           whole page (not just the card). Forest depth in dark, cream/forest in light. */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-forest-900 via-forest-800 to-[#0a2b20] dark:from-forest-950 dark:via-forest-900 dark:to-[#061a13]" />
+        {/* Forest depth in dark mode; soft cream wash in light mode.
+            One layer, theme-gated, so the toggle changes the whole page. */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cream-100 via-cream-50 to-white dark:from-forest-950 dark:via-forest-900 dark:to-[#061a13]" />
         <div className="absolute -left-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-gold-500/10 blur-3xl dark:bg-gold-500/15" />
         <div className="absolute -right-24 top-1/4 h-[26rem] w-[26rem] rounded-full bg-forest-500/10 blur-3xl dark:bg-forest-400/10" />
         <div
