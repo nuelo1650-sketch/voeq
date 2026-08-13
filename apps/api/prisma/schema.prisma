@@ -333,6 +333,8 @@ model Vendor {
   publicPhone          String?
   institutionId        String
   campusId             String
+  city                 String?
+  state                String?
   status               VendorStatus @default(incomplete)
   agreementVersion     String?
   agreementAcceptedAt  DateTime?
@@ -400,23 +402,30 @@ model Category {
   name          String
   description   String?
   iconName      String?
+  imagePublicId String?
+  imageUrl      String?
   displayOrder  Int      @default(0)
   isActive      Boolean  @default(true)
   isOfficial    Boolean  @default(false)
   createdById   String?
+  parentCategoryId String?
+  parentCategory Category?  @relation("CategoryTree", fields: [parentCategoryId], references: [id])
+  childCategories Category[] @relation("CategoryTree")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   listings Listing[]
+  listingCategories ListingCategory[]
 
   @@index([isActive, displayOrder])
   @@index([slug])
+  @@index([parentCategoryId])
 }
 
 model Listing {
   id                 String        @id @default(cuid())
   vendorId           String
-  categoryId         String
+  categoryId         String?
   title              String
   slug               String
   description        String
@@ -436,7 +445,8 @@ model Listing {
   deletedAt          DateTime?
 
   vendor   Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
-  category Category       @relation(fields: [categoryId], references: [id])
+  category Category?      @relation(fields: [categoryId], references: [id])
+  categories ListingCategory[]
   photos   ListingPhoto[]
   reviews  Review[]
   events   EventLog[]
@@ -449,6 +459,21 @@ model Listing {
   @@index([createdAt])
   @@index([isFlashDeal, flashDealUntil])
   searchVector Unsupported("tsvector")?
+}
+
+model ListingCategory {
+  id         String   @id @default(cuid())
+  listingId  String
+  categoryId String
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  listing  Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, categoryId])
+  @@index([categoryId])
+  @@index([listingId])
 }
 
 model ListingPhoto {

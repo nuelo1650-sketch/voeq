@@ -132,7 +132,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
     }),
   ]);
 
-  const categoryIds = categoryFacets.map((f) => f.categoryId);
+  const categoryIds = categoryFacets.map((f) => f.categoryId).filter((id): id is string => id !== null);
   const categories = await prisma.category.findMany({
     where: { id: { in: categoryIds } },
     select: { id: true, name: true },
@@ -148,8 +148,8 @@ export async function listListings(params: ListListingsParams): Promise<ListList
       priceMin: Number(l.priceMin),
       priceMax: l.priceMax ? Number(l.priceMax) : null,
       photoUrl: l.photos[0]?.url ?? null,
-      categoryName: l.category.name,
-      categorySlug: l.category.slug,
+      categoryName: l.category?.name ?? 'Uncategorized',
+      categorySlug: l.category?.slug ?? '',
       vendorName: l.vendor.businessName,
       vendorSlug: l.vendor.businessSlug,
       campusName: l.vendor.campus.name,
@@ -161,7 +161,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
     totalPages: Math.ceil(total / limit),
     facets: {
       categories: categoryFacets
-        .map((f) => ({ name: categoryFacetMap.get(f.categoryId) ?? 'Unknown', count: f._count }))
+      .map((f) => ({ name: categoryFacetMap.get(f.categoryId ?? '') ?? 'Unknown', count: f._count }))
         .filter((c) => c.name !== 'Unknown')
         .sort((a, b) => b.count - a.count),
       priceRange: {
@@ -231,7 +231,7 @@ export async function getListingBySlug(slug: string): Promise<{
 
   const related = await prisma.listing.findMany({
     where: {
-      categoryId: listing.categoryId,
+      categoryId: listing.categoryId ?? undefined,
       id: { not: listing.id },
       status: 'active',
       deletedAt: null,
@@ -253,7 +253,7 @@ export async function getListingBySlug(slug: string): Promise<{
     priceMax: listing.priceMax ? Number(listing.priceMax) : null,
     isFlashDeal: listing.isFlashDeal,
     flashDealUntil: listing.flashDealUntil,
-    category: listing.category,
+    category: listing.category ?? { name: '', slug: '' },
     vendor: {
       id: listing.vendor.id,
       slug: listing.vendor.businessSlug,
@@ -421,7 +421,7 @@ export async function getVendorOwnListing(vendorId: string, listingId: string) {
     priceMax: listing.priceMax ? Number(listing.priceMax) : null,
     isFlashDeal: listing.isFlashDeal,
     flashDealUntil: listing.flashDealUntil,
-    category: listing.category,
+    category: listing.category ?? { name: '', slug: '' },
     vendor: {
       id: listing.vendor.id,
       slug: listing.vendor.businessSlug,
