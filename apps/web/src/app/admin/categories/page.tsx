@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import AdminLayout from '../layout';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 
 interface AdminCategory {
@@ -58,7 +57,7 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <AdminHeader title="Categories" />
 
       {error && (
@@ -136,6 +135,6 @@ export default function AdminCategoriesPage() {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 }

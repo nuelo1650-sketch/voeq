@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import * as Icons from '@/components/icons/categories';
+import { Icons, OtherIcon } from '@/components/icons/categories';
 
 interface CategoryPillProps {
   slug: string;
@@ -15,7 +15,7 @@ interface CategoryPillProps {
 }
 
 export function CategoryPill({ slug, name, iconName, active, size = 'md', onClick, href }: CategoryPillProps) {
-  const Icon = (Icons as Record<string, React.ComponentType<{ className?: string }>>)[iconName];
+  const Icon = Icons[iconName] ?? OtherIcon;
 
   const sizeClasses = size === 'sm' ? 'h-9 px-3 text-xs gap-1.5' : 'h-11 px-4 text-sm gap-2';
   const iconSize = size === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
