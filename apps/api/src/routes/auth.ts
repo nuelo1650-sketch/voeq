@@ -24,7 +24,9 @@ import { rateLimit } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
 import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions } from '../services/session.service';
-import { env } from '../config/env';
+import { env, webAppUrl } from '../config/env';
+import { logger } from '../config/logger';
+import { CURRENT_AGREEMENT_VERSION } from '../services/auth.service';
 import { prisma } from '../lib/db';
 import { issueSession } from '../services/session.service';
 
@@ -293,6 +295,8 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           status: 'active',
           currentContext: 'buyer',
           emailVerified: new Date(),
+          agreementVersion: CURRENT_AGREEMENT_VERSION,
+          agreementAcceptedAt: new Date(),
         },
       });
     } else {
@@ -303,6 +307,13 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           image: user.image ?? profile.picture ?? null,
           emailVerified: user.emailVerified ?? new Date(),
           lastSignInAt: new Date(),
+          // Record TOS acceptance on first Google sign-in if not already done.
+          ...(user.agreementAcceptedAt
+            ? {}
+            : {
+                agreementVersion: CURRENT_AGREEMENT_VERSION,
+                agreementAcceptedAt: new Date(),
+              }),
         },
       });
     }
@@ -313,10 +324,12 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       role: user.role,
     });
     res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
-    res.redirect(`${webUrl}/home`);
+    res.redirect(`${webAppUrl}/home`);
   } catch (error) {
-    next(error);
+    // Never emit a raw API error page to the browser. Send the user back to
+    // the web app with an error flag so the UI can show a friendly message.
+    logger.error({ error }, 'Google OAuth callback failed');
+    res.redirect(`${webAppUrl}/signin?error=oauth`);
   }
 });
 

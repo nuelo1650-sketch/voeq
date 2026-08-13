@@ -4,6 +4,9 @@ export const SignupWithPasswordSchema = z.object({
   email: z.string().email().toLowerCase(),
   name: z.string().min(1).max(100),
   password: z.string().min(8).max(128),
+  // Consent: the user must explicitly accept the TOS/privacy policy at signup.
+  agreedToTerms: z.literal(true),
+  agreementVersion: z.string().min(1),
 });
 
 export const VerifyOtpSchema = z.object({

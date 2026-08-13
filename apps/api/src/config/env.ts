@@ -22,3 +22,8 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+// Canonical web-app origin. Never falls back to the API origin (WEB_URL),
+// otherwise OAuth/magic-link redirects would land on the API server (e.g.
+// voeq.onrender.com/home) which has no such route -> 404.
+export const webAppUrl = env.WEB_APP_URL ?? 'https://voeq.ng';

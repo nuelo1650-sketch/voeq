@@ -6,10 +6,15 @@ import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail, sendWelcomeEm
 import { issueSession } from './session.service';
 import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
-import { env } from '../config/env';
+import { env, webAppUrl } from '../config/env';
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 const MAGIC_LINK_EXPIRY_MS = 15 * 60 * 1000;
+
+// Version stamped on agreements accepted at signup. The web fetches the live
+// TOS version and passes it through; this is the fallback used by the Google
+// OAuth path (which has no explicit checkbox in this phase).
+export const CURRENT_AGREEMENT_VERSION = '1.0';
 
 interface RequestContext {
   ipAddress?: string;
@@ -17,7 +22,13 @@ interface RequestContext {
 }
 
 export async function signUpWithPassword(
-  input: { email: string; name: string; password: string },
+  input: {
+    email: string;
+    name: string;
+    password: string;
+    agreedToTerms?: boolean;
+    agreementVersion?: string;
+  },
   ctx: RequestContext,
 ): Promise<{ otpSent: true }> {
   const strength = validatePasswordStrength(input.password);
@@ -33,6 +44,16 @@ export async function signUpWithPassword(
 
   const passwordHash = await hashPassword(input.password);
 
+  const agreementData =
+    input.agreedToTerms && input.agreementVersion
+      ? {
+          agreementVersion: input.agreementVersion,
+          agreementAcceptedAt: new Date(),
+          agreementIp: ctx.ipAddress,
+          agreementUserAgent: ctx.userAgent,
+        }
+      : {};
+
   if (existing) {
     await prisma.user.update({
       where: { id: existing.id },
@@ -40,6 +61,7 @@ export async function signUpWithPassword(
         name: input.name,
         passwordHash,
         hasPassword: true,
+        ...agreementData,
       },
     });
   } else {
@@ -52,6 +74,7 @@ export async function signUpWithPassword(
         role: 'buyer',
         status: 'active',
         currentContext: 'buyer',
+        ...agreementData,
       },
     });
   }
@@ -186,7 +209,7 @@ export async function requestMagicLink(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
+  const webUrl = webAppUrl;
   const url = `${webUrl}/auth-callback?token=${encodeURIComponent(token)}`;
   await sendMagicLinkEmail({ to: input.email, url });
   return { linkSent: true };
@@ -240,7 +263,7 @@ export async function requestPasswordReset(
     userAgent: ctx.userAgent,
   });
 
-  const webUrl = env.WEB_APP_URL ?? env.WEB_URL;
+  const webUrl = webAppUrl;
   const url = `${webUrl}/reset-password?token=${encodeURIComponent(token)}`;
   await sendPasswordResetEmail({ to: input.email, url });
   return { linkSent: true };

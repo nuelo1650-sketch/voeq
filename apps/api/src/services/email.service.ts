@@ -1,25 +1,52 @@
 import { Resend } from 'resend';
-import { env } from '../config/env';
+import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
 
 const resend = new Resend(env.RESEND_API_KEY);
 
-const LOGO_URL = 'https://voeq.ng/brand/voeq-wordmark.svg';
+// Brand constants — single source of truth so every email looks like Voeq.
+const BRAND = {
+  forest: '#0F3D2E',
+  cream: '#F7F5F0',
+  gold: '#C9A24B',
+  ink: '#1A1A1A',
+  muted: '#6B6B6B',
+  border: '#E5E1D8',
+  logoUrl: 'https://voeq.ng/Name.png',
+  siteUrl: webAppUrl,
+  year: new Date().getFullYear(),
+};
 
-const emailHeader = `
-  <div style="text-align: center; margin: 0 0 24px;">
-    <img src="${LOGO_URL}" alt="Voeq" width="140" style="height: auto; width: 140px;" />
+const emailShell = (inner: string): string => `
+  <div style="background:${BRAND.cream}; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    <div style="max-width: 480px; margin: 0 auto; background: #FFFFFF; border: 1px solid ${BRAND.border}; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(15,61,46,0.06);">
+      <div style="padding: 28px 28px 0; text-align: center;">
+        <img src="${BRAND.logoUrl}" alt="Voeq" width="132" style="height: auto; width: 132px;" />
+      </div>
+      <div style="padding: 24px 28px 28px;">
+        ${inner}
+      </div>
+      <div style="padding: 20px 28px; border-top: 1px solid ${BRAND.border}; text-align: center; background: #FCFBF8;">
+        <p style="color:${BRAND.muted}; font-size: 12px; line-height: 18px; margin: 0;">
+          Voeq — the campus marketplace for Nigeria.<br/>
+          © ${BRAND.year} Voeq. All rights reserved.
+        </p>
+      </div>
+    </div>
   </div>
 `;
 
-const emailFooter = `
-  <div style="border-top: 1px solid #E5E1D8; margin-top: 32px; padding-top: 20px; text-align: center;">
-    <p style="color: #999; font-size: 12px; line-height: 18px; margin: 0;">
-      Voeq — Find. Connect. Grow.<br/>
-      © ${new Date().getFullYear()} Voeq. All rights reserved.
-    </p>
-  </div>
-`;
+const heading = (text: string): string =>
+  `<h1 style="color:${BRAND.forest}; font-size: 22px; line-height: 28px; margin: 0 0 16px; font-weight: 700;">${text}</h1>`;
+
+const body = (text: string): string =>
+  `<p style="color:${BRAND.ink}; font-size: 15px; line-height: 23px; margin: 0 0 20px;">${text}</p>`;
+
+const button = (href: string, label: string): string =>
+  `<a href="${href}" style="display:inline-block; background:${BRAND.forest}; color:${BRAND.cream}; text-decoration:none; padding:13px 26px; border-radius:999px; font-size:15px; font-weight:600;">${label}</a>`;
+
+const note = (text: string): string =>
+  `<p style="color:${BRAND.muted}; font-size: 13px; line-height: 19px; margin: 16px 0 0;">${text}</p>`;
 
 interface OtpEmailParams {
   to: string;
@@ -38,8 +65,6 @@ interface PasswordResetEmailParams {
 
 export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
   if (!env.RESEND_API_KEY) {
-    // Dev fallback: no email provider configured. Surface the OTP in logs so
-    // local/onboarding flows still work without a transactional email service.
     logger.warn({ to, otp }, 'RESEND_API_KEY not set — OTP not emailed (dev fallback)');
     if (process.env.NODE_ENV !== 'production') {
       console.log(`[DEV OTP] ${to} -> ${otp}`);
@@ -51,25 +76,14 @@ export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
       from: env.RESEND_FROM_EMAIL,
       to,
       subject: 'Your Voeq verification code',
-      html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-          ${emailHeader}
-          <h1 style="color: #0F3D2E; font-size: 24px; margin: 0 0 24px;">Your verification code</h1>
-          <p style="color: #1A1A1A; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
-            Enter this code to verify your email and continue setting up your Voeq account:
-          </p>
-          <div style="background: #F7F5F0; border-radius: 12px; padding: 24px; text-align: center; margin: 0 0 24px;">
-            <span style="color: #0F3D2E; font-size: 32px; font-weight: 600; letter-spacing: 8px; font-family: 'Geist Mono', monospace;">${otp}</span>
-          </div>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0 0 8px;">
-            This code expires in 10 minutes.
-          </p>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0;">
-            If you didn't request this, you can safely ignore this email.
-          </p>
-          ${emailFooter}
+      html: emailShell(`
+        ${heading('Your verification code')}
+        ${body('Enter this code to verify your email and finish setting up your Voeq account.')}
+        <div style="background:${BRAND.cream}; border:1px solid ${BRAND.border}; border-radius:12px; padding:22px; text-align:center; margin:0 0 8px;">
+          <span style="color:${BRAND.forest}; font-size:30px; font-weight:700; letter-spacing:6px; font-family:'Geist Mono', ui-monospace, monospace;">${otp}</span>
         </div>
-      `,
+        ${note('This code expires in 10 minutes. If you didn’t request this, you can safely ignore the email.')}
+      `),
     });
   } catch (error) {
     logger.error({ error, to }, 'Failed to send OTP email');
@@ -83,28 +97,14 @@ export async function sendMagicLinkEmail({ to, url }: MagicLinkEmailParams): Pro
       from: env.RESEND_FROM_EMAIL,
       to,
       subject: 'Sign in to Voeq',
-      html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-          ${emailHeader}
-          <h1 style="color: #0F3D2E; font-size: 24px; margin: 0 0 24px;">Sign in to Voeq</h1>
-          <p style="color: #1A1A1A; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
-            Click the button below to sign in. This link expires in 15 minutes and can only be used once.
-          </p>
-          <a href="${url}" style="display: inline-block; background: #0F3D2E; color: #F7F5F0; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 16px; font-weight: 500; margin: 0 0 24px;">
-            Sign in to Voeq
-          </a>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0 0 8px;">
-            Or copy and paste this link:
-          </p>
-          <p style="color: #666; font-size: 12px; line-height: 18px; word-break: break-all; margin: 0 0 24px;">
-            ${url}
-          </p>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0;">
-            If you didn't request this, you can safely ignore this email.
-          </p>
-          ${emailFooter}
-        </div>
-      `,
+      html: emailShell(`
+        ${heading('Sign in to Voeq')}
+        ${body('Tap the button below to sign in. The link expires in 15 minutes and can only be used once.')}
+        <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Sign in to Voeq')}</div>
+        ${note('Or paste this link into your browser:')}
+        <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
+        ${note('If you didn’t request this, you can safely ignore the email.')}
+      `),
     });
   } catch (error) {
     logger.error({ error, to }, 'Failed to send magic link email');
@@ -118,23 +118,13 @@ export async function sendWelcomeEmail({ to, name }: { to: string; name?: string
       from: env.RESEND_FROM_EMAIL,
       to,
       subject: 'Welcome to Voeq',
-      html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-          ${emailHeader}
-          <h1 style="color: #0F3D2E; font-size: 24px; margin: 0 0 24px;">Welcome to Voeq${name ? `, ${name}` : ''}!</h1>
-          <p style="color: #1A1A1A; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
-            Your account is verified. Voeq is the campus marketplace where Nigerian students find trusted vendors
-            for food, fashion, tech repairs, laundry, and more — and chat with them directly on WhatsApp.
-          </p>
-          <a href="${env.WEB_APP_URL ?? env.NEXT_PUBLIC_SITE_URL ?? 'https://voeq.ng'}/browse" style="display: inline-block; background: #0F3D2E; color: #F7F5F0; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 16px; font-weight: 500; margin: 0 0 24px;">
-            Browse vendors
-          </a>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0;">
-            Need a hand? Reply to this email or reach us at <a href="mailto:support@voeq.ng" style="color: #0F3D2E;">support@voeq.ng</a>.
-          </p>
-          ${emailFooter}
-        </div>
-      `,
+      html: emailShell(`
+        ${heading(`Welcome to Voeq${name ? `, ${name}` : ''}`)}
+        ${body('Your account is verified. Voeq is the campus marketplace where Nigerian students and locals find trusted vendors for food, fashion, tech repairs, laundry, and more — and chat with them directly on WhatsApp.')}
+        <div style="text-align:center; margin:4px 0 12px;">${button(`${BRAND.siteUrl}/browse`, 'Browse vendors')}</div>
+        ${note('Need a hand? Reply to this email or reach us at ')}
+        <p style="color:${BRAND.muted}; font-size:13px; line-height:19px; margin:0;"><a href="mailto:support@voeq.ng" style="color:${BRAND.forest};">support@voeq.ng</a></p>
+      `),
     });
   } catch (error) {
     logger.error({ error, to }, 'Failed to send welcome email');
@@ -147,28 +137,14 @@ export async function sendPasswordResetEmail({ to, url }: PasswordResetEmailPara
       from: env.RESEND_FROM_EMAIL,
       to,
       subject: 'Reset your Voeq password',
-      html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-          ${emailHeader}
-          <h1 style="color: #0F3D2E; font-size: 24px; margin: 0 0 24px;">Reset your password</h1>
-          <p style="color: #1A1A1A; font-size: 16px; line-height: 24px; margin: 0 0 24px;">
-            Click the button below to set a new password for your Voeq account. This link expires in 15 minutes and can only be used once.
-          </p>
-          <a href="${url}" style="display: inline-block; background: #0F3D2E; color: #F7F5F0; text-decoration: none; padding: 14px 28px; border-radius: 999px; font-size: 16px; font-weight: 500; margin: 0 0 24px;">
-            Reset password
-          </a>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0 0 8px;">
-            Or copy and paste this link:
-          </p>
-          <p style="color: #666; font-size: 12px; line-height: 18px; word-break: break-all; margin: 0 0 24px;">
-            ${url}
-          </p>
-          <p style="color: #666; font-size: 14px; line-height: 20px; margin: 0;">
-            If you didn't request this, you can safely ignore this email — your password won't change.
-          </p>
-          ${emailFooter}
-        </div>
-      `,
+      html: emailShell(`
+        ${heading('Reset your password')}
+        ${body('Tap the button below to choose a new password. The link expires in 15 minutes and can only be used once.')}
+        <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Reset password')}</div>
+        ${note('Or paste this link into your browser:')}
+        <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
+        ${note('If you didn’t request this, your password stays the same — you can ignore this email.')}
+      `),
     });
   } catch (error) {
     logger.error({ error, to }, 'Failed to send password reset email');

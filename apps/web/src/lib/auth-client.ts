@@ -15,6 +15,8 @@ export async function signUpWithPassword(input: {
   email: string;
   name: string;
   password: string;
+  agreedToTerms: true;
+  agreementVersion: string;
 }): Promise<{ otpSent: true }> {
   return api<{ otpSent: true }>('/api/auth/signup/password', {
     method: 'POST',
