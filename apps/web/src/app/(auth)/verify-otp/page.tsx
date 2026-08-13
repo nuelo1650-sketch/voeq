@@ -183,25 +183,28 @@ export default function VerifyOtpPage() {
         />
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="flex justify-center gap-2 sm:gap-3" onPaste={handlePaste}>
-            {digits.map((digit, i) => (
-              <input
-                key={i}
-                ref={(el) => {
-                  inputsRef.current[i] = el;
-                }}
-                type="text"
-                inputMode="numeric"
-                autoComplete={i === 0 ? 'one-time-code' : 'off'}
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleChange(i, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                onFocus={(e) => e.target.select()}
-                className="h-12 w-11 rounded-xl border border-cream-300 bg-cream-50 text-center text-xl font-semibold text-forest-900 outline-none transition focus:border-forest-700 focus:ring-2 focus:ring-forest-700/20 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100 sm:h-14 sm:w-12 sm:text-2xl"
-                aria-label={`Digit ${i + 1}`}
-              />
-            ))}
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-0 h-px -translate-y-1/2 bg-gradient-to-r from-gold-500/0 via-gold-500/40 to-gold-500/0" aria-hidden="true" />
+            <div className="relative flex justify-center gap-2 sm:gap-3" onPaste={handlePaste}>
+              {digits.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={(el) => {
+                    inputsRef.current[i] = el;
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete={i === 0 ? 'one-time-code' : 'off'}
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleChange(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                  onFocus={(e) => e.target.select()}
+                  className="relative z-10 h-14 w-12 rounded-xl border border-cream-300 bg-cream-50 text-center text-2xl font-semibold text-forest-900 outline-none transition focus:border-gold-500 focus:ring-2 focus:ring-gold-500/40 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100 sm:h-16 sm:w-14 sm:text-3xl"
+                  aria-label={`Digit ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
 
           {error && (

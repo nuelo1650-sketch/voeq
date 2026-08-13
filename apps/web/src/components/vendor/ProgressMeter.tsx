@@ -24,8 +24,8 @@ export function ProgressMeter({ progress, className, showLabel = true }: Progres
       <div className="h-2 w-full overflow-hidden rounded-full bg-cream-200 dark:bg-forest-700">
         <div
           className={cn(
-            'h-full rounded-full transition-all duration-500',
-            clampedProgress === 100 ? 'bg-gold-500' : 'bg-forest-700',
+            'h-full rounded-full bg-gradient-to-r from-forest-700 via-gold-500 to-gold-400 transition-all duration-700 ease-out',
+            clampedProgress === 100 && 'from-gold-500',
           )}
           style={{ width: `${clampedProgress}%` }}
         />

@@ -5,7 +5,7 @@ import { ProfileForm } from '@/components/marketplace/ProfileForm';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 import { Button } from '@/components/ui/Button';
 import { serverSignOut as signOut } from '@/lib/auth-server';
-import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { VendorPageHeader, VendorSection, PageHeader } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = {
@@ -28,13 +28,13 @@ export default async function ProfilePage() {
 
   if (!user) {
     return (
-      <VendorPageHeader title="Profile" subtitle="Manage your Voeq account and preferences." />
+      <PageHeader title="Profile" subtitle="Manage your Voeq account and preferences." />
     );
   }
 
   return (
     <>
-      <VendorPageHeader title="Profile" subtitle="Manage your Voeq account and preferences." />
+      <PageHeader title="Profile" subtitle="Manage your Voeq account and preferences." />
       <VendorSection>
         <Container size="md">
           <AnimatedSection>
