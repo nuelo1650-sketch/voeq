@@ -1,4 +1,4 @@
-import { PrismaClient, InstitutionSource, InstitutionStatus } from '@prisma/client';
+import { PrismaClient, InstitutionSource, InstitutionStatus } from '../generated/prisma-client';
 
 const prisma = new PrismaClient();
 
@@ -360,27 +360,86 @@ const CATEGORIES: Array<{
   iconName: string;
   displayOrder: number;
   description: string;
+  parentSlug?: string;
 }> = [
-  { slug: 'food', name: 'Food', iconName: 'utensils', displayOrder: 1, description: 'Meals, snacks, drinks, and food vendors on campus.' },
-  { slug: 'fashion', name: 'Fashion', iconName: 'shirt', displayOrder: 2, description: 'Clothing, shoes, bags, and fashion accessories.' },
-  { slug: 'tech', name: 'Tech', iconName: 'cpu', displayOrder: 3, description: 'Phones, laptops, gadgets, repairs, and tech services.' },
-  { slug: 'laundry', name: 'Laundry', iconName: 'shirt', displayOrder: 4, description: 'Wash, dry clean, iron, and laundry pickup.' },
-  { slug: 'beauty', name: 'Beauty', iconName: 'sparkles', displayOrder: 5, description: 'Makeup, hair, skincare, and beauty services.' },
-  { slug: 'repairs', name: 'Repairs', iconName: 'wrench', displayOrder: 6, description: 'Phone, laptop, electronics, and general repairs.' },
-  { slug: 'printing', name: 'Printing', iconName: 'printer', displayOrder: 7, description: 'Printing, photocopying, binding, and stationery.' },
-  { slug: 'photography', name: 'Photography', iconName: 'camera', displayOrder: 8, description: 'Photography, videography, and editing services.' },
-  { slug: 'academic-services', name: 'Academic Services', iconName: 'book', displayOrder: 9, description: 'Tutoring, assignment help, and academic support.' },
-  { slug: 'logistics', name: 'Logistics', iconName: 'truck', displayOrder: 10, description: 'Delivery, errand running, and logistics services.' },
-  { slug: 'furniture', name: 'Furniture', iconName: 'sofa', displayOrder: 11, description: 'Furniture, fittings, and home goods.' },
-  { slug: 'health-wellness', name: 'Health & Wellness', iconName: 'heart', displayOrder: 12, description: 'Pharmacy, fitness, and wellness services.' },
-  { slug: 'catering', name: 'Catering', iconName: 'utensils', displayOrder: 13, description: 'Event catering, bulk food, and party services.' },
-  { slug: 'cleaning', name: 'Cleaning', iconName: 'spray-can', displayOrder: 14, description: 'Home, office, and hostel cleaning services.' },
-  { slug: 'electrical', name: 'Electrical', iconName: 'zap', displayOrder: 15, description: 'Electrical work, wiring, and appliance services.' },
-  { slug: 'plumbing', name: 'Plumbing', iconName: 'droplet', displayOrder: 16, description: 'Plumbing, pipework, and water services.' },
-  { slug: 'tailoring', name: 'Tailoring', iconName: 'scissors', displayOrder: 17, description: 'Tailoring, fashion design, and alterations.' },
-  { slug: 'supermarket', name: 'Supermarket', iconName: 'shopping-cart', displayOrder: 18, description: 'Groceries, provisions, and supermarket items.' },
-  { slug: 'pharmacy', name: 'Pharmacy', iconName: 'pill', displayOrder: 19, description: 'Pharmacy, medication, and health products.' },
-  { slug: 'other', name: 'Other', iconName: 'grid', displayOrder: 20, description: 'Anything else that does not fit a specific category.' },
+  // ── Top-level parent categories ──
+  { slug: 'food', name: 'Food & Drinks', iconName: 'utensils', displayOrder: 1, description: 'Meals, snacks, drinks and food vendors on campus.' },
+  { slug: 'fashion', name: 'Fashion & Style', iconName: 'shirt', displayOrder: 2, description: 'Clothing, shoes, bags, wigs and fashion services.' },
+  { slug: 'tech', name: 'Tech & Gadgets', iconName: 'cpu', displayOrder: 3, description: 'Phones, laptops, gadgets, repairs and tech services.' },
+  { slug: 'beauty', name: 'Beauty & Grooming', iconName: 'sparkles', displayOrder: 4, description: 'Makeup, hair, skincare, barbing and nails.' },
+  { slug: 'printing', name: 'Printing & Stationery', iconName: 'printer', displayOrder: 5, description: 'Printing, photocopy, binding and thesis services.' },
+  { slug: 'photography', name: 'Photography & Media', iconName: 'camera', displayOrder: 6, description: 'Photography, videography and content creation.' },
+  { slug: 'academic-services', name: 'Academic & Tutoring', iconName: 'book', displayOrder: 7, description: 'Tutoring, assignment help and academic support.' },
+  { slug: 'laundry', name: 'Laundry & Cleaning', iconName: 'shirt', displayOrder: 8, description: 'Wash, dry clean, iron and cleaning services.' },
+  { slug: 'repairs', name: 'Repairs & Utilities', iconName: 'wrench', displayOrder: 9, description: 'Phone, laptop, electrical and general repairs.' },
+  { slug: 'logistics', name: 'Logistics & Errands', iconName: 'truck', displayOrder: 10, description: 'Delivery, rides and errand running.' },
+  { slug: 'health-wellness', name: 'Health & Wellness', iconName: 'heart', displayOrder: 11, description: 'Pharmacy, fitness and wellness services.' },
+  { slug: 'furniture', name: 'Home & Living', iconName: 'sofa', displayOrder: 12, description: 'Furniture, fittings and home goods.' },
+  { slug: 'supermarket', name: 'Supermarket', iconName: 'shopping-cart', displayOrder: 13, description: 'Groceries, provisions and supermarket items.' },
+  { slug: 'other', name: 'Other', iconName: 'grid', displayOrder: 14, description: 'Anything else that does not fit a specific category.' },
+
+  // ── Food & Drinks children ──
+  { slug: 'meals', name: 'Meals & Swallow', iconName: 'utensils', displayOrder: 1, description: 'Rice, swallow, small chops and cooked meals.', parentSlug: 'food' },
+  { slug: 'snacks', name: 'Snacks', iconName: 'cookie', displayOrder: 2, description: 'Puff-puff, meat-pie, chin-chin and small snacks.', parentSlug: 'food' },
+  { slug: 'drinks', name: 'Drinks & Smoothies', iconName: 'cup-soda', displayOrder: 3, description: 'Smoothies, zobo, juices and drinks.', parentSlug: 'food' },
+  { slug: 'small-chops', name: 'Small Chops & Pastries', iconName: 'croissant', displayOrder: 4, description: 'Puff-puff, samosa, spring rolls and pastries.', parentSlug: 'food' },
+  { slug: 'catering', name: 'Event Catering', iconName: 'utensils', displayOrder: 5, description: 'Bulk food, party and event catering.', parentSlug: 'food' },
+
+  // ── Fashion & Style children ──
+  { slug: 'clothing', name: 'Clothing', iconName: 'shirt', displayOrder: 1, description: 'Native, casual and corporate wear.', parentSlug: 'fashion' },
+  { slug: 'shoes', name: 'Shoes & Footwear', iconName: 'footprints', displayOrder: 2, description: 'Sneakers, heels, slippers and boots.', parentSlug: 'fashion' },
+  { slug: 'bags', name: 'Bags & Purses', iconName: 'bag', displayOrder: 3, description: 'Handbags, backpacks and purses.', parentSlug: 'fashion' },
+  { slug: 'accessories', name: 'Accessories', iconName: 'gem', displayOrder: 4, description: 'Watches, belts, chains and fashion accessories.', parentSlug: 'fashion' },
+  { slug: 'hair-wigs', name: 'Hair & Wigs', iconName: 'scissors', displayOrder: 5, description: 'Wigs, braids, weaves and styling.', parentSlug: 'fashion' },
+  { slug: 'tailoring', name: 'Tailoring & Sewing', iconName: 'scissors', displayOrder: 6, description: 'Tailoring, fashion design and alterations.', parentSlug: 'fashion' },
+
+  // ── Tech & Gadgets children ──
+  { slug: 'phones', name: 'Phones & Accessories', iconName: 'smartphone', displayOrder: 1, description: 'Phones, chargers, cases and accessories.', parentSlug: 'tech' },
+  { slug: 'laptops', name: 'Laptops & Computers', iconName: 'laptop', displayOrder: 2, description: 'Laptops, desktops and computer accessories.', parentSlug: 'tech' },
+  { slug: 'gadgets', name: 'Gadgets & Electronics', iconName: 'cpu', displayOrder: 3, description: 'Earphones, speakers, power banks and gadgets.', parentSlug: 'tech' },
+  { slug: 'tech-repairs', name: 'Tech Repairs', iconName: 'wrench', displayOrder: 4, description: 'Phone, laptop and gadget repairs.', parentSlug: 'tech' },
+
+  // ── Beauty & Grooming children ──
+  { slug: 'makeup', name: 'Makeup & Gele', iconName: 'sparkles', displayOrder: 1, description: 'Makeup, gele and bridal styling.', parentSlug: 'beauty' },
+  { slug: 'skincare', name: 'Skincare', iconName: 'droplet', displayOrder: 2, description: 'Facials, scrubs and skincare services.', parentSlug: 'beauty' },
+  { slug: 'barbing', name: 'Barbing & Male Grooming', iconName: 'scissors', displayOrder: 3, description: 'Haircuts, shaves and male grooming.', parentSlug: 'beauty' },
+  { slug: 'nails', name: 'Nails & Pedicure', iconName: 'hand', displayOrder: 4, description: 'Manicure, pedicure and nail art.', parentSlug: 'beauty' },
+
+  // ── Printing & Stationery children ──
+  { slug: 'photocopy', name: 'Photocopy & Print', iconName: 'printer', displayOrder: 1, description: 'Printing and photocopying.', parentSlug: 'printing' },
+  { slug: 'binding', name: 'Binding & Lamination', iconName: 'book', displayOrder: 2, description: 'Spiral, hardcover binding and lamination.', parentSlug: 'printing' },
+  { slug: 'projects', name: 'Projects & Thesis', iconName: 'file-text', displayOrder: 3, description: 'Project typing, printing and binding.', parentSlug: 'printing' },
+
+  // ── Photography & Media children ──
+  { slug: 'videography', name: 'Videography & Editing', iconName: 'video', displayOrder: 1, description: 'Event videos and editing.', parentSlug: 'photography' },
+  { slug: 'content-flyers', name: 'Content & Flyers', iconName: 'megaphone', displayOrder: 2, description: 'Flyer design and social content.', parentSlug: 'photography' },
+
+  // ── Academic & Tutoring children ──
+  { slug: 'tutoring', name: 'Tutoring', iconName: 'graduation-cap', displayOrder: 1, description: 'One-on-one and group tutoring.', parentSlug: 'academic-services' },
+  { slug: 'assignment-help', name: 'Assignment & Project Help', iconName: 'pencil', displayOrder: 2, description: 'Assignment and project assistance.', parentSlug: 'academic-services' },
+  { slug: 'typing', name: 'Typing & Formatting', iconName: 'type', displayOrder: 3, description: 'Typing, formatting and data entry.', parentSlug: 'academic-services' },
+
+  // ── Laundry & Cleaning children ──
+  { slug: 'cleaning', name: 'Home & Hostel Cleaning', iconName: 'spray-can', displayOrder: 1, description: 'Home, office and hostel cleaning.', parentSlug: 'laundry' },
+
+  // ── Repairs & Utilities children ──
+  { slug: 'electronics-repair', name: 'Electronics Repair', iconName: 'wrench', displayOrder: 1, description: 'TV, gadget and appliance repairs.', parentSlug: 'repairs' },
+  { slug: 'electrical', name: 'Electrical & Wiring', iconName: 'zap', displayOrder: 2, description: 'Electrical work and wiring.', parentSlug: 'repairs' },
+  { slug: 'plumbing', name: 'Plumbing', iconName: 'droplet', displayOrder: 3, description: 'Plumbing and water services.', parentSlug: 'repairs' },
+
+  // ── Logistics & Errands children ──
+  { slug: 'delivery', name: 'Delivery & Rides', iconName: 'truck', displayOrder: 1, description: 'Parcel delivery and campus rides.', parentSlug: 'logistics' },
+  { slug: 'errands', name: 'Errand Running', iconName: 'running', displayOrder: 2, description: 'Shopping and errand running.', parentSlug: 'logistics' },
+
+  // ── Health & Wellness children ──
+  { slug: 'pharmacy', name: 'Pharmacy & Meds', iconName: 'pill', displayOrder: 1, description: 'Pharmacy, medication and health products.', parentSlug: 'health-wellness' },
+  { slug: 'fitness', name: 'Fitness & Gym', iconName: 'dumbbell', displayOrder: 2, description: 'Gym, training and fitness services.', parentSlug: 'health-wellness' },
+
+  // ── Home & Living children ──
+  { slug: 'home-fittings', name: 'Furniture & Fittings', iconName: 'sofa', displayOrder: 1, description: 'Furniture, fittings and home goods.', parentSlug: 'furniture' },
+
+  // ── Supermarket children ──
+  { slug: 'groceries', name: 'Groceries & Provisions', iconName: 'shopping-cart', displayOrder: 1, description: 'Groceries and provisions.', parentSlug: 'supermarket' },
 ];
 
 async function main(): Promise<void> {
@@ -437,14 +496,33 @@ async function main(): Promise<void> {
   console.warn(`  ✓ Seeded ${campusCount} campuses`);
 
   console.warn('🏷️  Seeding categories...');
+  const categorySlugToId = new Map<string, string>();
   for (const category of CATEGORIES) {
-    await prisma.category.upsert({
-      where: { slug: category.slug },
-      update: {},
-      create: category,
+    const slug = category.slug;
+    const existing = await prisma.category.findUnique({ where: { slug } });
+    const parentId = category.parentSlug ? categorySlugToId.get(category.parentSlug) : undefined;
+    if (existing) {
+      categorySlugToId.set(slug, existing.id);
+      // Keep parent link in sync if it changed.
+      if (parentId && existing.parentCategoryId !== parentId) {
+        await prisma.category.update({ where: { id: existing.id }, data: { parentCategoryId: parentId } });
+      }
+      continue;
+    }
+    const created = await prisma.category.create({
+      data: {
+        slug,
+        name: category.name,
+        description: category.description,
+        iconName: category.iconName,
+        displayOrder: category.displayOrder,
+        isOfficial: true,
+        parentCategoryId: parentId,
+      },
     });
+    categorySlugToId.set(slug, created.id);
   }
-  console.warn(`  ✓ Seeded ${CATEGORIES.length} categories`);
+  console.warn(`  ✓ Seeded ${CATEGORIES.length} categories (${categorySlugToId.size} resolved)`);
 
   console.warn('👤 Seeding super-admin...');
   const adminEmail = 'owidavid2002@gmail.com';

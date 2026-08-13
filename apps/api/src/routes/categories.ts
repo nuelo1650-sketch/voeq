@@ -13,17 +13,19 @@ const createCategorySchema = z.object({
 
 categoriesRouter.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
-    const categories = await prisma.category.findMany({
+    const flat = await prisma.category.findMany({
       where: { isActive: true },
-      orderBy: { displayOrder: 'asc' },
+      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
       select: {
         id: true,
         slug: true,
         name: true,
         description: true,
         iconName: true,
+        imageUrl: true,
         displayOrder: true,
         isOfficial: true,
+        parentCategoryId: true,
         _count: {
           select: {
             listings: {
@@ -34,18 +36,44 @@ categoriesRouter.get('/', async (_req: Request, res: Response, next: NextFunctio
       },
     });
 
-    res.status(200).json({
-      categories: categories.map((c) => ({
-        id: c.id,
-        slug: c.slug,
-        name: c.name,
-        description: c.description,
-        iconName: c.iconName,
-        displayOrder: c.displayOrder,
-        isOfficial: c.isOfficial,
-        listingCount: c._count.listings,
-      })),
+    const childrenOf = new Map<string | null, typeof flat>();
+    for (const c of flat) {
+      const key = c.parentCategoryId ?? null;
+      if (!childrenOf.has(key)) childrenOf.set(key, []);
+      childrenOf.get(key)!.push(c);
+    }
+
+    type CategoryNode = {
+      id: string;
+      slug: string;
+      name: string;
+      description: string | null;
+      iconName: string | null;
+      imageUrl: string | null;
+      displayOrder: number;
+      isOfficial: boolean;
+      parentId: string | null;
+      listingCount: number;
+      children: CategoryNode[];
+    };
+
+    const toNode = (c: (typeof flat)[number]): CategoryNode => ({
+      id: c.id,
+      slug: c.slug,
+      name: c.name,
+      description: c.description,
+      iconName: c.iconName,
+      imageUrl: c.imageUrl,
+      displayOrder: c.displayOrder,
+      isOfficial: c.isOfficial,
+      parentId: c.parentCategoryId,
+      listingCount: c._count.listings,
+      children: (childrenOf.get(c.id) ?? []).map(toNode),
     });
+
+    const topLevel = (childrenOf.get(null) ?? []).map(toNode);
+
+    res.status(200).json({ categories: topLevel });
   } catch (error) {
     next(error);
   }
