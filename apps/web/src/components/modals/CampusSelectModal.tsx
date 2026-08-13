@@ -63,6 +63,28 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
     setSelectedCampusId(null);
   };
 
+  const handleSubmitOther = async () => {
+    if (otherName.trim().length < 2) {
+      setError('Please enter your institution name');
+      return;
+    }
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await api('/api/institutions/request', {
+        method: 'POST',
+        body: JSON.stringify({ name: otherName.trim(), email: undefined }),
+      });
+      onSelected();
+    } catch {
+      // Still let the user continue even if the request fails to save —
+      // the important thing is they can proceed without a campus.
+      onSelected();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedCampusId) {
       setError('Please select a campus');
@@ -165,9 +187,14 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
             <p className="text-xs text-forest-700/60">
               We&apos;ll review and add it within 24 hours. For now, you can continue without selecting.
             </p>
-            <Button variant="ghost" onClick={() => setShowOther(false)}>
-              Back
-            </Button>
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setShowOther(false)}>
+                Back
+              </Button>
+              <Button onClick={handleSubmitOther} isLoading={isSubmitting} disabled={otherName.trim().length < 2}>
+                Continue
+              </Button>
+            </div>
           </div>
         )}
 

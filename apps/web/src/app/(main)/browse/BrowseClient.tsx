@@ -149,6 +149,12 @@ export function BrowseClient({
         </AnimatedSection>
       ) : (
         <AnimatedSection>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">
+              {currentCategory ? categories.find((c) => c.slug === currentCategory)?.name ?? 'Listings' : 'All listings'}
+            </h2>
+            <span className="text-sm text-forest-700/60 dark:text-cream-100/60">{total} results</span>
+          </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
             {listings.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />

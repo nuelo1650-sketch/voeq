@@ -292,6 +292,8 @@ model Institution {
   approvedAt DateTime?
   approvedBy String?
 
+  requestedByEmail String?
+
   campuses Campus[]
   vendors  Vendor[]
 

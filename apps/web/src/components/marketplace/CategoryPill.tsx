@@ -24,8 +24,8 @@ export function CategoryPill({ slug, name, iconName, active, size = 'md', onClic
     'inline-flex items-center justify-center rounded-full font-medium transition whitespace-nowrap',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2',
     active
-      ? 'bg-forest-700 text-cream-100'
-      : 'bg-cream-100 text-forest-700 border border-cream-300 hover:border-forest-700/30 dark:bg-forest-800 dark:text-cream-100 dark:border-forest-700',
+      ? 'bg-gold-500 text-forest-900 border border-gold-500 shadow-sm shadow-gold-500/30'
+      : 'bg-cream-100 text-forest-700 border border-cream-300 hover:border-forest-700/30 dark:bg-forest-800 dark:text-cream-100 dark:border-forest-700 hover:dark:border-gold-500/50',
     sizeClasses,
   );
 

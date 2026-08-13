@@ -56,3 +56,42 @@ institutionsRouter.get('/search', async (req: Request, res: Response, next: Next
     next(error);
   }
 });
+
+// Allow users to request an institution that isn't listed yet. Stored as a
+// pending institution (status: 'pending') so admins can approve/review it.
+const requestSchema = z.object({
+  name: z.string().min(2).max(120),
+  email: z.string().email().optional(),
+});
+
+institutionsRouter.post('/request', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email } = requestSchema.parse(req.body ?? {});
+    const slug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60);
+    const existing = await prisma.institution.findFirst({
+      where: { slug },
+      select: { id: true, status: true },
+    });
+    if (existing) {
+      // Already exists (approved or pending) — just acknowledge.
+      return res.status(200).json({ requested: true, status: existing.status });
+    }
+    await prisma.institution.create({
+      data: {
+        name: name.trim(),
+        slug,
+        type: 'university',
+        status: 'pending',
+        requestedByEmail: email,
+      },
+    });
+    res.status(201).json({ requested: true, status: 'pending' });
+  } catch (error) {
+    next(error);
+  }
+});
