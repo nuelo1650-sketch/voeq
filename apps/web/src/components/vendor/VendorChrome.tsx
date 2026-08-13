@@ -58,6 +58,7 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-cream-50 dark:bg-forest-900">
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur dark:border-forest-700 dark:bg-forest-900/80">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" aria-hidden="true" />
         <Container size="xl">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
@@ -71,9 +72,8 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
                   <path d="M4 7h16M4 12h16M4 17h16" />
                 </svg>
               </button>
-              <Link href="/vendor" className="flex items-center gap-2">
+              <Link href="/vendor" className="flex items-center gap-2" aria-label="Voeq">
                 <Logo size="lg" />
-                <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
               </Link>
             </div>
             <div className="flex items-center gap-2">
@@ -110,21 +110,24 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition',
+                      'group relative flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition',
                       active
-                        ? 'bg-forest-700 text-cream-100 shadow-sm'
+                        ? 'bg-forest-700 text-cream-100 shadow-sm dark:bg-forest-700'
                         : 'text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800',
                     )}
                   >
-                    {Icon ? <Icon className={cn('h-4 w-4', active ? 'text-cream-100' : 'text-forest-500 dark:text-cream-100/70')} /> : null}
+                    {active && (
+                      <span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-gold-400" aria-hidden="true" />
+                    )}
+                    {Icon ? <Icon className={cn('h-4 w-4', active ? 'text-gold-300' : 'text-forest-500 dark:text-cream-100/70')} /> : null}
                     <span className="flex-1">{item.label}</span>
-                    {active ? <ChevronRightIcon className="h-4 w-4 text-cream-100/80" /> : null}
+                    {active ? <ChevronRightIcon className="h-4 w-4 text-gold-300/80" /> : null}
                   </Link>
                 );
               })}
             </nav>
-            <div className="mt-4 hidden rounded-2xl border border-cream-200 bg-cream-50/60 p-4 dark:border-forest-700 dark:bg-forest-900/60 lg:block">
-              <p className="text-xs font-semibold uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Need help?</p>
+            <div className="mt-4 hidden rounded-2xl border border-gold-500/30 bg-gold-500/[0.06] p-4 dark:border-gold-400/30 dark:bg-gold-400/[0.06] lg:block">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gold-700/80 dark:text-gold-400/80">Need help?</p>
               <p className="mt-2 text-sm text-forest-700/80 dark:text-cream-100/80">Use the quick actions on your dashboard to update your profile or create a listing.</p>
             </div>
           </aside>

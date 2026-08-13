@@ -49,3 +49,24 @@ export function ThreadProgress({
     </div>
   );
 }
+
+/** Card with a signature gold thread along its top edge — the Voeq seam. */
+export function ThreadCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800',
+        className,
+      )}
+    >
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-gold-500/70 to-transparent" />
+      {children}
+    </div>
+  );
+}

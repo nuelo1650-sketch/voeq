@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { ListingForm } from '@/components/vendor/ListingForm';
+import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
 
 export const metadata: Metadata = {
   title: 'Edit listing',
@@ -15,11 +16,11 @@ interface Props {
 export default async function EditListingPage({ params }: Props) {
   const { id } = await params;
   return (
-    <div className="space-y-6">
-      <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">
-        Edit listing
-      </h1>
-      <ListingForm mode="edit" listingId={id} />
-    </div>
+    <>
+      <VendorPageHeader title="Edit listing" subtitle="Update the details students see on this listing." />
+      <div className="mx-auto max-w-3xl">
+        <ListingForm mode="edit" listingId={id} />
+      </div>
+    </>
   );
 }

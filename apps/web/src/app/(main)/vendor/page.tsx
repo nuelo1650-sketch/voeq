@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container';
 import { ArrowRightIcon, ChevronRightIcon, CheckIcon, StarIcon, ShareIcon } from '@/components/icons';
 import type { Listing } from '@/lib/vendor-client';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { ThreadCard } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = {
@@ -39,7 +40,7 @@ function TrendBadge({ trend, label }: { trend: 'up' | 'down' | 'flat'; label: st
 
 function StatCard({ title, value, sub, trend, trendLabel, icon }: { title: string; value: string | number; sub?: string; trend?: 'up' | 'down' | 'flat'; trendLabel?: string; icon?: React.ReactNode }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:shadow-sm dark:border-forest-700 dark:bg-forest-800">
+    <ThreadCard className="p-5 transition hover:shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">{title}</p>
@@ -53,7 +54,7 @@ function StatCard({ title, value, sub, trend, trendLabel, icon }: { title: strin
           <TrendBadge trend={trend ?? 'flat'} label={trendLabel} />
         </div>
       ) : null}
-    </div>
+    </ThreadCard>
   );
 }
 
@@ -182,7 +183,7 @@ export default async function VendorDashboardPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-5 dark:border-forest-700 dark:bg-forest-800 lg:col-span-2">
+                <ThreadCard className="p-5 lg:col-span-2">
                   <div className="flex items-center justify-between">
                     <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Your listings</h2>
                     <Button variant="outline" size="sm" rightIcon={<ArrowRightIcon className="h-4 w-4" />}>
@@ -229,7 +230,7 @@ export default async function VendorDashboardPage() {
                       </div>
                     </div>
                   )}
-                </div>
+                </ThreadCard>
 
                 <div className="space-y-3">
                   <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Quick actions</h2>

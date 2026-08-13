@@ -19,6 +19,7 @@ import { ReportButton } from '@/components/reports/ReportButton';
 import { DisputeButton } from '@/components/reports/DisputeButton';
 import { ReviewListWrapper } from '@/components/reviews/ReviewListWrapper';
 import { VendorSection } from '@/components/vendor/VendorPageShell';
+import { ThreadSeam, ThreadLine } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import Image from 'next/image';
 
@@ -81,16 +82,20 @@ export default async function VendorPage({ params }: VendorPageProps) {
           <AnimatedSection>
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
               {vendor.profilePhotoUrl ? (
-                <Image
-                  src={vendor.profilePhotoUrl}
-                  alt={vendor.businessName}
-                  width={96}
-                  height={96}
-                  className="h-24 w-24 rounded-full object-cover"
-                  priority
-                />
+                <div className="rounded-full bg-gradient-to-br from-gold-400 to-gold-600 p-0.5">
+                  <Image
+                    src={vendor.profilePhotoUrl}
+                    alt={vendor.businessName}
+                    width={96}
+                    height={96}
+                    className="h-24 w-24 rounded-full object-cover"
+                    priority
+                  />
+                </div>
               ) : (
-                <Avatar size="xl" alt={vendor.businessName} />
+                <div className="rounded-full bg-gradient-to-br from-gold-400 to-gold-600 p-0.5">
+                  <Avatar size="xl" alt={vendor.businessName} className="border-0" />
+                </div>
               )}
 
               <div className="flex-1">
@@ -104,7 +109,8 @@ export default async function VendorPage({ params }: VendorPageProps) {
                     </Badge>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">
+                <ThreadSeam className="mt-3" />
+                <p className="mt-3 text-sm text-forest-700/70 dark:text-cream-100/70">
                   {vendor.institution.name} · {vendor.campus.name}
                 </p>
                 {vendor.ratingCount > 0 && (
@@ -148,7 +154,9 @@ export default async function VendorPage({ params }: VendorPageProps) {
       </VendorSection>
 
       {vendor.listings.length > 0 && (
-        <VendorSection title={`Listings (${vendor.listings.length})`} className="bg-cream-50 dark:bg-forest-800">
+        <>
+          <ThreadLine className="max-w-5xl" />
+          <VendorSection title={`Listings (${vendor.listings.length})`} className="bg-cream-50 dark:bg-forest-800">
           <Container size="lg" className="py-6">
             <AnimatedSection>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
@@ -159,6 +167,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
             </AnimatedSection>
           </Container>
         </VendorSection>
+        </>
       )}
 
       <VendorSection title="Reviews" className="border-y border-cream-200 dark:border-forest-700">
