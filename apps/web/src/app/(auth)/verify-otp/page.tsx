@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyOtp, resendOtp } from '@/lib/auth-client';
 import { Button } from '@/components/ui/Button';
 import { AuthShell } from '@/components/auth/AuthShell';
@@ -12,6 +12,7 @@ const RESEND_SECONDS = 30;
 export default function VerifyOtpPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [intent, setIntent] = useState<'buyer' | 'vendor'>('buyer');
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -20,12 +21,14 @@ export default function VerifyOtpPage() {
   const [cooldown, setCooldown] = useState(0);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Read email from the URL (?email=...) on mount.
+  // Read email + intent from the URL (?email=...&intent=...) on mount.
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const e = params.get('email');
       if (e) setEmail(e);
+      const i = params.get('intent');
+      if (i === 'vendor' || i === 'buyer') setIntent(i);
     }
   }, []);
 
@@ -97,7 +100,7 @@ export default function VerifyOtpPage() {
       if (result.user) {
         setVerified(true);
         setTimeout(() => {
-          window.location.href = '/home';
+          window.location.href = intent === 'vendor' ? '/vendor/onboarding/step-1' : '/home';
         }, 1200);
       }
     } catch (err: unknown) {
