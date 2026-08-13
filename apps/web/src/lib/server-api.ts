@@ -1,6 +1,6 @@
 // Server-only. Do not import from any 'use client' component.
 
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { ApiException, type ApiError } from './api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -31,13 +31,23 @@ export async function serverApi<T = unknown>(
     .map((c) => `${c.name}=${c.value}`)
     .join('; ');
 
-  // Server-to-API call. The browser's session cookie lives on the web domain
-  // (voeq.ng), but the API runs on a separate domain (Render), so a direct
-  // server fetch can't read it. Route through the same-origin internal proxy
-  // (/api-internal) which forwards the incoming cookie to the API. This keeps
-  // getMe() working on server components without cross-domain cookie hacks.
-  const host = (await headers()).get('host');
-  const base = host ? `${new URL('/api-internal', `http://${host}`).origin}` : '';
+  // Server-to-API call. Forward the browser's session cookie directly to the
+  // API (server-to-server). Domain scoping of the cookie is irrelevant here
+  // because we pass the raw Cookie header explicitly — the API validates the
+  // JWT regardless of which domain set it.
+  //
+  // IMPORTANT: call the API by its own absolute URL (NEXT_PUBLIC_API_URL), do
+  // NOT self-fetch through /api-internal (https://voeq.ng/...). A server
+  // function fetching its own hostname is unreliable on Vercel (the `host`
+  // header can be empty, producing an invalid relative fetch that throws, which
+  // made every server-authed page bounce to /signin even though the API itself
+  // worked). Going direct to the API is the robust path.
+  const base =
+    API_URL ||
+    (() => {
+      const host = process.env.NEXT_PUBLIC_VERCEL_URL || process.env.HOST;
+      return host ? `${new URL('/api-internal', `http://${host}`).origin}` : '';
+    })();
 
   try {
     const res = await fetch(`${base}${path}`, {
