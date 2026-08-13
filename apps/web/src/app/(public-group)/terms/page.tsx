@@ -12,19 +12,19 @@ export const metadata: Metadata = buildMetadata({
 const SECTIONS: { heading: string; body: string }[] = [
   {
     heading: '1. About Voeq',
-    body: 'Voeq ("Voeq," "we," "us") is an independent, peer-to-peer vendor discovery directory. Voeq operates strictly as a digital classifieds and discovery board. Voeq does not process payments, does not hold funds in escrow, does not handle deliveries, and is not a party, broker, or agent to any transaction, sale, service, or agreement between a buyer and a vendor. All financial interactions, price negotiations, and exchanges happen entirely outside the platform (e.g. via WhatsApp or in person), at users\' own risk.',
+    body: 'Voeq ("Voeq," "we," "us") is an independent, peer-to-peer vendor discovery directory. Voeq operates strictly as a digital classifieds and discovery board. Voeq does not process payments, does not hold funds in escrow, does not handle deliveries, and is not a party, broker, or agent to any transaction, sale, service, or agreement between a Shopper and a vendor. All financial interactions, price negotiations, and exchanges happen entirely outside the platform (e.g. via WhatsApp or in person), at users\' own risk.',
   },
   {
     heading: '2. Eligibility',
-    body: 'You must be at least 13 years old to create an account. Vendors select their status at registration (Campus Vendor or Off-Campus Vendor). Buyers may register using Google sign-in or email. A valid email address is required for all accounts and must be confirmed by one-time password (OTP) before the account is active.',
+    body: 'You must be at least 13 years old to create an account. Vendors select their status at registration (Campus Vendor or Off-Campus Vendor). Shoppers may register using Google sign-in or email. A valid email address is required for all accounts and must be confirmed by one-time password (OTP) before the account is active.',
   },
   {
     heading: '3. Listings & Categories',
     body: 'Each vendor may create one or more listings, each assigned to a single category. A vendor\'s storefront may contain listings across multiple categories. A vendor profile is not visible or searchable until it has at least one published listing and the vendor has accepted these Terms. Voeq may edit or remove a listing\'s category, title, or images if inaccurate, misleading, or in violation of these Terms.',
   },
   {
-    heading: '4. Buyer Conduct',
-    body: 'Buyers may browse freely without an account. An account with a verified email is required to use the Connect feature. Buyers agree to use Connect in good faith, not for harassment, spam, or fraud.',
+    heading: '4. Shopper Conduct',
+    body: 'Shoppers may browse freely without an account. An account with a verified email is required to use the Connect feature. Shoppers agree to use Connect in good faith, not for harassment, spam, or fraud.',
   },
   {
     heading: '5. Prohibited Conduct & Content',

@@ -16,7 +16,7 @@ const SECTIONS: { heading: string; body: string }[] = [
   },
   {
     heading: '2. What We Collect',
-    body: 'Email address (all users, OTP-verified); name and business details (vendors); listing details — publicly displayed (vendors); reviews and reports (buyers/vendors); Google account basics, if used to sign up. Voeq does not collect or require National Identification Numbers (NIN), academic matriculation numbers, or passwords stored outside of Google/email\'s own authentication systems.',
+    body: 'Email address (all users, OTP-verified); name and business details (vendors); listing details — publicly displayed (vendors); reviews and reports (Shoppers/vendors); Google account basics, if used to sign up. Voeq does not collect or require National Identification Numbers (NIN), academic matriculation numbers, or passwords stored outside of Google/email\'s own authentication systems.',
   },
   {
     heading: '3. How We Use It',

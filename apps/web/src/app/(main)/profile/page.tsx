@@ -79,7 +79,7 @@ export default async function ProfilePage() {
                     <a href="/following">Following</a>
                   </Button>
                   <Button variant="outline" asChild>
-                    <a href="/buyer-dashboard">Buyer Dashboard</a>
+                    <a href="/buyer-dashboard">Shopper Dashboard</a>
                   </Button>
                   <Button variant="outline" asChild>
                     <a href="/settings">Settings</a>

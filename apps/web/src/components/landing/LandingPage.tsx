@@ -77,7 +77,7 @@ const FAQS = [
   { question: 'Are vendors verified?', answer: 'Yes. Vendors go through a verification process including campus presence confirmation and profile review.' },
   { question: 'Which campuses are supported?', answer: 'Voeq launches university by university across Nigeria. Check the homepage for the latest campuses we have gone live at, and if your institution is not listed yet, you can submit it and we will prioritise adding it.' },
   { question: 'Can I become a vendor?', answer: 'Absolutely. Sign up as a vendor, complete your business profile, add your first listing, and start receiving messages from students immediately.' },
-  { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2, Voeq will integrate secure payments with buyer protection.' },
+  { question: 'How does payment work?', answer: 'In Phase 1 (current), all transactions happen directly between you and the vendor via WhatsApp. In Phase 2, Voeq will integrate secure payments with Shopper protection.' },
 ];
 
 export default async function LandingPage() {
@@ -199,11 +199,11 @@ export default async function LandingPage() {
           </Container>
         </Section>
 
-        {/* DUAL AUDIENCE SPLIT — buyers and vendors, equal weight */}
+        {/* DUAL AUDIENCE SPLIT — Shoppers and vendors, equal weight */}
         <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
           <Container size="lg">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {/* Buyers */}
+              {/* Shoppers */}
               <div className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest-700 text-cream-100">

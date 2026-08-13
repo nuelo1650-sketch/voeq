@@ -13,7 +13,7 @@ import { DraftBanner } from './DraftBanner';
 const schema = z.object({
   businessName: z.string().min(3, 'At least 3 characters').max(100),
   ownerName: z.string().min(1, 'Required').max(100),
-  description: z.string().min(100, 'At least 100 characters (helps buyers understand your business)').max(500),
+  description: z.string().min(100, 'At least 100 characters (helps Shoppers understand your business)').max(500),
 });
 
 type FormData = z.infer<typeof schema>;

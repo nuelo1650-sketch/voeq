@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function MessagesPage() {
   return (
     <>
-      <VendorPageHeader title="Messages" subtitle="In-app messaging with vendors and buyers." />
+      <VendorPageHeader title="Messages" subtitle="In-app messaging with vendors and Shoppers." />
       <VendorSection>
         <Container size="md">
           <AnimatedSection>

@@ -41,10 +41,10 @@ Vendors may not list:
 - Admin may verify your presence at any time.
 
 5. Conduct
-- You must communicate professionally with buyers.
+- You must communicate professionally with Shoppers.
 - You must honor all advertised offerings, prices, and availability.
-- You may not harass, spam, or defraud buyers.
-- You may not solicit buyers to transact outside the platform once Phase 2 payments launch.
+- You may not harass, spam, or defraud Shoppers.
+- You may not solicit Shoppers to transact outside the platform once Phase 2 payments launch.
 
 6. Fees & Promotion
 - Basic listings on Voeq are free.
@@ -59,13 +59,13 @@ Vendors may not list:
 - Badges and trust score are displayed on your storefront and listing cards.
 
 8. Reporting & Suspension
-- Buyers may report your profile or listings for: not on campus, scam or fraud, inappropriate content, impersonation, or harassment.
+- Shoppers may report your profile or listings for: not on campus, scam or fraud, inappropriate content, impersonation, or harassment.
 - 3 or more reports in 7 days will flag your account for admin review.
 - Voeq may warn, restrict, suspend, or permanently remove your account for confirmed violations.
 - You may appeal any suspension by contacting vendors@voeq.ng.
 
 9. Reviews
-- Buyers may leave reviews on your storefront.
+- Shoppers may leave reviews on your storefront.
 - You may publicly respond to each review once.
 - You may not bribe, coerce, or fake reviews.
 - Voeq may remove reviews that violate platform standards.

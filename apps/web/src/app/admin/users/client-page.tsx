@@ -68,7 +68,7 @@ export default function AdminUsersPage() {
               className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900"
             >
               <option value="">All roles</option>
-              <option value="buyer">Buyer</option>
+              <option value="buyer">Shopper</option>
               <option value="vendor">Vendor</option>
               <option value="admin">Admin</option>
               <option value="super_admin">Super admin</option>
