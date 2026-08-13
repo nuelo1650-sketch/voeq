@@ -12,9 +12,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" aria-label="Voeq home" className="flex items-center gap-2">
+            <Link href="/" aria-label="Voeq home" className="flex items-center">
               <Logo size="lg" />
-              <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <a href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100 dark:hover:text-white">Browse</a>
@@ -39,7 +38,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div>
               <Link href="/" aria-label="Voeq home">
-                <Logo size="lg" />
+                <Logo size="lg" tone="light" />
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">The campus marketplace for Nigerian students.</p>
               <p className="mt-2 text-sm text-cream-100/70">Built by students, for students.</p>

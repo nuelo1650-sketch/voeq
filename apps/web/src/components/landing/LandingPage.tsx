@@ -29,6 +29,7 @@ import {
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { AnnouncementBar } from '@/components/landing/AnnouncementBar';
 import { ListingShowcase } from '@/components/landing/ListingShowcase';
+import { Logo } from '@/components/brand/Logo';
 import { buildMetadata, buildOrganizationJsonLd, buildWebSiteJsonLd, buildFaqJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
@@ -104,14 +105,7 @@ export default async function LandingPage() {
         <Container size="lg">
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/Name.png"
-                alt="Voeq"
-                className="h-9 w-auto sm:h-11"
-                width={120}
-                height={44}
-              />
+              <Logo size="lg" />
             </Link>
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
               <Link href="/browse" className="text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-cream-100">Browse</Link>
@@ -238,6 +232,25 @@ export default async function LandingPage() {
                 </Button>
               </div>
             </div>
+          </Container>
+        </Section>
+
+        {/* WHAT IS VOEQ / WHO ARE OUR VENDORS — explains the model before the showcase */}
+        <Section spacing="md" className="bg-cream-50 dark:bg-forest-800">
+          <Container size="lg">
+            <AnimatedSection>
+              <div className="mx-auto max-w-3xl text-center">
+                <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">What is Voeq?</h2>
+                <p className="mt-4 text-lg text-forest-700/80 dark:text-cream-100/80">
+                  Voeq is a campus marketplace that connects Nigerian students with the vendors already serving their school —
+                  the food stall by the gate, the tailor down the road, the phone repairer, the laundromat, the photographer at events.
+                </p>
+                <p className="mt-3 text-lg text-forest-700/80 dark:text-cream-100/80">
+                  These are real, often student-run businesses. Voeq verifies that each vendor is actually present on their campus,
+                  then puts their storefront in front of the students who need them — with no platform fees and direct WhatsApp contact.
+                </p>
+              </div>
+            </AnimatedSection>
           </Container>
         </Section>
 
@@ -485,8 +498,7 @@ export default async function LandingPage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" aria-label="Voeq home" className="flex items-center gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/Name.png" alt="Voeq" className="h-8 w-auto" width={110} height={40} />
+                <Logo size="lg" tone="light" />
               </Link>
               <p className="mt-4 text-sm text-cream-100/70">Find. Connect. Grow.</p>
               <p className="mt-2 text-sm text-cream-100/50">The campus marketplace for Nigerian students.</p>

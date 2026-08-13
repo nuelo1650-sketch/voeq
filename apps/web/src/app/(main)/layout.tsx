@@ -73,9 +73,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur dark:border-forest-700 dark:bg-forest-900/80">
         <Container size="lg">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/home" aria-label="Voeq home" className="flex items-center gap-2">
+            <Link href="/home" aria-label="Voeq home" className="flex items-center">
               <Logo size="lg" />
-              <span className="text-lg font-semibold tracking-tight text-forest-900 dark:text-cream-100">Voeq</span>
             </Link>
             <nav className="flex items-center gap-2">
               <Link

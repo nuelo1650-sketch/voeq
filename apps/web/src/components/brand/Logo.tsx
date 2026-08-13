@@ -9,37 +9,35 @@ interface LogoProps {
   className?: string;
 }
 
+// Bigger, responsive logo. Desktop caps at h-16 (64px); mobile steps down.
 const heightClass: Record<LogoSize, string> = {
-  sm: 'h-9',
-  md: 'h-11',
-  lg: 'h-14',
-  xl: 'h-16',
+  sm: 'h-10 sm:h-12',
+  md: 'h-11 sm:h-14',
+  lg: 'h-12 sm:h-16',
+  xl: 'h-14 sm:h-20',
 };
 
-// Always visible: forest in light mode, cream in dark mode.
-const toneClass: Record<LogoTone, string> = {
-  auto: 'text-forest-900 dark:text-cream-100',
-  light: 'text-cream-100',
-  dark: 'text-forest-900',
-};
-
+/**
+ * Renders the Voeq wordmark (Name.png). Dark logo on light backgrounds,
+ * white logo on dark ones — so it stays visible in navbars and dark footers.
+ */
 export function Logo({ size = 'md', tone = 'auto', className }: LogoProps) {
+  const cls = cn('w-auto object-contain', heightClass[size], className);
+
+  if (tone === 'light') {
+    // Rendered on a dark background → use white logo.
+    return <img src="/Name-white.png" alt="Voeq" width={240} height={160} className={cls} />;
+  }
+  if (tone === 'dark') {
+    // Rendered on a light background → use dark logo.
+    return <img src="/Name.png" alt="Voeq" width={240} height={160} className={cls} />;
+  }
+
+  // auto: show dark on light mode, white on dark mode.
   return (
-    <svg
-      viewBox="0 0 415 175"
-      role="img"
-      aria-label="Voeq"
-      fill="currentColor"
-      className={cn('w-auto object-contain', heightClass[size], toneClass[tone], className)}
-    >
-      <g fill="none" stroke="currentColor" strokeWidth={20} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M25 35 L65 130 L105 35" />
-        <circle cx="155" cy="82" r="40" />
-        <path d="M287.1 67 A40 40 0 1 1 287.1 97" />
-        <line x1="214" y1="82" x2="287" y2="82" />
-        <circle cx="345" cy="82" r="40" />
-      </g>
-      <path d="M335 118 L355 118 L395 168 L375 148 Z" fill="currentColor" stroke="none" />
-    </svg>
+    <>
+      <img src="/Name.png" alt="Voeq" width={240} height={160} className={cn(cls, 'dark:hidden')} />
+      <img src="/Name-white.png" alt="Voeq" width={240} height={160} className={cn(cls, 'hidden dark:block')} />
+    </>
   );
 }

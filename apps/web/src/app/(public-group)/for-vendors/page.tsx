@@ -6,6 +6,7 @@ import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { CheckIcon } from '@/components/icons';
+import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
 export const metadata: Metadata = buildMetadata({
   title: 'For Vendors',
@@ -27,6 +28,34 @@ export default function ForVendorsPage() {
                 <Link href="/signup">List your business</Link>
               </Button>
             </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* WHO CAN SELL / HOW IT WORKS FOR VENDORS */}
+      <Section spacing="md">
+        <Container size="lg">
+          <AnimatedSection>
+            <div className="mx-auto max-w-3xl text-center">
+              <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Who can sell on Voeq?</h2>
+              <p className="mt-4 text-lg text-forest-700/80 dark:text-cream-100/80">
+                Any vendor serving a campus — food sellers, tailors, tech repairers, laundromats, photographers, printers,
+                and more. You keep your business; Voeq just puts your storefront in front of the students who need it.
+              </p>
+            </div>
+          </AnimatedSection>
+          <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-3">
+            {[
+              { step: '1', title: 'Create your storefront', description: 'Sign up free and add your business details in minutes.' },
+              { step: '2', title: 'Add your listings', description: 'Post what you sell with photos and prices — no commission, ever.' },
+              { step: '3', title: 'Get discovered', description: 'Students on your campus find you and message you directly on WhatsApp.' },
+            ].map((item) => (
+              <div key={item.step} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 text-center dark:border-forest-700 dark:bg-forest-900">
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-forest-700 text-lg font-semibold text-cream-100">{item.step}</div>
+                <h3 className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
+                <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
+              </div>
+            ))}
           </div>
         </Container>
       </Section>
