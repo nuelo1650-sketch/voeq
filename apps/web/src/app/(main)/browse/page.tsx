@@ -21,28 +21,22 @@ interface BrowsePageProps {
     minRating?: string;
     verifiedOnly?: string;
     sort?: string;
-    view?: string;
-    trending?: string;
   }>;
 }
 
-async function fetchBrowseData(params: {
-  category?: string;
-  search?: string;
-  campusId?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  minRating?: string;
-  verifiedOnly?: string;
-  sort?: string;
-  view?: string;
-  trending?: string;
-}, campusId?: string) {
-  const trending = params.trending === 'true';
-  const querySort: ListListingsParams['sort'] = trending
-    ? 'popular'
-    : ((params.sort ?? 'newest') as ListListingsParams['sort']);
-
+async function fetchBrowseData(
+  params: {
+    category?: string;
+    search?: string;
+    campusId?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    minRating?: string;
+    verifiedOnly?: string;
+    sort?: string;
+  },
+  campusId?: string,
+) {
   const query: ListListingsParams = {
     campusId,
     category: params.category,
@@ -51,7 +45,7 @@ async function fetchBrowseData(params: {
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
     minRating: params.minRating ? Number(params.minRating) : undefined,
     verifiedOnly: params.verifiedOnly === 'true',
-    sort: querySort,
+    sort: (params.sort ?? 'newest') as ListListingsParams['sort'],
     limit: 20,
     page: 1,
   };
@@ -67,7 +61,6 @@ async function fetchBrowseData(params: {
     getCategories().catch(() => ({ categories: [] })),
   ]);
 
-  const view = (params.view as 'grid' | 'list' | 'map') ?? 'grid';
   const activeFilters = [
     params.search,
     params.category,
@@ -78,7 +71,7 @@ async function fetchBrowseData(params: {
     params.verifiedOnly,
   ].filter(Boolean).length;
 
-  return { result, categories: categoriesResult.categories, view, trending, activeFilters };
+  return { result, categories: categoriesResult.categories, activeFilters };
 }
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
@@ -86,7 +79,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const me = await getMe().catch(() => null);
   const campusId = params.campusId ?? me?.user?.defaultCampusId ?? undefined;
 
-  const { result, categories, view, trending, activeFilters } = await fetchBrowseData(params, campusId);
+  const { result, categories, activeFilters } = await fetchBrowseData(params, campusId);
 
   const header = !campusId ? (
     <>
@@ -113,8 +106,6 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         listings={result.listings}
         categories={categories}
         total={result.total}
-        view={view}
-        trending={trending}
         activeFilters={activeFilters}
       />
     </>
