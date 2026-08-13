@@ -50,10 +50,13 @@ async function handler(req: NextRequest, ctx: { params: Promise<{ path?: string[
     }
   });
   if (setCookie) {
-    const rewritten = setCookie
-      .split(',')
-      .map((c) => c.replace(/;\s*domain=[^;]+/i, '').trim())
-      .join(', ');
+    // Strip any Domain attribute so the browser scopes the session cookie to
+    // voeq.ng (the proxy response host), since the API cannot set a voeq.ng
+    // cookie directly from its own domain. Do NOT split on commas: the Expires
+    // attribute value (e.g. "Thu, 13 Aug 2026 22:31:51 GMT") contains commas,
+    // and naively splitting on ',' mangles the cookie so browsers reject it
+    // (empty cookieStore -> no session -> every auth page bounces to /signin).
+    const rewritten = setCookie.replace(/;\s*domain=[^;]+/i, '');
     responseHeaders.set('Set-Cookie', rewritten);
   }
 
