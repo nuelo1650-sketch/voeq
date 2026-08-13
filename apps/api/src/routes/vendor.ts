@@ -303,7 +303,7 @@ vendorRouter.post(
 
       const input = CreateListingSchema.parse(req.body);
       const listing = await createListing(vendor.id, {
-        categoryId: input.categoryId,
+        categoryIds: input.categoryIds,
         title: input.title,
         description: input.description,
         priceMin: input.priceMin,

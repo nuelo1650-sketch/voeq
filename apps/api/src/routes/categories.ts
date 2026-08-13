@@ -9,6 +9,8 @@ const createCategorySchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().max(200).optional(),
   iconName: z.string().max(50).optional(),
+  imagePublicId: z.string().max(200).optional(),
+  imageUrl: z.string().url().optional(),
 });
 
 categoriesRouter.get('/', async (_req: Request, res: Response, next: NextFunction) => {
@@ -107,6 +109,8 @@ categoriesRouter.post(
           name: input.name,
           description: input.description,
           iconName: input.iconName ?? undefined,
+          imagePublicId: input.imagePublicId ?? undefined,
+          imageUrl: input.imageUrl ?? undefined,
           displayOrder,
           isOfficial: false,
           createdById: req.userId ?? null,

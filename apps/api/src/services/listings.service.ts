@@ -279,7 +279,7 @@ export async function getListingBySlug(slug: string): Promise<{
 export async function createListing(
   vendorId: string,
   input: {
-    categoryId: string;
+    categoryIds: string[];
     title: string;
     description: string;
     priceMin: number;
@@ -300,7 +300,7 @@ export async function createListing(
   return prisma.listing.create({
     data: {
       vendorId,
-      categoryId: input.categoryId,
+      categoryId: input.categoryIds[0],
       slug,
       title: input.title,
       description: input.description,
@@ -316,6 +316,12 @@ export async function createListing(
           height: p.height,
           altText: p.altText,
           displayOrder: p.displayOrder,
+        })),
+      },
+      categories: {
+        create: input.categoryIds.map((categoryId, index) => ({
+          categoryId,
+          isPrimary: index === 0,
         })),
       },
     },

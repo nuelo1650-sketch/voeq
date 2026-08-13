@@ -24,7 +24,7 @@ export const CreateVendorSchema = z.object({
 export const UpdateVendorSchema = CreateVendorSchema.partial();
 
 export const CreateListingSchema = z.object({
-  categoryId: z.string().min(1),
+  categoryIds: z.array(z.string().min(1)).min(1, 'Pick at least one category').max(5, 'Up to 5 categories'),
   title: z.string().min(3).max(60),
   description: z.string().min(50).max(500),
   priceMin: z.coerce.number().nonnegative(),
