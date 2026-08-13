@@ -50,14 +50,23 @@ async function handler(req: NextRequest, ctx: { params: Promise<{ path?: string[
     }
   });
   if (setCookie) {
-    // Strip any Domain attribute so the browser scopes the session cookie to
-    // voeq.ng (the proxy response host), since the API cannot set a voeq.ng
-    // cookie directly from its own domain. Do NOT split on commas: the Expires
-    // attribute value (e.g. "Thu, 13 Aug 2026 22:31:51 GMT") contains commas,
-    // and naively splitting on ',' mangles the cookie so browsers reject it
-    // (empty cookieStore -> no session -> every auth page bounces to /signin).
-    const rewritten = setCookie.replace(/;\s*domain=[^;]+/i, '');
-    responseHeaders.set('Set-Cookie', rewritten);
+    // Normalize the session cookie for the voeq.ng (web) ↔ Render (API)
+    // cross-site relationship:
+    //  - Strip any Domain attribute so the browser scopes the cookie to voeq.ng
+    //    (the proxy response host); the API cannot set a voeq.ng cookie directly.
+    //  - Force SameSite=None; Secure. The web app and API run on different
+    //    domains, so the cookie is cross-site; a Lax cookie is dropped by the
+    //    browser in that context, which breaks every authenticated page.
+    // Do NOT split on commas: the Expires value ("Thu, 13 Aug 2026 ...") contains
+    // commas, and splitting mangles the cookie so browsers reject it entirely
+    // (no session -> all auth pages bounce to /signin).
+    const normalized = setCookie
+      .replace(/;\s*domain=[^;]+/i, '')
+      .replace(/;\s*samesite=[^;]+/i, '')
+      .replace(/;\s*secure\b/i, '')
+      .trim()
+      .replace(/$/, '; Secure; SameSite=None');
+    responseHeaders.set('Set-Cookie', normalized);
   }
 
   const text = await upstreamRes.text();
