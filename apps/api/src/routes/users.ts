@@ -30,6 +30,7 @@ usersRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, ne
 const updateProfileSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   image: z.string().url().optional(),
+  homeSeenAt: z.string().datetime().optional(),
 });
 
 usersRouter.patch(

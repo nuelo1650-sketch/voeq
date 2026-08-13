@@ -7,6 +7,7 @@ export interface AuthUser {
   role: 'buyer' | 'vendor' | 'admin' | 'super_admin';
   emailVerified: Date | null;
   agreementAcceptedAt: Date | null;
+  homeSeenAt: string | null;
   defaultCampusId: string | null;
   image?: string | null;
   vendorStatus: 'incomplete' | 'pending' | 'live' | 'rejected' | 'suspended' | null;

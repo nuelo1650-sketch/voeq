@@ -159,6 +159,7 @@ model User {
   agreementAcceptedAt DateTime?
   agreementIp         String?
   agreementUserAgent  String?
+  homeSeenAt          DateTime?  // set after a shopper finishes the one-time in-app welcome wizard
   lastAdminImpersonationAt DateTime?
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt

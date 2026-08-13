@@ -1,6 +1,6 @@
 // Server-only. Do not import from any 'use client' component.
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { ApiException, type ApiError } from './api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -31,8 +31,16 @@ export async function serverApi<T = unknown>(
     .map((c) => `${c.name}=${c.value}`)
     .join('; ');
 
+  // Server-to-API call. The browser's session cookie lives on the web domain
+  // (voeq.ng), but the API runs on a separate domain (Render), so a direct
+  // server fetch can't read it. Route through the same-origin internal proxy
+  // (/api-internal) which forwards the incoming cookie to the API. This keeps
+  // getMe() working on server components without cross-domain cookie hacks.
+  const host = (await headers()).get('host');
+  const base = host ? `${new URL('/api-internal', `http://${host}`).origin}` : '';
+
   try {
-    const res = await fetch(`${API_URL}${path}`, {
+    const res = await fetch(`${base}${path}`, {
       ...options,
       // CRITICAL: do not cache. Next.js caches fetch() by default; without this,
       // the first authenticated user's response would be served to subsequent
