@@ -32,7 +32,9 @@ export default function CareersPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="rounded-full border border-cream-300 px-3 py-1 text-xs font-medium text-forest-700 dark:border-forest-700 dark:text-cream-100">{job.type}</span>
-                  <Button variant="primary" size="sm">Apply</Button>
+                  <Button variant="primary" size="sm" asChild>
+                    <a href={`mailto:careers@voeq.ng?subject=Application:%20${encodeURIComponent(job.title)}`}>Apply</a>
+                  </Button>
                 </div>
               </div>
             </div>

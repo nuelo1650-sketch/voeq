@@ -18,6 +18,7 @@ import { auditRouter } from './audit';
 import { settingsRouter } from './settings';
 import { impersonateRouter } from './impersonate';
 import { exportRouter } from './export';
+import { pressRouter } from './press';
 
 export const adminRouter: ReturnType<typeof Router> = Router();
 
@@ -41,3 +42,4 @@ adminRouter.use('/audit', auditRouter);
 adminRouter.use('/settings', settingsRouter);
 adminRouter.use('/impersonate', impersonateRouter);
 adminRouter.use('/export', exportRouter);
+adminRouter.use('/press', pressRouter);

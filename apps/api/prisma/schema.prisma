@@ -746,3 +746,18 @@ model Follow {
   @@index([userId])
   @@index([vendorId])
 }
+
+model PressItem {
+  id          String   @id @default(cuid())
+  kind        String   @default("announcement") // announcement | feature | press-release | blog
+  title       String
+  summary     String?
+  body        String?
+  publishDate DateTime @default(now())
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([publishDate])
+}

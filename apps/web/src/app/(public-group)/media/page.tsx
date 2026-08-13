@@ -23,14 +23,11 @@ export default function MediaPage() {
           <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
             <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Brand assets</h2>
             <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
-              Download the Voeq wordmark, icon, and favicon for editorial use.
+              Download the Voeq logo and favicon for editorial use.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Button variant="outline" asChild>
-                <a href="/brand/voeq-wordmark.svg" download>Wordmark (SVG)</a>
-              </Button>
-              <Button variant="outline" asChild>
-                <a href="/brand/voeq-icon.svg" download>Icon (SVG)</a>
+                <a href="/Name.png" download>Logo (PNG)</a>
               </Button>
               <Button variant="outline" asChild>
                 <a href="/favicon-192.png" download>Favicon (PNG)</a>

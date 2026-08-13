@@ -32,6 +32,22 @@ export async function serverGetCategories(): Promise<{ categories: CategorySumma
   return serverApi<{ categories: CategorySummary[] }>('/api/categories');
 }
 
+export interface PressItemSummary {
+  id: string;
+  kind: string;
+  title: string;
+  summary: string | null;
+  body: string | null;
+  publishDate: string;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function serverGetPressItems(): Promise<{ items: PressItemSummary[] }> {
+  return serverApi<{ items: PressItemSummary[] }>('/api/press');
+}
+
 export async function serverGetWishlist(): Promise<{ items: WishlistItemSummary[] }> {
   return serverApi<{ items: WishlistItemSummary[] }>('/api/wishlist');
 }
