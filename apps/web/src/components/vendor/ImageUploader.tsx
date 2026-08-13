@@ -11,7 +11,7 @@ interface ImageUploaderProps {
   value?: UploadResult | null;
   onChange: (result: UploadResult | null) => void;
   aspectRatio?: 'square' | 'video' | 'auto';
-  folder?: 'profile' | 'listing';
+  folder?: 'profile' | 'listing' | 'category';
   className?: string;
 }
 

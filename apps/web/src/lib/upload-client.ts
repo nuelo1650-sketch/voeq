@@ -30,7 +30,7 @@ export async function compressImage(file: File): Promise<File> {
 
 export async function uploadImage(
   file: File,
-  folder: 'profile' | 'listing' = 'listing',
+  folder: 'profile' | 'listing' | 'category' = 'listing',
 ): Promise<UploadResult> {
   const compressed = await compressImage(file);
 

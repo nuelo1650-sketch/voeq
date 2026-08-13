@@ -12,7 +12,7 @@ import { ImageUploader } from './ImageUploader';
 import { createListing, updateListing, getMyListing, getCategories, deleteListing } from '@/lib/vendor-client';
 
 const schema = z.object({
-  categoryId: z.string().min(1, 'Required'),
+  categoryIds: z.array(z.string().min(1)).min(1, 'Required').max(5),
   title: z.string().min(3).max(60),
   description: z.string().min(50).max(500),
   priceMin: z.coerce.number().nonnegative(),
@@ -31,6 +31,7 @@ interface ListingFormProps {
 export function ListingForm({ mode, listingId }: ListingFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [photos, setPhotos] = useState<Array<{ publicId: string; url: string; width: number; height: number; displayOrder: number }>>([]);
 
   const {
@@ -49,7 +50,7 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
     if (mode === 'edit' && listingId) {
       getMyListing(listingId).then((res) => {
         const l = res.listing;
-        setValue('categoryId', l.category.id);
+        setSelectedIds([l.category.id]);
         setValue('title', l.title);
         setValue('description', l.description);
         setValue('priceMin', l.priceMin);
@@ -64,7 +65,7 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
   const onSubmit = async (data: FormData) => {
     if (photos.length === 0) return;
     const payload = {
-      categoryId: data.categoryId,
+      categoryIds: selectedIds,
       title: data.title,
       description: data.description,
       priceMin: data.priceMin,
@@ -95,24 +96,20 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-forest-700 dark:text-cream-100 mb-2">Category</label>
+        <label className="block text-sm font-medium text-forest-700 dark:text-cream-100 mb-2">Categories</label>
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
               key={cat.id}
               type="button"
-              onClick={() => setValue('categoryId', cat.id, { shouldValidate: true })}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
-                watch('categoryId') === cat.id
-                  ? 'border-forest-700 bg-forest-700 text-cream-100'
-                  : 'border-cream-300 text-forest-700 dark:border-forest-700 dark:text-cream-100'
-              }`}
+              onClick={() => setSelectedIds((prev) => (prev.includes(cat.id) ? prev.filter((x) => x !== cat.id) : prev.length >= 5 ? prev : [...prev, cat.id]))}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium ${selectedIds.includes(cat.id) ? 'border-forest-700 bg-forest-700 text-cream-100' : 'border-cream-300 text-forest-700 dark:border-forest-700 dark:text-cream-100'}`}
             >
               {cat.name}
             </button>
           ))}
         </div>
-        {errors.categoryId && <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>}
+        {selectedIds.length === 0 && <p className="mt-1 text-sm text-red-600">Select at least one category.</p>}
       </div>
 
       <Input label="Title" maxLength={60} error={errors.title?.message} {...register('title')} />

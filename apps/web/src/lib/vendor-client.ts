@@ -102,7 +102,7 @@ export interface Listing {
 }
 
 export async function createListing(input: {
-  categoryId: string;
+  categoryIds: string[];
   title: string;
   description: string;
   priceMin: number;
@@ -142,6 +142,20 @@ export async function getDrafts(): Promise<{ drafts: Record<string, unknown> }> 
   return api('/api/vendors/me/draft');
 }
 
-export async function getCategories(): Promise<{ categories: Array<{ id: string; slug: string; name: string; description: string | null; iconName: string | null; displayOrder: number; isOfficial: boolean }> }> {
+export type CategoryNode = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  iconName: string | null;
+  imageUrl: string | null;
+  displayOrder: number;
+  isOfficial: boolean;
+  parentId: string | null;
+  listingCount: number;
+  children: CategoryNode[];
+};
+
+export async function getCategories(): Promise<{ categories: CategoryNode[] }> {
   return api('/api/categories');
 }
