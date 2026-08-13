@@ -16,7 +16,8 @@
     "security:audit": "bash scripts/security-audit.sh"
   },
   "dependencies": {
-    "turbo": "^2.1.3"
+    "turbo": "^2.1.3",
+    "next": "15.1.12"
   },
   "devDependencies": {
     "typescript": "^5.5.4"
