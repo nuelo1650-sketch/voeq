@@ -58,7 +58,7 @@ export function AuthShell({ children, title, subtitle }: { children: React.React
           <div className="overflow-hidden rounded-2xl border border-cream-300 bg-white/80 shadow-xl backdrop-blur transition dark:border-forest-700 dark:bg-forest-800/80 sm:rounded-3xl">
             {children}
           </div>
-          <div className="mt-4 rounded-2xl border border-gold-500/30 bg-gold-500/5 px-4 py-3 text-center dark:border-gold-400/30 dark:bg-gold-400/5">
+          <div className="mt-4 rounded-2xl border border-gold-500/40 bg-gold-500/[0.07] px-4 py-3 text-center shadow-[0_0_0_1px_rgba(212,175,55,0.06),0_8px_30px_-12px_rgba(212,175,55,0.35)] dark:border-gold-400/40 dark:bg-gold-400/[0.07]">
             <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
               Are you a vendor?{' '}
               <a
