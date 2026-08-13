@@ -149,6 +149,10 @@ export default async function LandingPage() {
                 <Link href="/browse" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Browse</Link>
                 <Link href="/for-vendors" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">For Vendors</Link>
                 <Link href="/about" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">About</Link>
+                <div className="flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm font-medium text-forest-700 dark:text-cream-100">
+                  <span>Theme</span>
+                  <ThemeToggle />
+                </div>
                 <div className="my-2 border-t border-cream-200 dark:border-forest-700" />
                 <Link href="/signin" className="block rounded-md bg-forest-700 px-3 py-2 text-center text-sm font-medium text-cream-100 hover:bg-forest-800">Sign in</Link>
                 <Link href="/signup" className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Sign up</Link>
@@ -396,7 +400,7 @@ export default async function LandingPage() {
               <AnimatedSection>
                 <div>
                   <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
-                  <p className="mt-4 text-lg text-cream-100/80">Reach thousands of students on your campus. Free to start, no upfront costs.</p>
+                  <p className="mt-4 text-lg text-cream-100/80">Reach every student on campus. Free to start, no upfront costs.</p>
                   <ul className="mt-8 space-y-3">
                     {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
                       <li key={benefit} className="flex items-center gap-3">
@@ -431,7 +435,7 @@ export default async function LandingPage() {
             <AnimatedSection>
               <div className="text-center">
                 <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">Ready to find what you need on campus?</h2>
-                <p className="mt-4 text-base text-forest-700/70 dark:text-cream-100/70">Join thousands of students already using Voeq.</p>
+                <p className="mt-4 text-base text-forest-700/70 dark:text-cream-100/70">Be one of the first to try Voeq at NMU.</p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button variant="primary" size="lg" asChild>
                     <Link href="/signup">Get started</Link>

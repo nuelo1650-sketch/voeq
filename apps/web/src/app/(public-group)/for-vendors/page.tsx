@@ -22,7 +22,7 @@ export default function ForVendorsPage() {
           <div className="text-center">
             <Badge variant="gold" className="mb-4">For Vendors</Badge>
             <h1 className="font-serif text-5xl font-semibold text-forest-900 dark:text-cream-100 sm:text-6xl">Grow your business on campus</h1>
-            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80">Reach students at 100+ Nigerian universities. Free to start, no upfront costs.</p>
+            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80">Expanding to 100+ universities.</p>
             <div className="mt-8">
               <Button variant="primary" size="lg" asChild>
                 <Link href="/signup">List your business</Link>

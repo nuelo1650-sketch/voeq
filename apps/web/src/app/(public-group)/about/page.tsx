@@ -64,7 +64,7 @@ export default function AboutPage() {
             <p className="mt-3 text-lg text-forest-700/70 dark:text-cream-100/70">
               Pronounced <span className="font-semibold text-forest-900 dark:text-cream-100">&ldquo;voke&rdquo;</span> — like the sound of a connection being made.
             </p>
-            <p className="mt-6 font-serif text-2xl text-gold-600 dark:text-gold-500">Find. Connect. Grow.</p>
+            <p className="mt-6 font-serif text-2xl text-gold-600 dark:text-gold-500">Pronounced &quot;Voke&quot;.</p>
             <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80">
               Voeq is the campus marketplace where Nigerian students discover verified vendors and chat with them
               directly on WhatsApp — and where vendors reach every student on their campus for free.
