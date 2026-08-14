@@ -6,6 +6,7 @@ services:
     buildCommand: cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @voeq/api prisma:generate && pnpm --filter @voeq/shared build && pnpm --filter @voeq/ui build && pnpm --filter @voeq/api build
     startCommand: cd ../.. && pnpm --filter @voeq/api start
     healthCheckPath: /health
+    healthCheckGracePeriod: 60
     envVars:
       - key: NODE_ENV
         value: production
