@@ -47,7 +47,10 @@ vendorRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, n
     });
 
     if (!vendor) {
-      res.status(404).json({ error: 'NotFound', hasVendor: false });
+      // Authenticated but no Vendor row yet (e.g. vendor-role user mid-onboarding).
+      // Return 200 (not 404) so the web can render a "continue setup" state without
+      // treating this as a missing route. 404 is reserved for truly unauthenticated.
+      res.status(200).json({ hasVendor: false });
       return;
     }
 
