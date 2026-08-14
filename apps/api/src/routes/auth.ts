@@ -22,6 +22,7 @@ import {
 import { rateLimit, trackFailure } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
+import { safeRedirect } from '../lib/redirect';
 import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions, revokeSession, hashToken, verifyPendingToken } from '../services/session.service';
 import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
@@ -413,14 +414,15 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       where: { userId: user.id },
       select: { status: true },
     });
-    const dest =
+    const dest = safeRedirect(
       user.role === 'vendor'
         ? vendor?.status === 'live'
           ? '/vendor'
           : '/vendor/onboarding/step-1'
         : user.role === 'admin' || user.role === 'super_admin'
           ? '/admin'
-          : '/home';
+          : '/home',
+    );
     const sep = webAppUrl.includes('?') ? '&' : '?';
     res.redirect(`${webAppUrl}/api/auth/google/callback${sep}token=${encodeURIComponent(sessionToken)}&dest=${encodeURIComponent(dest)}`);
   } catch (error) {

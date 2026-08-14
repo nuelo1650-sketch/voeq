@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { safeRedirect } from '@/lib/auth-redirect';
 
 /**
  * Web-side Google OAuth callback.
@@ -15,7 +16,9 @@ const COOKIE_NAME =
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get('token');
-  const dest = searchParams.get('dest') || '/home';
+  // Pin the post-auth destination to a same-origin absolute path (§12): reject
+  // any scheme / protocol-relative / foreign-host value to close open-redirect.
+  const dest = safeRedirect(searchParams.get('dest'), '/home');
 
   if (!token) {
     return NextResponse.redirect(new URL('/signin?error=oauth', req.url));
