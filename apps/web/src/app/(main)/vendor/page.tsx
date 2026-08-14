@@ -80,12 +80,35 @@ function QuickAction({ title, description, href, cta }: { title: string; descrip
 export default async function VendorDashboardPage() {
   await requireVendor();
   const [vendorResult, analytics, listings] = await Promise.all([
-    getMyVendor(),
+    getMyVendor().catch(() => null),
     getMyAnalytics().catch(() => null),
     getMyListings().catch(() => null),
   ]);
 
-  if (!('vendor' in vendorResult)) return null;
+  // Graceful degradation: if /me 404s (row not yet created) but the user is a
+  // vendor-role, send them to onboarding to create the Vendor row. Never crash
+  // the whole dashboard on a transient 404.
+  if (!vendorResult || !('vendor' in vendorResult)) {
+    return (
+      <VendorSection>
+        <Container size="md">
+          <div className="rounded-2xl border-2 border-gold-500/30 bg-gold-500/5 p-8 text-center">
+            <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
+              Finish setting up your storefront
+            </h2>
+            <p className="mt-2 text-sm text-forest-700/80 dark:text-cream-100/80">
+              Your vendor profile isn&apos;t complete yet. A few quick steps and you&apos;ll be live.
+            </p>
+            <div className="mt-6">
+              <Button variant="primary" asChild>
+                <Link href="/vendor/onboarding/step-1">Continue setup</Link>
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </VendorSection>
+    );
+  }
   const vendor = vendorResult.vendor;
 
   const stats = analytics?.stats ?? null;
