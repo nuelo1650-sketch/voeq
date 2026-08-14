@@ -1,5 +1,4 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
-import { createHash } from 'crypto';
 import {
   SignupWithPasswordSchema,
   VerifyOtpSchema,
@@ -23,7 +22,7 @@ import {
 import { rateLimit, trackFailure } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
-import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions, verifyPendingToken } from '../services/session.service';
+import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions, revokeSession, hashToken, verifyPendingToken } from '../services/session.service';
 import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
 import { CURRENT_AGREEMENT_VERSION } from '../services/auth.service';
@@ -63,7 +62,10 @@ authRouter.post(
         res.status(401).json({ error: 'InvalidOrExpiredToken', message: 'Verification session expired. Please sign up again.' });
         return;
       }
-      const result = await verifyOtp(input);
+      const result = await verifyOtp(input, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] ?? null,
+      });
       const vendor = await prisma.vendor.findUnique({
         where: { userId: result.user.id },
         select: { status: true },
@@ -116,7 +118,10 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = SignInWithPasswordSchema.parse(req.body);
-      const result = await signInWithPassword(input);
+      const result = await signInWithPassword(input, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] ?? null,
+      });
       if (!result) {
         res.status(401).json({ error: 'InvalidCredentials' });
         return;
@@ -171,7 +176,10 @@ authRouter.post(
         res.status(400).json({ error: 'TokenRequired' });
         return;
       }
-      const result = await consumeMagicLink(token);
+      const result = await consumeMagicLink(token, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] ?? null,
+      });
       if (!result) {
         res.status(401).json({ error: 'InvalidOrExpiredToken' });
         return;
@@ -199,8 +207,19 @@ authRouter.post(
   },
 );
 
-authRouter.post('/signout', (_req: Request, res: Response) => {
-  res.clearCookie(getSessionCookieName(), { path: '/' });
+authRouter.post('/signout', async (req: Request, res: Response) => {
+  const cookieName = getSessionCookieName();
+  const token = req.cookies?.[cookieName];
+  if (token) {
+    // Revoke this device's session server-side so the JWT is invalid immediately,
+    // not just locally cleared (which would leave it valid until 30d expiry).
+    try {
+      await revokeSession(hashToken(token));
+    } catch {
+      // best-effort; still clear the cookie below
+    }
+  }
+  res.clearCookie(cookieName, { path: '/' });
   res.status(200).json({ signedOut: true });
 });
 
@@ -227,7 +246,10 @@ authRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = ConsumePasswordResetSchema.parse(req.body);
-      const result = await consumePasswordReset(input);
+      const result = await consumePasswordReset(input, {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] ?? null,
+      });
       if (!result) {
         res.status(401).json({ error: 'InvalidOrExpiredToken' });
         return;
@@ -370,11 +392,17 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       await ensureVendorRow(user.id);
     }
 
-    const sessionToken = await issueSession({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    const sessionToken = await issueSession(
+      {
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      {
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] ?? null,
+      },
+    );
 
     // web app runs on voeq.ng. Setting the session cookie here would scope it
     // to the API domain, so the web app never receives it and the user lands
@@ -406,17 +434,17 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
 authRouter.post('/logout-all', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {
     const cookieName = getSessionCookieName();
-    const token = req.cookies?.[cookieName];
-    const tokenHash = token ? createHash('sha256').update(token).digest('hex') : '';
 
     const user = await prisma.user.findUnique({ where: { id: req.userId! } });
     let deletedCount = 0;
     if (user) {
-      // Delete all server-persisted sessions for this user except the current one.
-      deletedCount = await revokeAllUserSessions(user.id, tokenHash);
+      // Revoke EVERY server-persisted session for this user (true logout-everywhere),
+      // including the current device. Each API request re-checks the Session row,
+      // so revoking here instantly invalidates the JWT on every device.
+      deletedCount = await revokeAllUserSessions(user.id);
     }
 
-    // Clear the current session cookie (logout this device too).
+    // Clear the current session cookie too.
     res.clearCookie(cookieName, { path: '/' });
     res.status(200).json({ loggedOut: true, revokedSessions: deletedCount });
   } catch (error) {

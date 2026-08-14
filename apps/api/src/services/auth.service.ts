@@ -17,8 +17,8 @@ const MAGIC_LINK_EXPIRY_MS = 15 * 60 * 1000;
 export const CURRENT_AGREEMENT_VERSION = '1.0';
 
 interface RequestContext {
-  ipAddress?: string;
-  userAgent?: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
 }
 
 export async function signUpWithPassword(
@@ -117,6 +117,7 @@ export async function signUpWithPassword(
 
 export async function verifyOtp(
   input: { email: string; otp: string },
+  ctx?: RequestContext,
 ): Promise<{ sessionToken: string; user: User }> {
   const result = await consumeToken({ token: input.otp, type: 'otp' });
   if (!result || result.email !== input.email) {
@@ -142,11 +143,14 @@ export async function verifyOtp(
     }
   }
 
-  const sessionToken = await issueSession({
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-  });
+  const sessionToken = await issueSession(
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    ctx,
+  );
 
   return { sessionToken, user: updated };
 }
@@ -172,6 +176,7 @@ export async function resendOtp(input: { email: string }): Promise<{ otpSent: tr
 
 export async function signInWithPassword(
   input: { email: string; password: string },
+  ctx?: RequestContext,
 ): Promise<{ sessionToken: string; user: User } | null> {
   const user = await prisma.user.findUnique({ where: { email: input.email } });
   if (!user || !user.passwordHash) {
@@ -187,11 +192,14 @@ export async function signInWithPassword(
     data: { lastSignInAt: new Date() },
   });
 
-  const sessionToken = await issueSession({
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-  });
+  const sessionToken = await issueSession(
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    ctx,
+  );
 
   return { sessionToken, user: updated };
 }
@@ -226,6 +234,7 @@ export async function requestMagicLink(
 
 export async function consumeMagicLink(
   token: string,
+  ctx?: RequestContext,
 ): Promise<{ sessionToken: string; user: User } | null> {
   const result = await consumeToken({ token, type: 'magic_link', purpose: 'signin' });
   if (!result) return null;
@@ -241,11 +250,14 @@ export async function consumeMagicLink(
     },
   });
 
-  const sessionToken = await issueSession({
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-  });
+  const sessionToken = await issueSession(
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    ctx,
+  );
 
   return { sessionToken, user: updated };
 }
@@ -281,7 +293,7 @@ export async function requestPasswordReset(
 export async function consumePasswordReset(params: {
   token: string;
   newPassword: string;
-}): Promise<{ sessionToken: string; user: User } | null> {
+}, ctx?: RequestContext): Promise<{ sessionToken: string; user: User } | null> {
   const strength = validatePasswordStrength(params.newPassword);
   if (!strength.valid) {
     throw new Error(strength.reason ?? 'Invalid password');
@@ -308,11 +320,14 @@ export async function consumePasswordReset(params: {
     },
   });
 
-  const sessionToken = await issueSession({
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-  });
+  const sessionToken = await issueSession(
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    ctx,
+  );
 
   // Revoke all DB-backed sessions (e.g. admin impersonation) on password reset.
   // Standard auth uses stateless JWTs, so callers should also invalidate the old

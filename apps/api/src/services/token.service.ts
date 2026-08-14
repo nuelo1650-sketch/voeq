@@ -21,8 +21,8 @@ export async function storeToken(params: {
   purpose?: AuthTokenPurpose;
   expiresInMs: number;
   userId?: string;
-  ipAddress?: string;
-  userAgent?: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
 }): Promise<void> {
   await prisma.authToken.create({
     data: {

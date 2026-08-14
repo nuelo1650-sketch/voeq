@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
+import { createHash, randomUUID } from 'crypto';
 import { env } from '../config/env';
 import { prisma } from '../lib/db';
 import type { UserRole } from '../lib/db';
@@ -11,6 +12,16 @@ export interface SessionPayload {
   email: string;
   role: UserRole;
   vendorStatus?: string | null;
+}
+
+export interface IssueSessionContext {
+  ipAddress?: string | null;
+  userAgent?: string | null;
+}
+
+/** Hash a raw JWT so we can store/lookup it without persisting the token itself. */
+export function hashToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
 }
 
 /**
@@ -43,7 +54,10 @@ export async function verifyPendingToken(token: string): Promise<string | null> 
   }
 }
 
-export async function issueSession(payload: SessionPayload): Promise<string> {
+export async function issueSession(
+  payload: SessionPayload,
+  ctx?: IssueSessionContext,
+): Promise<string> {
   // Derive vendorStatus at sign-time from the existing Vendor row (no separate
   // column). Only meaningful when role === 'vendor'; null otherwise.
   let vendorStatus: string | null = null;
@@ -55,16 +69,46 @@ export async function issueSession(payload: SessionPayload): Promise<string> {
     vendorStatus = vendor?.status ?? null;
   }
 
-  return new SignJWT({
+  const jti = randomUUID();
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_SECONDS * 1000);
+
+  const token = await new SignJWT({
     email: payload.email,
     role: payload.role,
     vendorStatus,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setSubject(payload.sub)
+    .setJti(jti)
     .setIssuedAt()
     .setExpirationTime('30d')
     .sign(secret);
+
+  // Persist a Session row so logout / revoke can actually invalidate the token.
+  // tokenHash (not the raw JWT) is stored; requireAuth looks it up on each request.
+  await prisma.session.create({
+    data: {
+      userId: payload.sub,
+      tokenHash: hashToken(token),
+      expiresAt,
+      ipAddress: ctx?.ipAddress ?? null,
+      userAgent: ctx?.userAgent ?? null,
+    },
+  });
+
+  return token;
+}
+
+/**
+ * Resolve a session by raw JWT. Returns null if the token is valid but has no
+ * matching (non-expired) Session row — i.e. it was logged out or expired server-side.
+ */
+export async function lookupSession(token: string): Promise<{ userId: string } | null> {
+  const tokenHash = hashToken(token);
+  const session = await prisma.session.findUnique({ where: { tokenHash } });
+  if (!session) return null;
+  if (session.expiresAt < new Date()) return null;
+  return { userId: session.userId };
 }
 
 export async function verifySession(token: string): Promise<SessionPayload | null> {
