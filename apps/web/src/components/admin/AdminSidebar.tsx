@@ -33,12 +33,12 @@ export function AdminSidebar() {
   };
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:flex">
-      <div className="flex h-16 items-center px-4">
-        <Link href="/admin" aria-label="Voeq admin">
+      <div className="flex h-16 items-center px-5">
+        <Link href="/admin" aria-label="Voeq admin" className="transition-opacity hover:opacity-80">
           <Logo size="lg" />
         </Link>
       </div>
-      <div className="px-3 pb-2">
+      <div className="px-5 pb-3">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-gold-500/15 px-2.5 py-1 text-xs font-medium text-gold-600 dark:text-gold-400">
           <ShieldCheck className="h-3.5 w-3.5" /> Super admin
         </span>
@@ -52,13 +52,16 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
+                'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition',
                 active
                   ? 'bg-gold-500/15 text-forest-900 dark:text-cream-100'
                   : 'text-forest-700 hover:bg-cream-200 hover:text-forest-900 dark:text-cream-100/80 dark:hover:bg-forest-800',
               )}
             >
-              <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', active ? 'bg-gold-500 text-forest-900' : 'bg-cream-200/60 dark:bg-forest-800')}>
+              {active && (
+                <span className="absolute inset-y-2 left-0 w-1 rounded-full bg-gold-500" aria-hidden />
+              )}
+              <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition', active ? 'bg-gold-500 text-forest-900' : 'bg-cream-200/60 text-forest-700/80 group-hover:bg-cream-200 dark:bg-forest-800 dark:text-cream-100/80')}>
                 <Icon className="h-5 w-5" />
               </span>
               {item.label}

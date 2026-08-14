@@ -14,7 +14,7 @@ export function AdminPage({
   children: ReactNode;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-7xl animate-fade-in space-y-6 px-1">
       <div>
         <AdminHeader title={title} description={description} actions={actions} />
         <ThreadSeam className="mt-3" />
@@ -26,7 +26,7 @@ export function AdminPage({
 
 export function AdminTable({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 shadow-sm dark:border-forest-700 dark:bg-forest-800">
+    <div className="overflow-hidden rounded-2xl border border-cream-200 shadow-sm dark:border-forest-700">
       <table className="w-full text-left text-sm">{children}</table>
     </div>
   );
@@ -35,7 +35,7 @@ export function AdminTable({ children }: { children: ReactNode }) {
 export function AdminTh({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <th
-      className={`border-b border-cream-200 px-4 py-3 text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:border-forest-700 dark:text-cream-100/60 ${className ?? ''}`}
+      className={`border-b border-cream-200 bg-cream-100/60 px-4 py-3 text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:border-forest-700 dark:bg-forest-900/40 dark:text-cream-100/60 ${className ?? ''}`}
     >
       {children}
     </th>
@@ -45,8 +45,8 @@ export function AdminTh({ children, className }: { children: ReactNode; classNam
 export function AdminEmpty({ children }: { children: ReactNode }) {
   return (
     <tr>
-      <td colSpan={99} className="px-4 py-10 text-center text-sm text-forest-700/60 dark:text-cream-100/60">
-        {children}
+      <td colSpan={99} className="px-4 py-14 text-center">
+        <p className="text-sm text-forest-700/50 dark:text-cream-100/50">{children}</p>
       </td>
     </tr>
   );
