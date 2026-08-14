@@ -63,7 +63,7 @@ vendorRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, n
  *
  * This is the entry point for the "Become a vendor" flow: a buyer clicks
  * "Get started" on /become-vendor, the web calls this endpoint, and we
- * (a) set role='vendor' + currentContext='vendor', and (b) create the
+ * (a) set role='vendor', and (b) create the
  * Vendor subtree (if it does not already exist) so the onboarding forms
  * have something to read/write. Reuses the same create block as PATCH /me.
  *
@@ -96,7 +96,7 @@ vendorRouter.post(
 
       await prisma.user.update({
         where: { id: userId },
-        data: { role: 'vendor', currentContext: 'vendor' },
+        data: { role: 'vendor' },
       });
 
       const hasListing =

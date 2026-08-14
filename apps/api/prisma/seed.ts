@@ -534,7 +534,6 @@ async function main(): Promise<void> {
         name: 'Emmanuel Owi',
         role: 'super_admin',
         status: 'active',
-        currentContext: 'buyer',
         emailVerified: new Date(),
         agreementVersion: 'v1',
         agreementAcceptedAt: new Date(),

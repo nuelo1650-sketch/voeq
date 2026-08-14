@@ -67,7 +67,7 @@ export async function signUpWithPassword(
         // Promote to vendor context only if this is a fresh (unverified) account
         // being (re)registered with vendor intent; never demote an existing role.
         ...(isVendorIntent && existing.role === 'buyer'
-          ? { role: 'vendor', currentContext: 'vendor' }
+          ? { role: 'vendor' }
           : {}),
         ...agreementData,
       },
@@ -81,7 +81,6 @@ export async function signUpWithPassword(
         hasPassword: true,
         role: isVendorIntent ? 'vendor' : 'buyer',
         status: 'active',
-        currentContext: isVendorIntent ? 'vendor' : 'buyer',
         ...agreementData,
       },
     });

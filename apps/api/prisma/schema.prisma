@@ -30,11 +30,6 @@ enum UserStatus {
   banned
 }
 
-enum UserContext {
-  buyer
-  vendor
-}
-
 enum AuthProvider {
   google
   email
@@ -150,7 +145,6 @@ model User {
   image               String?
   role                UserRole    @default(buyer)
   status              UserStatus  @default(active)
-  currentContext      UserContext @default(buyer)
   defaultCampusId     String?
   emailVerified       DateTime?
   hasPassword         Boolean     @default(false)

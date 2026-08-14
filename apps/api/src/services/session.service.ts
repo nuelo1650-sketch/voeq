@@ -10,12 +10,25 @@ export interface SessionPayload {
   sub: string;
   email: string;
   role: UserRole;
+  vendorStatus?: string | null;
 }
 
 export async function issueSession(payload: SessionPayload): Promise<string> {
+  // Derive vendorStatus at sign-time from the existing Vendor row (no separate
+  // column). Only meaningful when role === 'vendor'; null otherwise.
+  let vendorStatus: string | null = null;
+  if (payload.role === 'vendor') {
+    const vendor = await prisma.vendor.findUnique({
+      where: { userId: payload.sub },
+      select: { status: true },
+    });
+    vendorStatus = vendor?.status ?? null;
+  }
+
   return new SignJWT({
     email: payload.email,
     role: payload.role,
+    vendorStatus,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setSubject(payload.sub)

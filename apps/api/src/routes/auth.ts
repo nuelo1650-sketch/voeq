@@ -322,7 +322,6 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           hasGoogle: true,
           role: intent === 'vendor' ? 'vendor' : 'buyer',
           status: 'active',
-          currentContext: intent === 'vendor' ? 'vendor' : 'buyer',
           emailVerified: new Date(),
           agreementVersion: CURRENT_AGREEMENT_VERSION,
           agreementAcceptedAt: new Date(),
