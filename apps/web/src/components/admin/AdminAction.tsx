@@ -11,12 +11,13 @@ interface AdminActionProps {
   body?: Record<string, unknown>;
   confirmMessage?: string;
   label: string;
+  loadingLabel?: string;
   variant?: 'primary' | 'ghost' | 'destructive' | 'gold' | 'outline';
   size?: 'sm' | 'md';
   onDone?: () => void;
 }
 
-export function AdminAction({ method = 'POST', path, body, confirmMessage, label, variant = 'ghost', size = 'sm', onDone }: AdminActionProps) {
+export function AdminAction({ method = 'POST', path, body, confirmMessage, label, loadingLabel = 'Working…', variant = 'ghost', size = 'sm', onDone }: AdminActionProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -38,10 +39,10 @@ export function AdminAction({ method = 'POST', path, body, confirmMessage, label
 
   return (
     <span className="inline-flex items-center gap-2">
-      <Button variant={variant} size={size} onClick={run} disabled={pending}>
-        {pending ? 'Working…' : label}
+      <Button variant={variant} size={size} onClick={run} disabled={pending} aria-busy={pending}>
+        {pending ? loadingLabel : label}
       </Button>
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      {error && <span className="text-xs text-red-600" role="alert">{error}</span>}
     </span>
   );
 }

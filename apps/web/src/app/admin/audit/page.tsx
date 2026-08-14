@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import { getAuditLog } from '@/lib/admin-server';
-import { Container } from '@/components/ui/Container';
+import { AdminPage } from '@/components/admin/AdminPage';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export const metadata: Metadata = { title: 'Admin · Audit log', robots: { index: false, follow: false } };
@@ -10,12 +10,7 @@ export default async function AdminAuditPage() {
   const data = await getAuditLog({ page: 1 }).catch(() => ({ entries: [], total: 0, page: 1, totalPages: 1 })) as any;
 
   return (
-    <Container size="xl">
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Audit log</h1>
-        <p className="mt-1 text-sm text-forest-700/60 dark:text-cream-100/60">{data.total} events</p>
-      </div>
-
+    <AdminPage title="Audit log" description={`${data.total} events`}>
       <Card>
         <CardContent className="pt-6">
           <ul className="space-y-3">
@@ -34,6 +29,6 @@ export default async function AdminAuditPage() {
           </ul>
         </CardContent>
       </Card>
-    </Container>
+    </AdminPage>
   );
 }

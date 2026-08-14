@@ -1,8 +1,7 @@
 import { type Metadata } from 'next';
 import { getSignupsChart, getClicksByCategory } from '@/lib/admin-server';
-import { Container } from '@/components/ui/Container';
+import { AdminPage } from '@/components/admin/AdminPage';
 import { Card, CardContent } from '@/components/ui/Card';
-import { ThreadSeam } from '@/components/brand/Thread';
 
 export const metadata: Metadata = { title: 'Admin · Analytics', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
@@ -17,13 +16,7 @@ export default async function AdminAnalyticsPage() {
   const maxSignups = Math.max(1, ...signups.data.map((d: any) => d.count));
 
   return (
-    <Container size="xl">
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Analytics</h1>
-        <p className="mt-1 text-sm text-forest-700/60 dark:text-cream-100/60">Growth and engagement signals.</p>
-        <ThreadSeam className="mt-3" />
-      </div>
-
+    <AdminPage title="Analytics" description="Growth and engagement signals.">
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardContent className="pt-6">
@@ -54,6 +47,6 @@ export default async function AdminAnalyticsPage() {
           </CardContent>
         </Card>
       </div>
-    </Container>
+    </AdminPage>
   );
 }

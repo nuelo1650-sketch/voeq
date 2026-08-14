@@ -3,12 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { Container } from '@/components/ui/Container';
+import { AdminPage } from '@/components/admin/AdminPage';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-import { ThreadSeam } from '@/components/brand/Thread';
 
 export default function AdminEmailsPage() {
   const router = useRouter();
@@ -37,13 +35,7 @@ export default function AdminEmailsPage() {
   };
 
   return (
-    <Container size="lg">
-      <AdminHeader title="Broadcast email" />
-      <div className="mb-6">
-        <p className="mt-1 text-sm text-forest-700/60 dark:text-cream-100/60">Send an announcement to your users or vendors.</p>
-        <ThreadSeam className="mt-3" />
-      </div>
-
+    <AdminPage title="Broadcast email" description="Send an announcement to your users or vendors.">
       <Card>
         <CardContent className="space-y-4 pt-6">
           <div>
@@ -64,6 +56,6 @@ export default function AdminEmailsPage() {
           {status && <p className="text-sm text-forest-700/70 dark:text-cream-100/70">{status}</p>}
         </CardContent>
       </Card>
-    </Container>
+    </AdminPage>
   );
 }

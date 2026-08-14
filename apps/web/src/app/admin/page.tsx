@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { getStats, getSignupsChart, getClicksByCategory } from '@/lib/admin-server';
+import { AdminPage } from '@/components/admin/AdminPage';
 import { KPICard } from '@/components/admin/KPICard';
 import { ChartCard } from '@/components/admin/ChartCard';
 import { SignupsChart } from '@/components/admin/SignupsChart';
@@ -21,9 +22,7 @@ export default async function AdminDashboard() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <h1 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">Dashboard</h1>
-
+    <AdminPage title="Dashboard" description="Platform growth and trust signals at a glance.">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <KPICard label="Total users" value={stats.totalUsers} delta={stats.newUsersToday} deltaLabel="today" />
         <KPICard label="Live vendors" value={stats.liveVendors} subValue={`${stats.pendingVendors} pending`} />
@@ -41,6 +40,6 @@ export default async function AdminDashboard() {
           <CategoryClicksChart data={clicks.data} />
         </ChartCard>
       </div>
-    </div>
+    </AdminPage>
   );
 }
