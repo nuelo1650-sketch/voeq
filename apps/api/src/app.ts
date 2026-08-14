@@ -145,8 +145,11 @@ export function createApp(): Application {
   app.use('/api/institutions', institutionsRouter);
   app.use('/api/search', searchRouter);
   app.use('/api/listings', listingsRouter);
-  app.use('/api/vendors', vendorsRouter);
+  // IMPORTANT: register specific vendor routes (vendorRouter: /me, /upgrade, …)
+  // BEFORE the catch-all public route (vendorsRouter: /:slug). Otherwise
+  // GET /api/vendors/me is shadowed by /:slug (slug='me') and 404s.
   app.use('/api/vendors', vendorRouter);
+  app.use('/api/vendors', vendorsRouter);
   app.use('/api/vendors', vendorSocialRouter);
   app.use('/api/vendors', vendorHoursRouter);
   app.use('/api/upload', uploadRouter);
