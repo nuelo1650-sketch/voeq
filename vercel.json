@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm --filter @voeq/web run build",
+  "buildCommand": "pnpm --filter @voeq/shared --filter @voeq/ui build && pnpm --filter @voeq/web run build",
   "outputDirectory": "apps/web/.next"
 }
