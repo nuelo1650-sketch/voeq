@@ -24,29 +24,6 @@ import type { Prisma } from '@prisma/client';
 
 export const vendorRouter: ReturnType<typeof Router> = Router();
 
-vendorRouter.get('/debug-me', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
-  try {
-    const userId = req.userId!;
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    const vendorByUserId = await prisma.vendor.findUnique({ where: { userId } });
-    const vendorByIdRaw = await prisma.$queryRawUnsafe(
-      `SELECT id, "userId", "businessSlug", status FROM "Vendor" WHERE "userId" = $1 LIMIT 1`,
-      userId,
-    );
-    const vendorCount = await prisma.vendor.count();
-    res.status(200).json({
-      userId,
-      userFound: !!user,
-      userRole: user?.role ?? null,
-      vendorFindUnique: vendorByUserId ? { id: vendorByUserId.id, userId: vendorByUserId.userId, status: vendorByUserId.status } : null,
-      vendorRawQuery: vendorByIdRaw,
-      totalVendorsInDb: vendorCount,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
 vendorRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {
     const vendor = await prisma.vendor.findUnique({

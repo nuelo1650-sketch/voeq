@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { SignUpForm } from '@/components/auth/SignUpForm';
 import { AuthDivider } from '@/components/auth/AuthDivider';
@@ -11,10 +11,17 @@ import { motion } from 'framer-motion';
 
 type Intent = 'buyer' | 'vendor';
 
-export default function SignUpPage() {
+function SignUpPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [intent, setIntent] = useState<Intent>('buyer');
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Honor ?intent=vendor from CTAs (e.g. "List your business" on the signin page).
+  useEffect(() => {
+    const q = searchParams.get('intent');
+    if (q === 'vendor' || q === 'buyer') setIntent(q);
+  }, [searchParams]);
 
   const handleSuccess = (email: string) => {
     router.push(`/verify-otp?email=${encodeURIComponent(email)}&intent=${intent}`);
@@ -89,5 +96,13 @@ export default function SignUpPage() {
         </div>
       </div>
     </AuthShell>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpPageInner />
+    </Suspense>
   );
 }

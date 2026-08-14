@@ -5,16 +5,24 @@ import VendorChrome from '@/components/vendor/VendorChrome';
 
 export default async function VendorLayout({ children }: { children: React.ReactNode }) {
   const me = await getMe().catch(() => null);
-  // If the user is not a vendor at all, send them to the upgrade flow.
-  if (!me?.user || (me.user.role !== 'vendor' && me.user.role !== 'admin' && me.user.role !== 'super_admin')) {
+  const role = me?.user?.role;
+
+  // Only non-vendor roles are sent to the upgrade flow. A vendor (or admin) may
+  // have a transient /me failure or not-yet-created Vendor row — never bounce
+  // them out of /vendor for that; let the inner pages (onboarding) create it.
+  const isVendorRole = role === 'vendor' || role === 'admin' || role === 'super_admin';
+  if (!me?.user || !isVendorRole) {
     redirect('/become-vendor');
   }
 
   const vendorResult = await getMyVendor().catch(() => null);
-  // A vendor-role user without a Vendor row yet is mid-onboarding — let them
-  // through so /vendor/onboarding can create the row. Only bounce true
-  // non-vendors (handled above) or never send them here.
-  if (!vendorResult) redirect('/become-vendor');
+
+  // Vendor-role user without a Vendor row yet → onboarding (step-1 creates it).
+  // If /me failed entirely (transient 503), fall through so the page itself
+  // can surface an error rather than looping back to /become-vendor.
+  if (vendorResult && !('vendor' in vendorResult)) {
+    redirect('/vendor/onboarding/step-1');
+  }
 
   return <VendorChrome>{children}</VendorChrome>;
 }

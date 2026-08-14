@@ -114,7 +114,7 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
             <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
               Are you a vendor?{' '}
               <a
-                href="/become-vendor"
+                href="/signup?intent=vendor"
                 className="font-semibold text-forest-900 underline underline-offset-2 transition hover:text-gold-600 dark:text-cream-100 dark:hover:text-gold-400"
               >
                 List your business on Voeq
