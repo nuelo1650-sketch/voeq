@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
+import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
+  requireVendor();
   return (
     <>
       <VendorPageHeader title="Settings" subtitle="Light or dark mode, plus more preferences soon." />

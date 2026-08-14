@@ -8,6 +8,7 @@ import type { Listing } from '@/lib/vendor-client';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { ThreadCard } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { requireVendor } from '@/lib/auth-server';
 
 export const metadata: Metadata = {
   title: 'Vendor dashboard',
@@ -77,6 +78,7 @@ function QuickAction({ title, description, href, cta }: { title: string; descrip
 }
 
 export default async function VendorDashboardPage() {
+  await requireVendor();
   const [vendorResult, analytics, listings] = await Promise.all([
     getMyVendor(),
     getMyAnalytics().catch(() => null),

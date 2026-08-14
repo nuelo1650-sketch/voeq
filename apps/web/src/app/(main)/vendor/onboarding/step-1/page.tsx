@@ -2,6 +2,7 @@ import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { BusinessBasicsForm } from '@/components/vendor/BusinessBasicsForm';
 import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
+import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { Container } from '@/components/ui/Container';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function Step1Page() {
+  await requireVendor();
   const result = await getMyVendor().catch(() => null);
   const initialData = result && 'vendor' in result ? {
     businessName: result.vendor.businessName,

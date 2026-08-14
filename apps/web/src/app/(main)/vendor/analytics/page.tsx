@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { getMyAnalytics } from '@/lib/vendor-client';
+import { requireVendor } from '@/lib/auth-server';
 import { Container } from '@/components/ui/Container';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { ThreadCard } from '@/components/brand/Thread';
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function AnalyticsPage() {
+  requireVendor();
   const data = await getMyAnalytics();
   const stats = data?.stats ?? {
     totalViews: 0,

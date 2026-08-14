@@ -2,6 +2,7 @@ import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { ContactLocationForm } from '@/components/vendor/ContactLocationForm';
 import { VendorHoursOnboarding } from '@/components/vendor/VendorHoursOnboarding';
+import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { Container } from '@/components/ui/Container';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default function Step2Page() {
+  requireVendor();
   return (
     <>
       <VendorPageHeader title="Contact & location" subtitle="Where can students reach you?" />

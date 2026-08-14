@@ -1,5 +1,5 @@
 import { type Metadata } from 'next';
-import { getStats, getSignupsChart, getClicksByCategory } from '@/lib/admin-client';
+import { getStats, getSignupsChart, getClicksByCategory } from '@/lib/admin-server';
 import { KPICard } from '@/components/admin/KPICard';
 import { ChartCard } from '@/components/admin/ChartCard';
 import { SignupsChart } from '@/components/admin/SignupsChart';

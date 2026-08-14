@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { ListingForm } from '@/components/vendor/ListingForm';
+import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default async function EditListingPage({ params }: Props) {
+  requireVendor();
   const { id } = await params;
   return (
     <>

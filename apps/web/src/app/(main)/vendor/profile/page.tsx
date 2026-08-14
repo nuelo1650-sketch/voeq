@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
+import { requireVendor } from '@/lib/auth-server';
 import { VendorProfileForm } from '@/components/vendor/VendorProfileForm';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function VendorProfilePage() {
+  await requireVendor();
   let result;
   try {
     result = await getMyVendor();

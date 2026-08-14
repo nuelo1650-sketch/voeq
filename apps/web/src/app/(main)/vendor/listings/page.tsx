@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
 import { getMyListings } from '@/lib/vendor-client';
+import { requireVendor } from '@/lib/auth-server';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import type { Listing } from '@/lib/vendor-client';
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function ListingsPage() {
+  requireVendor();
   const { listings } = await getMyListings();
 
   return (
