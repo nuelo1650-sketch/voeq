@@ -20,6 +20,9 @@ export interface EdgeSession {
  * Verify the session JWT at the edge (middleware) using the same AUTH_SECRET
  * the API signs with. Fail-closed: any missing/expired/garbage token returns
  * null, and the caller treats the request as unauthenticated.
+ *
+ * NOTE: the web project's AUTH_SECRET MUST equal the API's AUTH_SECRET, or
+ * edge verification fails for every request (treated as unauthenticated).
  */
 export async function verifySession(token: string): Promise<EdgeSession | null> {
   const secret = process.env.AUTH_SECRET;
