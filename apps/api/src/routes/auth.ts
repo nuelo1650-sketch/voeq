@@ -352,6 +352,12 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       email: user.email,
       role: user.role,
     });
+    // Cross-domain cookie problem: the API runs on voeq.onrender.com but the
+    // web app runs on voeq.ng. Setting the session cookie here would scope it
+    // to the API domain, so the web app never receives it and the user lands
+    // unauthenticated. Instead we hand the signed token to the web via a query
+    // param; the web route /api/auth/google/callback sets the cookie on the
+    // correct (web) domain and then redirects to the role-based destination.
     const vendor = await prisma.vendor.findUnique({
       where: { userId: user.id },
       select: { status: true },
@@ -364,8 +370,8 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
         : user.role === 'admin' || user.role === 'super_admin'
           ? '/admin'
           : '/home';
-    res.cookie(getSessionCookieName(), sessionToken, getSessionCookieOptions());
-    res.redirect(`${webAppUrl}${dest}`);
+    const sep = webAppUrl.includes('?') ? '&' : '?';
+    res.redirect(`${webAppUrl}/api/auth/google/callback${sep}token=${encodeURIComponent(sessionToken)}&dest=${encodeURIComponent(dest)}`);
   } catch (error) {
     // Never emit a raw API error page to the browser. Send the user back to
     // the web app with an error flag so the UI can show a friendly message.

@@ -58,6 +58,64 @@ vendorRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, n
   }
 });
 
+/**
+ * Promote the authenticated shopper (role buyer) to a vendor.
+ *
+ * This is the entry point for the "Become a vendor" flow: a buyer clicks
+ * "Get started" on /become-vendor, the web calls this endpoint, and we
+ * (a) set role='vendor' + currentContext='vendor', and (b) create the
+ * Vendor subtree (if it does not already exist) so the onboarding forms
+ * have something to read/write. Reuses the same create block as PATCH /me.
+ *
+ * Idempotent: if the user is already a vendor or already has a Vendor row,
+ * it simply returns the existing vendor without erroring.
+ */
+vendorRouter.post(
+  '/upgrade',
+  requireAuth,
+  async (req: AuthedRequest, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId!;
+
+      let vendor = await prisma.vendor.findUnique({ where: { userId } });
+      if (!vendor) {
+        vendor = await prisma.vendor.create({
+          data: {
+            userId,
+            businessName: '',
+            businessSlug: await generateUniqueVendorSlug(`vendor-${userId.slice(-6)}`),
+            ownerName: '',
+            description: '',
+            whatsappNumber: '',
+            institutionId: '',
+            campusId: '',
+            status: 'incomplete',
+          },
+        });
+      }
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { role: 'vendor', currentContext: 'vendor' },
+      });
+
+      const hasListing =
+        (await prisma.listing.count({
+          where: { vendorId: vendor.id, deletedAt: null, status: { not: 'draft' } },
+        })) > 0;
+      const progress = await calculateOnboardingProgress(vendor, hasListing);
+      await prisma.vendor.update({
+        where: { id: vendor.id },
+        data: { onboardingProgress: progress },
+      });
+
+      res.status(200).json({ vendor });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 vendorRouter.patch(
   '/me',
   requireAuth,

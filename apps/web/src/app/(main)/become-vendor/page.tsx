@@ -3,11 +3,10 @@ import { redirect } from 'next/navigation';
 import { serverGetMe as getMe } from '@/lib/auth-server';
 import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
 import { SearchIcon, WhatsAppIcon, StarIcon } from '@/components/icons';
 import { VendorPageHeader, VendorSection, PageHeader } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { BecomeVendorButton } from '@/components/vendor/BecomeVendorButton';
 
 export const metadata: Metadata = {
   title: 'Become a vendor',
@@ -54,9 +53,7 @@ export default async function BecomeVendorPage() {
                 </div>
               ))}
               <div className="pt-2">
-                <Button size="lg" fullWidth>
-                  <Link href="/vendor/onboarding/step-1">Get started</Link>
-                </Button>
+                <BecomeVendorButton />
               </div>
             </div>
           </AnimatedSection>

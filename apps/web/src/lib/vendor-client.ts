@@ -39,6 +39,14 @@ export async function getMyVendor(): Promise<{ vendor: VendorProfile; progress: 
   return api('/api/vendors/me');
 }
 
+/**
+ * Promote the current shopper to a vendor. Creates the Vendor subtree and sets
+ * role='vendor'. Idempotent — safe to call if already a vendor.
+ */
+export async function upgradeToVendor(): Promise<{ vendor: VendorProfile }> {
+  return api('/api/vendors/upgrade', { method: 'POST' });
+}
+
 export async function upsertVendor(input: Partial<VendorProfile> & Partial<{
   institutionId: string;
   campusId: string;

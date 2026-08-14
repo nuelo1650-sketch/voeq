@@ -92,13 +92,21 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
     }
     setIsSubmitting(true);
     setError(null);
-    try {
-      await setDefaultCampus(selectedCampusId);
-      onSelected();
-    } catch {
-      setError('Failed to save. Please try again.');
-      setIsSubmitting(false);
+    // Retry on transient failures (e.g. cold-start 503s) instead of leaving the
+    // user stuck in an infinite "select campus" loop.
+    let lastErr: unknown = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await setDefaultCampus(selectedCampusId);
+        onSelected();
+        return;
+      } catch (err) {
+        lastErr = err;
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+      }
     }
+    setError('Failed to save your campus. Please try again.');
+    setIsSubmitting(false);
   };
 
   return (
