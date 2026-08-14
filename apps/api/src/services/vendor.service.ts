@@ -81,35 +81,39 @@ export async function canGoLive(vendorId: string): Promise<{ canGoLive: boolean;
 }
 
 /**
- * Atomically guarantee a Vendor row for a user and promote them to vendor.
- * Uses an upsert inside a transaction so a double-submit / race (e.g. two
- * rapid /upgrade clicks) cannot throw a unique-constraint 500, and the
- * role flip + row creation can never disagree. Idempotent: if the user is
- * already a vendor with a row, this is a clean no-op.
+ * Guarantee a Vendor row for a user and promote them to vendor.
+ *
+ * `upsert` is atomic at the database level, so a double-submit / race (e.g. two
+ * rapid /upgrade clicks) cannot throw a unique-constraint 500. If the row
+ * already exists the update is a no-op, making this idempotent. The role flip
+ * is a separate idempotent update.
+ *
+ * Note: deliberately NOT wrapped in an interactive `prisma.$transaction` — those
+ * require interactive-transaction support from the connection layer and fail on
+ * pooled/serverless setups (Render). `upsert` alone provides the race-safety
+ * we need without that dependency.
  */
 export async function ensureVendorRow(userId: string): Promise<Vendor> {
-  return prisma.$transaction(async (tx) => {
-    const vendor = await tx.vendor.upsert({
-      where: { userId },
-      create: {
-        userId,
-        businessName: '',
-        businessSlug: await generateUniqueVendorSlug(`vendor-${userId.slice(-6)}`),
-        ownerName: '',
-        description: '',
-        whatsappNumber: '',
-        institutionId: '',
-        campusId: '',
-        status: 'incomplete',
-      },
-      update: {},
-    });
-
-    await tx.user.update({
-      where: { id: userId },
-      data: { role: 'vendor' },
-    });
-
-    return vendor;
+  const vendor = await prisma.vendor.upsert({
+    where: { userId },
+    create: {
+      userId,
+      businessName: '',
+      businessSlug: await generateUniqueVendorSlug(`vendor-${userId.slice(-6)}`),
+      ownerName: '',
+      description: '',
+      whatsappNumber: '',
+      institutionId: '',
+      campusId: '',
+      status: 'incomplete',
+    },
+    update: {},
   });
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role: 'vendor' },
+  });
+
+  return vendor;
 }
