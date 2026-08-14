@@ -12,6 +12,7 @@ import {
   generateUniqueVendorSlug,
   calculateOnboardingProgress,
   canGoLive,
+  ensureVendorRow,
 } from '../services/vendor.service';
 import { getClientIp } from '../utils/ip';
 import {
@@ -77,27 +78,7 @@ vendorRouter.post(
     try {
       const userId = req.userId!;
 
-      let vendor = await prisma.vendor.findUnique({ where: { userId } });
-      if (!vendor) {
-        vendor = await prisma.vendor.create({
-          data: {
-            userId,
-            businessName: '',
-            businessSlug: await generateUniqueVendorSlug(`vendor-${userId.slice(-6)}`),
-            ownerName: '',
-            description: '',
-            whatsappNumber: '',
-            institutionId: '',
-            campusId: '',
-            status: 'incomplete',
-          },
-        });
-      }
-
-      await prisma.user.update({
-        where: { id: userId },
-        data: { role: 'vendor' },
-      });
+      const vendor = await ensureVendorRow(userId);
 
       const hasListing =
         (await prisma.listing.count({

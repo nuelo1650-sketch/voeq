@@ -28,6 +28,7 @@ import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
 import { CURRENT_AGREEMENT_VERSION } from '../services/auth.service';
 import { prisma } from '../lib/db';
+import { ensureVendorRow } from '../services/vendor.service';
 import { issueSession } from '../services/session.service';
 
 export const authRouter: ReturnType<typeof Router> = Router();
@@ -362,12 +363,19 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
       });
     }
 
+    // OAuth vendor signup: guarantee the Vendor row exists atomically (mirrors
+    // /upgrade). Without this an OAuth vendor (intent=vendor) gets role='vendor'
+    // but no Vendor row, breaking onboarding. Buyers must not get a row.
+    if (user.role === 'vendor') {
+      await ensureVendorRow(user.id);
+    }
+
     const sessionToken = await issueSession({
       sub: user.id,
       email: user.email,
       role: user.role,
     });
-    // Cross-domain cookie problem: the API runs on voeq.onrender.com but the
+
     // web app runs on voeq.ng. Setting the session cookie here would scope it
     // to the API domain, so the web app never receives it and the user lands
     // unauthenticated. Instead we hand the signed token to the web via a query

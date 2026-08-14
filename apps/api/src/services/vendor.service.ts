@@ -79,3 +79,37 @@ export async function canGoLive(vendorId: string): Promise<{ canGoLive: boolean;
 
   return { canGoLive: true };
 }
+
+/**
+ * Atomically guarantee a Vendor row for a user and promote them to vendor.
+ * Uses an upsert inside a transaction so a double-submit / race (e.g. two
+ * rapid /upgrade clicks) cannot throw a unique-constraint 500, and the
+ * role flip + row creation can never disagree. Idempotent: if the user is
+ * already a vendor with a row, this is a clean no-op.
+ */
+export async function ensureVendorRow(userId: string): Promise<Vendor> {
+  return prisma.$transaction(async (tx) => {
+    const vendor = await tx.vendor.upsert({
+      where: { userId },
+      create: {
+        userId,
+        businessName: '',
+        businessSlug: await generateUniqueVendorSlug(`vendor-${userId.slice(-6)}`),
+        ownerName: '',
+        description: '',
+        whatsappNumber: '',
+        institutionId: '',
+        campusId: '',
+        status: 'incomplete',
+      },
+      update: {},
+    });
+
+    await tx.user.update({
+      where: { id: userId },
+      data: { role: 'vendor' },
+    });
+
+    return vendor;
+  });
+}
