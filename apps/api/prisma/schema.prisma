@@ -330,8 +330,8 @@ model Vendor {
   profilePhotoPublicId String?
   whatsappNumber       String
   publicPhone          String?
-  institutionId        String
-  campusId             String
+  institutionId        String?
+  campusId             String?
   city                 String?
   state                String?
   status               VendorStatus @default(incomplete)
@@ -373,8 +373,8 @@ model Vendor {
   websiteUrl       String?
 
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  institution Institution   @relation(fields: [institutionId], references: [id])
-  campus      Campus        @relation(fields: [campusId], references: [id])
+  institution Institution?  @relation(fields: [institutionId], references: [id])
+  campus      Campus?       @relation(fields: [campusId], references: [id])
   listings    Listing[]
   reviews     Review[]
   reports     Report[]      @relation("ReportTarget")

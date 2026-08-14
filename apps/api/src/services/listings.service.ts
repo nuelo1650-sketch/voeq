@@ -32,7 +32,7 @@ export interface ListListingsResult {
     categorySlug: string;
     vendorName: string;
     vendorSlug: string;
-    campusName: string;
+    campusName: string | null;
     isFlashDeal: boolean;
     createdAt: Date;
   }>;
@@ -152,7 +152,7 @@ export async function listListings(params: ListListingsParams): Promise<ListList
       categorySlug: l.category?.slug ?? '',
       vendorName: l.vendor.businessName,
       vendorSlug: l.vendor.businessSlug,
-      campusName: l.vendor.campus.name,
+      campusName: l.vendor.campus?.name ?? null,
       isFlashDeal: l.isFlashDeal,
       createdAt: l.createdAt,
     })),
@@ -189,7 +189,7 @@ export async function getListingBySlug(slug: string): Promise<{
     description: string;
     profilePhotoUrl: string | null;
     whatsappNumber: string;
-    campus: { name: string };
+    campus: { name: string } | null;
     ratingAvg: number;
     ratingCount: number;
   };
@@ -261,7 +261,7 @@ export async function getListingBySlug(slug: string): Promise<{
       description: listing.vendor.description,
       profilePhotoUrl: listing.vendor.profilePhotoPublicId,
       whatsappNumber: listing.vendor.whatsappNumber,
-      campus: listing.vendor.campus,
+      campus: listing.vendor.campus ?? null,
       ratingAvg: listing.vendor.ratingAvg,
       ratingCount: listing.vendor.ratingCount,
     },
@@ -435,7 +435,7 @@ export async function getVendorOwnListing(vendorId: string, listingId: string) {
       description: listing.vendor.description,
       profilePhotoUrl: listing.vendor.profilePhotoPublicId,
       whatsappNumber: listing.vendor.whatsappNumber,
-      campus: listing.vendor.campus,
+      campus: listing.vendor.campus ?? null,
       ratingAvg: listing.vendor.ratingAvg,
       ratingCount: listing.vendor.ratingCount,
     },
