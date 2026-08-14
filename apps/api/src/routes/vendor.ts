@@ -92,7 +92,8 @@ vendorRouter.post(
 
       res.status(200).json({ vendor });
     } catch (error) {
-      next(error);
+      const e = error as Error & { code?: string };
+      res.status(500).json({ error: 'UpgradeFailed', detail: e?.message, code: e?.code, stack: e?.stack?.slice(0, 400) });
     }
   },
 );
