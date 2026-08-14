@@ -13,6 +13,36 @@ export interface SessionPayload {
   vendorStatus?: string | null;
 }
 
+/**
+ * Short-lived token issued at signup and required to verify the OTP. Prevents
+ * OTP enumeration / resend-bombing: an attacker cannot hit /verify-otp or
+ * /resend-otp with an arbitrary ?email= without a valid pending token that was
+ * only ever produced by a real signup. Carries the email as its subject so the
+ * API can confirm the OTP being verified belongs to the signup that started it.
+ */
+const PENDING_DURATION_SECONDS = 5 * 60;
+
+export async function issuePendingToken(email: string): Promise<string> {
+  return new SignJWT({ purpose: 'otp' })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject(email)
+    .setIssuedAt()
+    .setExpirationTime(`${PENDING_DURATION_SECONDS}s`)
+    .sign(secret);
+}
+
+export async function verifyPendingToken(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    if (payload.purpose === 'otp' && typeof payload.sub === 'string') {
+      return payload.sub;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export async function issueSession(payload: SessionPayload): Promise<string> {
   // Derive vendorStatus at sign-time from the existing Vendor row (no separate
   // column). Only meaningful when role === 'vendor'; null otherwise.

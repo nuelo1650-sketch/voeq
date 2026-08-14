@@ -23,8 +23,9 @@ function SignUpPageInner() {
     if (q === 'vendor' || q === 'buyer') setIntent(q);
   }, [searchParams]);
 
-  const handleSuccess = (email: string) => {
-    router.push(`/verify-otp?email=${encodeURIComponent(email)}&intent=${intent}`);
+  const handleSuccess = (email: string, pendingToken: string) => {
+    const params = new URLSearchParams({ email, intent, pendingToken });
+    router.push(`/verify-otp?${params.toString()}`);
   };
 
   const handleGoogle = async () => {

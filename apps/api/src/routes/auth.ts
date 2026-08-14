@@ -20,10 +20,10 @@ import {
   consumePasswordReset,
   resendOtp,
 } from '../services/auth.service';
-import { rateLimit } from '../middleware/rate-limit';
+import { rateLimit, trackFailure } from '../middleware/rate-limit';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
-import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions } from '../services/session.service';
+import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions, verifyPendingToken } from '../services/session.service';
 import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
 import { CURRENT_AGREEMENT_VERSION } from '../services/auth.service';
@@ -34,7 +34,7 @@ export const authRouter: ReturnType<typeof Router> = Router();
 
 authRouter.post(
   '/signup/password',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signup' }),
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signup', keyFromBody: 'email' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = SignupWithPasswordSchema.parse(req.body);
@@ -51,10 +51,17 @@ authRouter.post(
 
 authRouter.post(
   '/verify-otp',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'otp' }),
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'otp', keyFromBody: 'email', lockoutAfter: 5 }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = VerifyOtpSchema.parse(req.body);
+      // Require a valid pending token issued by signup (prevents OTP
+      // enumeration / resend-bombing with an arbitrary email).
+      const pendingEmail = await verifyPendingToken(input.pendingToken ?? '');
+      if (!pendingEmail || pendingEmail !== input.email) {
+        res.status(401).json({ error: 'InvalidOrExpiredToken', message: 'Verification session expired. Please sign up again.' });
+        return;
+      }
       const result = await verifyOtp(input);
       const vendor = await prisma.vendor.findUnique({
         where: { userId: result.user.id },
@@ -74,6 +81,7 @@ authRouter.post(
         },
       });
     } catch (error) {
+      trackFailure({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'otp', keyFromBody: 'email', lockoutAfter: 5 }, req);
       next(error);
     }
   },
@@ -81,13 +89,21 @@ authRouter.post(
 
 authRouter.post(
   '/resend-otp',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp' }),
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp', keyFromBody: 'email', lockoutAfter: 5 }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = RequestMagicLinkSchema.parse(req.body);
+      // Require a valid pending token so resend cannot be used to bomb an
+      // arbitrary email.
+      const pendingEmail = await verifyPendingToken(input.pendingToken ?? '');
+      if (!pendingEmail || pendingEmail !== input.email) {
+        res.status(401).json({ error: 'InvalidOrExpiredToken', message: 'Verification session expired. Please sign up again.' });
+        return;
+      }
       await resendOtp({ email: input.email });
       res.status(200).json({ otpSent: true });
     } catch (error) {
+      trackFailure({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp', keyFromBody: 'email', lockoutAfter: 5 }, req);
       next(error);
     }
   },

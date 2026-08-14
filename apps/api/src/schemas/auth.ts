@@ -16,6 +16,8 @@ export const SignupWithPasswordSchema = z.object({
 export const VerifyOtpSchema = z.object({
   email: z.string().email().toLowerCase(),
   otp: z.string().regex(/^\d{6}$/, 'OTP must be 6 digits'),
+  // Short-lived token issued at signup; required to verify the OTP (anti-enumeration).
+  pendingToken: z.string().min(1),
 });
 
 export const SignInWithPasswordSchema = z.object({
@@ -25,6 +27,8 @@ export const SignInWithPasswordSchema = z.object({
 
 export const RequestMagicLinkSchema = z.object({
   email: z.string().email().toLowerCase(),
+  // Required for the OTP resend path (anti-bombing); absent for magic-link request.
+  pendingToken: z.string().min(1).optional(),
 });
 
 export const AcceptAgreementSchema = z.object({

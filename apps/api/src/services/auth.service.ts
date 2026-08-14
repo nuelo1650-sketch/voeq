@@ -3,7 +3,7 @@ import type { User } from '../lib/db';
 import { hashPassword, verifyPassword, validatePasswordStrength } from './password.service';
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
 import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email.service';
-import { issueSession } from './session.service';
+import { issueSession, verifyPendingToken, issuePendingToken } from './session.service';
 import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
 import { env, webAppUrl } from '../config/env';
@@ -31,7 +31,7 @@ export async function signUpWithPassword(
     intent?: 'buyer' | 'vendor';
   },
   ctx: RequestContext,
-): Promise<{ otpSent: true }> {
+): Promise<{ otpSent: true; pendingToken: string }> {
   const strength = validatePasswordStrength(input.password);
   if (!strength.valid) {
     throw new Error(strength.reason ?? 'Invalid password');
@@ -42,7 +42,9 @@ export async function signUpWithPassword(
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
   if (existing && existing.hasPassword && existing.emailVerified) {
     logger.info({ email: input.email }, 'Signup attempted for existing verified account');
-    return { otpSent: true };
+    // Return a pending token so the client can still proceed to /verify-otp
+    // (the OTP flow is a no-op here, but the contract must stay consistent).
+    return { otpSent: true, pendingToken: await issuePendingToken(input.email) };
   }
 
   const passwordHash = await hashPassword(input.password);
@@ -110,7 +112,7 @@ export async function signUpWithPassword(
       logger.error({ email: input.email, err: err2 }, 'Failed to send OTP email during signup after retry');
     }
   }
-  return { otpSent: true };
+  return { otpSent: true, pendingToken: await issuePendingToken(input.email) };
 }
 
 export async function verifyOtp(

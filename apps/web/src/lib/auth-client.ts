@@ -20,21 +20,21 @@ export async function signUpWithPassword(input: {
   agreedToTerms: true;
   agreementVersion: string;
   intent?: 'buyer' | 'vendor';
-}): Promise<{ otpSent: true }> {
-  return api<{ otpSent: true }>('/api/auth/signup/password', {
+}): Promise<{ otpSent: true; pendingToken: string }> {
+  return api<{ otpSent: true; pendingToken: string }>('/api/auth/signup/password', {
     method: 'POST',
     body: JSON.stringify(input),
   });
 }
 
-export async function verifyOtp(input: { email: string; otp: string }): Promise<{ user: AuthUser }> {
+export async function verifyOtp(input: { email: string; otp: string; pendingToken?: string }): Promise<{ user: AuthUser }> {
   return api<{ user: AuthUser }>('/api/auth/verify-otp', {
     method: 'POST',
     body: JSON.stringify(input),
   });
 }
 
-export async function resendOtp(input: { email: string }): Promise<{ otpSent: true }> {
+export async function resendOtp(input: { email: string; pendingToken?: string }): Promise<{ otpSent: true }> {
   return api<{ otpSent: true }>('/api/auth/resend-otp', {
     method: 'POST',
     body: JSON.stringify(input),

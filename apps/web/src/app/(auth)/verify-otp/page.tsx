@@ -14,6 +14,7 @@ export default function VerifyOtpPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [intent, setIntent] = useState<'buyer' | 'vendor'>('buyer');
+  const [pendingToken, setPendingToken] = useState('');
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,8 @@ export default function VerifyOtpPage() {
       if (e) setEmail(e);
       const i = params.get('intent');
       if (i === 'vendor' || i === 'buyer') setIntent(i);
+      const pt = params.get('pendingToken');
+      if (pt) setPendingToken(pt);
     }
   }, []);
 
@@ -97,7 +100,7 @@ export default function VerifyOtpPage() {
     setError(null);
     setLoading(true);
     try {
-      const result = await verifyOtp({ email, otp: code });
+      const result = await verifyOtp({ email, otp: code, pendingToken });
       if (result.user) {
         setVerified(true);
         const dest = resolvePostAuthDestination(result.user);
@@ -125,7 +128,7 @@ export default function VerifyOtpPage() {
     setResending(true);
     setError(null);
     try {
-      await resendOtp({ email });
+      await resendOtp({ email, pendingToken });
       setCooldown(RESEND_SECONDS);
       setDigits(Array(OTP_LENGTH).fill(''));
       inputsRef.current[0]?.focus();

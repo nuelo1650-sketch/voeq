@@ -24,7 +24,7 @@ const signupSchema = z.object({
 
 type SignupInput = z.infer<typeof signupSchema>;
 
-export function SignUpForm({ onSuccess, intent = 'buyer' }: { onSuccess?: (email: string) => void; intent?: 'buyer' | 'vendor' }) {
+export function SignUpForm({ onSuccess, intent = 'buyer' }: { onSuccess?: (email: string, pendingToken: string) => void; intent?: 'buyer' | 'vendor' }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [agreementVersion, setAgreementVersion] = useState<string>('1.0');
 
@@ -54,7 +54,7 @@ export function SignUpForm({ onSuccess, intent = 'buyer' }: { onSuccess?: (email
   const onSubmit = async (data: SignupInput) => {
     setSubmitError(null);
     try {
-      await signUpWithPassword({
+      const result = await signUpWithPassword({
         name: data.name,
         email: data.email,
         password: data.password,
@@ -62,7 +62,7 @@ export function SignUpForm({ onSuccess, intent = 'buyer' }: { onSuccess?: (email
         agreementVersion,
         intent,
       });
-      onSuccess?.(data.email);
+      onSuccess?.(data.email, result.pendingToken);
     } catch (err) {
       const error = err as { error?: string; message?: string };
       setSubmitError(formatAuthError(error));
