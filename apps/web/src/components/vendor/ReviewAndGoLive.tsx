@@ -18,17 +18,39 @@ export function ReviewAndGoLive() {
   const [scrolled, setScrolled] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  const load = useCallback(() => {
+    setLoadError(false);
+    Promise.all([
+      getMyVendor().then((res) => { if ('vendor' in res) setVendor(res.vendor); }),
+      getCurrentAgreements().then((data) => {
+        if (data.vendorAgreement) {
+          setVendor((prev) => prev);
+          setAgreement({ version: data.vendorAgreement.version, content: data.vendorAgreement.content, title: data.vendorAgreement.title });
+        }
+      }),
+    ]).catch(() => setLoadError(true));
+  }, []);
 
   useEffect(() => {
-    getMyVendor().then((res) => {
-      if ('vendor' in res) setVendor(res.vendor);
-    });
-    getCurrentAgreements().then((data) => {
-      if (data.vendorAgreement) {
-        setAgreement({ version: data.vendorAgreement.version, content: data.vendorAgreement.content, title: data.vendorAgreement.title });
-      }
-    });
-  }, []);
+    load();
+  }, [load]);
+
+  if (loadError) {
+    return (
+      <div className="rounded-2xl border border-cream-300 bg-cream-50 p-8 text-center dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+        <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
+          We couldn&apos;t load your profile. Check your connection and try again.
+        </p>
+        <Button className="mt-4" onClick={load}>Retry</Button>
+      </div>
+    );
+  }
+
+  if (!vendor) {
+    return <p className="text-sm text-forest-700/60 dark:text-cream-100/60">Loading…</p>;
+  }
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -51,13 +73,9 @@ export function ReviewAndGoLive() {
     } finally {
       setSubmitting(false);
     }
-  };
+    };
 
-  if (!vendor) {
-    return <p className="text-sm text-forest-700/60 dark:text-cream-100/60">Loading…</p>;
-  }
-
-  return (
+    return (
     <div className="space-y-6">
       <div>
         <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Review your profile</h2>

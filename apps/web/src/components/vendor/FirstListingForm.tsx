@@ -50,8 +50,12 @@ export function FirstListingForm() {
     defaultValues: { priceMin: 0 },
   });
 
+  const [categoriesError, setCategoriesError] = useState(false);
+
   useEffect(() => {
-    getCategories().then((res) => setTree(res.categories));
+    getCategories()
+      .then((res) => setTree(res.categories))
+      .catch(() => setCategoriesError(true));
   }, []);
 
   const toggleCategory = (id: string) => {
@@ -143,7 +147,23 @@ export function FirstListingForm() {
           </p>
 
           <div className="space-y-4">
-            {tree.map((parent) => (
+            {categoriesError ? (
+              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-4 text-center dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+                <p className="text-sm text-forest-700/80 dark:text-cream-100/80">Couldn&apos;t load categories.</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-3"
+                  onClick={() => {
+                    setCategoriesError(false);
+                    getCategories().then((res) => setTree(res.categories)).catch(() => setCategoriesError(true));
+                  }}
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              tree.map((parent) => (
               <div key={parent.id} className="rounded-2xl border border-cream-300 bg-cream-50/60 p-4 dark:border-forest-700 dark:bg-forest-800/40 dark:bg-forest-800/60 dark:border-cream-100">
                 <p className="mb-2 text-sm font-semibold text-forest-900 dark:text-cream-100">
                   {parent.name}
@@ -167,8 +187,9 @@ export function FirstListingForm() {
                   ))}
                 </div>
               </div>
-            ))}
+            )))}
           </div>
+
 
           {selectedIds.length === 0 && (
             <p className="mt-2 text-sm text-red-600">Select at least one category.</p>

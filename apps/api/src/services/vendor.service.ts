@@ -40,7 +40,7 @@ export async function calculateOnboardingProgress(vendor: Vendor | null, hasList
 
   let progress = 0;
 
-  if (vendor.businessName && vendor.ownerName && vendor.description.length >= 100) {
+  if (vendor.businessName && vendor.ownerName && vendor.description.length >= 50) {
     progress += 20;
   }
 

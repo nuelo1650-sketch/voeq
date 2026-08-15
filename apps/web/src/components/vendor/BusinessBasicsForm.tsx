@@ -14,7 +14,7 @@ import { DraftBanner } from './DraftBanner';
 const schema = z.object({
   businessName: z.string().min(3, 'At least 3 characters').max(100),
   ownerName: z.string().min(1, 'Required').max(100),
-  description: z.string().min(100, 'At least 100 characters (helps Shoppers understand your business)').max(500),
+  description: z.string().min(50, 'At least 50 characters').max(500),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -65,7 +65,7 @@ export function BusinessBasicsForm({ initialData }: BusinessBasicsFormProps) {
           placeholder="Tell students about your business. What do you offer? What makes you special?"
           rows={4}
           maxLength={500}
-          helperText={`${watch('description')?.length ?? 0}/500 characters (min 100)`}
+          helperText={`${watch('description')?.length ?? 0}/500 characters (min 50)`}
           error={errors.description?.message}
           {...register('description')}
         />
