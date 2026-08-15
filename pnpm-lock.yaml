@@ -151,9 +151,6 @@ importers:
       '@voeq/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@voeq/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       autoprefixer:
         specifier: ^10.4.20
         version: 10.5.4(postcss@8.5.26)
@@ -281,25 +278,6 @@ importers:
       zod:
         specifier: ^3.23.8
         version: 3.25.76
-
-  packages/ui:
-    dependencies:
-      react:
-        specifier: ^19.0.0
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.8(react@19.2.8)
-      typescript:
-        specifier: ^5.5.4
-        version: 5.9.3
-    devDependencies:
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.2.18
-      '@types/react-dom':
-        specifier: ^19.0.0
-        version: 19.2.4(@types/react@19.2.18)
 
 packages:
 
