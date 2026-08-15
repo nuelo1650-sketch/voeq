@@ -141,11 +141,13 @@ export function getSessionCookieOptions(): {
   sameSite: 'lax' | 'none';
   maxAge: number;
   path: string;
+  domain?: string;
 } {
   const apiUrl = env.NEXT_PUBLIC_API_URL;
   const webUrl = env.WEB_URL;
   let secure = env.NODE_ENV === 'production';
   let sameSite: 'lax' | 'none' = 'lax';
+  let domain: string | undefined;
 
   if (apiUrl && webUrl) {
     try {
@@ -157,6 +159,14 @@ export function getSessionCookieOptions(): {
         sameSite = 'none';
         secure = true;
       }
+      // The API (e.g. api.voeq.ng) sets this cookie, but the web app runs on a
+      // different host (voeq.ng). Without a shared parent domain the browser
+      // scopes the cookie to the API host and the web app never receives it —
+      // so password/OTP sessions vanish on every navigation (user must re-sign
+      // in). Sharing the cookie on the common parent (.voeq.ng) makes it visible
+      // to both hosts. Skip on localhost (no shared parent).
+      const parent = sharedParentDomain(apiHost, webHost);
+      if (parent) domain = parent;
     } catch {
       // invalid URL, keep defaults
     }
@@ -168,7 +178,24 @@ export function getSessionCookieOptions(): {
     sameSite,
     maxAge: SESSION_DURATION_SECONDS,
     path: '/',
+    domain,
   };
+}
+
+/** Returns the shared parent domain with a leading dot (e.g. ".voeq.ng") when
+ *  both hosts share a registrable parent, else null (no shared cookie scope). */
+function sharedParentDomain(a: string, b: string): string | null {
+  const pa = a.split('.');
+  const pb = b.split('.');
+  if (pa.length < 2 || pb.length < 2) return null;
+  // Walk up from the TLD until the two hosts diverge.
+  let i = 0;
+  while (i < pa.length && i < pb.length && pa[pa.length - 1 - i] === pb[pb.length - 1 - i]) {
+    i++;
+  }
+  // Need at least a registrable domain (e.g. voeq.ng) shared by both.
+  if (i >= 2) return '.' + pa.slice(pa.length - i).join('.');
+  return null;
 }
 
 /**
