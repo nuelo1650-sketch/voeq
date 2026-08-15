@@ -89,7 +89,7 @@ export default async function LandingPage() {
 
   const categories = categoriesResult.categories ?? [];
   const institutions = institutionsResult.institutions ?? [];
-  const campusCount = statsResult.institutions ?? 0;
+  const universityCount = statsResult.institutions ?? 0;
 
   const orgJsonLd = buildOrganizationJsonLd();
   const websiteJsonLd = buildWebSiteJsonLd();
@@ -405,7 +405,7 @@ export default async function LandingPage() {
                   <p className="mt-4 text-lg text-cream-100/80">Reach every student on campus. Free to start, no upfront costs.</p>
                   <ul className="mt-8 space-y-3">
                     {[
-                      `Reach students across ${campusCount}+ campuses`,
+                      `Reach students across ${universityCount}+ universities`,
                       'Free to start',
                       'Manage your storefront',
                       'Direct WhatsApp inquiries',

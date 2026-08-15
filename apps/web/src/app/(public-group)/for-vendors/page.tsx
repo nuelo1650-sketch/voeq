@@ -17,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 
 export default async function ForVendorsPage() {
   const stats = await getStats().catch(() => ({ institutions: 0, categories: 0, vendors: 0, listings: 0 }));
-  const campusCount = stats.institutions ?? 0;
+  const universityCount = stats.institutions ?? 0;
 
   return (
     <>
@@ -26,7 +26,7 @@ export default async function ForVendorsPage() {
           <div className="text-center">
             <Badge variant="gold" className="mb-4">For Vendors</Badge>
             <h1 className="font-serif text-5xl font-semibold text-forest-900 dark:text-cream-100 sm:text-6xl">Grow your business on campus</h1>
-            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80">Live across {campusCount}+ campuses and growing.</p>
+            <p className="mt-6 text-lg text-forest-700/80 dark:text-cream-100/80">Live across {universityCount}+ universities and growing.</p>
             <div className="mt-8">
               <Button variant="primary" size="lg" asChild>
                 <Link href="/signup">List your business</Link>
@@ -68,7 +68,7 @@ export default async function ForVendorsPage() {
         <Container size="lg">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
-              { title: `Reach students across ${campusCount}+ campuses`, description: 'Get discovered by students actively looking for what you offer.' },
+              { title: `Reach students across ${universityCount}+ universities`, description: 'Get discovered by students actively looking for what you offer.' },
               { title: 'Free to start', description: 'No upfront costs. Create your storefront and add listings in minutes.' },
               { title: 'Direct inquiries', description: 'Students message you directly on WhatsApp. No platform fees in Phase 1.' },
               { title: 'Build trust', description: 'Earn badges and reviews that help you stand out to new customers.' },
