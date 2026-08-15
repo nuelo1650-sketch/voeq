@@ -21,7 +21,7 @@ usersRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, ne
       res.status(404).json({ error: 'NotFound' });
       return;
     }
-    res.status(200).json({ user });
+    res.status(200).json({ user, impersonatedBy: req.impersonatedBy ?? null });
   } catch (error) {
     next(error);
   }

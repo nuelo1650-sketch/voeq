@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { endImpersonation } from '@/lib/admin-client';
+import { getMe } from '@/lib/auth-client';
 
 export function ImpersonationBanner() {
   const router = useRouter();
@@ -10,8 +11,17 @@ export function ImpersonationBanner() {
   const [isImpersonating, setIsImpersonating] = useState(false);
 
   useEffect(() => {
-    // Placeholder: in real auth context, set from JWT/cookie
-    setIsImpersonating(false);
+    let active = true;
+    getMe()
+      .then((data) => {
+        if (active) setIsImpersonating(Boolean((data as { impersonatedBy?: string | null }).impersonatedBy));
+      })
+      .catch(() => {
+        if (active) setIsImpersonating(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleEnd = async () => {

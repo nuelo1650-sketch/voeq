@@ -10,6 +10,7 @@ export interface AuthedRequest extends Request {
   userId?: string;
   userRole?: string;
   sessionId?: string;
+  impersonatedBy?: string;
 }
 
 export async function requireAuth(
@@ -39,6 +40,7 @@ export async function requireAuth(
     req.userId = payload.sub;
     req.userRole = typeof payload.role === 'string' ? payload.role : 'buyer';
     req.sessionId = typeof payload.jti === 'string' ? payload.jti : undefined;
+    req.impersonatedBy = typeof payload.impersonatedBy === 'string' ? payload.impersonatedBy : undefined;
     next();
   } catch {
     res.status(401).json({ error: 'Unauthorized', message: 'Invalid session' });
@@ -63,6 +65,7 @@ export async function optionalAuth(
         req.userId = payload.sub;
         req.userRole = typeof payload.role === 'string' ? payload.role : 'buyer';
         req.sessionId = typeof payload.jti === 'string' ? payload.jti : undefined;
+        req.impersonatedBy = typeof payload.impersonatedBy === 'string' ? payload.impersonatedBy : undefined;
       }
     }
   } catch {
