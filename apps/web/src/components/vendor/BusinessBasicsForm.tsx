@@ -50,9 +50,16 @@ export function BusinessBasicsForm({ initialData }: BusinessBasicsFormProps) {
     defaultValues,
   });
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const onSubmit = async (data: FormData) => {
-    await upsertVendor(data);
-    router.push('/vendor/onboarding/step-2');
+    setSaveError(null);
+    try {
+      await upsertVendor(data);
+      router.push('/vendor/onboarding/step-2');
+    } catch {
+      setSaveError('Could not save. Check your connection and try again.');
+    }
   };
 
   return (
@@ -72,6 +79,7 @@ export function BusinessBasicsForm({ initialData }: BusinessBasicsFormProps) {
         <div className="flex justify-end">
           <Button type="submit" isLoading={isSubmitting}>Continue</Button>
         </div>
+        {saveError && <p className="text-right text-sm text-red-600">{saveError}</p>}
       </form>
       <DraftBanner<FormData> step="step-1" watch={watch} enabled={!isSubmitting} />
     </>

@@ -103,19 +103,23 @@ export function ContactLocationForm() {
       setSubmitError('Please select a campus.');
       return;
     }
-    await upsertVendor({
-      whatsappNumber: data.whatsappNumber,
-      publicPhone: data.publicPhone || undefined,
-      institutionId: data.institutionId,
-      campusId: data.campusId || undefined,
-      websiteUrl: data.websiteUrl || undefined,
-      instagramHandle: data.instagramHandle || undefined,
-      tiktokHandle: data.tiktokHandle || undefined,
-      twitterHandle: data.twitterHandle || undefined,
-      facebookPage: data.facebookPage || undefined,
-      linkedinProfile: data.linkedinProfile || undefined,
-    });
-    router.push('/vendor/onboarding/step-3');
+    try {
+      await upsertVendor({
+        whatsappNumber: data.whatsappNumber,
+        publicPhone: data.publicPhone || undefined,
+        institutionId: data.institutionId,
+        campusId: data.campusId || undefined,
+        websiteUrl: data.websiteUrl || undefined,
+        instagramHandle: data.instagramHandle || undefined,
+        tiktokHandle: data.tiktokHandle || undefined,
+        twitterHandle: data.twitterHandle || undefined,
+        facebookPage: data.facebookPage || undefined,
+        linkedinProfile: data.linkedinProfile || undefined,
+      });
+      router.push('/vendor/onboarding/step-3');
+    } catch {
+      setSubmitError('Could not save. Check your connection and try again.');
+    }
   };
 
   const currentInstitution = institutions.find((i) => i.id === watch('institutionId'));

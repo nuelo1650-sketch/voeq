@@ -11,6 +11,7 @@ export function ProfilePhotoUpload() {
   const router = useRouter();
   const [photo, setPhoto] = useState<UploadResult | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     getMyVendor().then((res) => {
@@ -36,9 +37,12 @@ export function ProfilePhotoUpload() {
   const handleContinue = async () => {
     if (!photo) return;
     setSaving(true);
+    setSaveError(null);
     try {
       await upsertVendor({ profilePhotoPublicId: photo.publicId });
       router.push('/vendor/onboarding/step-4');
+    } catch {
+      setSaveError('Could not save. Check your connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -86,6 +90,7 @@ export function ProfilePhotoUpload() {
           Upload a photo to continue, or skip and add one later.
         </p>
       )}
+      {saveError && <p className="text-right text-sm text-red-600">{saveError}</p>}
     </div>
   );
 }

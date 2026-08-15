@@ -99,19 +99,26 @@ export function FirstListingForm() {
     }
   };
 
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const onSubmit = async (data: FormData) => {
     if (photos.length === 0) return;
     if (selectedIds.length === 0) return;
-    await createListing({
-      categoryIds: selectedIds,
-      title: data.title,
-      description: data.description,
-      priceMin: data.priceMin,
-      priceMax: data.priceMax,
-      section: data.section,
-      photos: photos.map((p, i) => ({ ...p, altText: data.title, displayOrder: i })),
-    });
-    router.push('/vendor/onboarding/step-5');
+    setSubmitError(null);
+    try {
+      await createListing({
+        categoryIds: selectedIds,
+        title: data.title,
+        description: data.description,
+        priceMin: data.priceMin,
+        priceMax: data.priceMax,
+        section: data.section,
+        photos: photos.map((p, i) => ({ ...p, altText: data.title, displayOrder: i })),
+      });
+      router.push('/vendor/onboarding/step-5');
+    } catch (err) {
+      setSubmitError((err as { message?: string })?.message ?? 'Could not create listing. Check your connection and try again.');
+    }
   };
 
   const handlePhotoAdd = (result: UploadResult | null) => {
@@ -293,6 +300,7 @@ export function FirstListingForm() {
             Continue
           </Button>
         </div>
+        {submitError && <p className="text-right text-sm text-red-600">{submitError}</p>}
       </form>
       <DraftBanner<FormData> step="step-4" watch={watch} enabled={!isSubmitting} />
     </>
