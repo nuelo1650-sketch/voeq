@@ -11,6 +11,14 @@ const apiEnvSchema = envSchema.extend({
   SIGHTENGINE_SECRET: z.string().min(1),
   ADMIN_EMAIL: z.string().email().optional(),
   IMPERSONATION_SECRET: z.string().min(32).optional(),
+  // Local dev SMTP sink (Mailpit). When set, transactional emails are sent
+  // via nodemailer instead of Resend — no effect on production (Resend path
+  // is used whenever RESEND_API_KEY is present).
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().default(1025),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_SECURE: z.coerce.boolean().default(false),
 });
 
 const parsed = apiEnvSchema.safeParse(process.env);

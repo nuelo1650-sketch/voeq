@@ -1,8 +1,35 @@
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
 
 const resend = new Resend(env.RESEND_API_KEY);
+
+/**
+ * SMTP transport for local dev (Mailpit). Lazily created only when SMTP_HOST
+ * is set. Production uses Resend; this path is never touched there.
+ */
+const smtpTransport =
+  env.SMTP_HOST
+    ? nodemailer.createTransport({
+        host: env.SMTP_HOST,
+        port: env.SMTP_PORT,
+        secure: env.SMTP_SECURE,
+        auth: env.SMTP_USER
+          ? { user: env.SMTP_USER, pass: env.SMTP_PASS }
+          : undefined,
+      })
+    : null;
+
+const sendViaSmtp = async (to: string, subject: string, html: string): Promise<void> => {
+  if (!smtpTransport) return;
+  await smtpTransport.sendMail({
+    from: env.RESEND_FROM_EMAIL,
+    to,
+    subject,
+    html,
+  });
+};
 
 // Brand constants — single source of truth so every email looks like Voeq.
 const BRAND = {
@@ -76,88 +103,109 @@ interface PasswordResetEmailParams {
 }
 
 export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
-  if (!env.RESEND_API_KEY) {
-    logger.warn({ to, otp }, 'RESEND_API_KEY not set — OTP not emailed (dev fallback)');
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[DEV OTP] ${to} -> ${otp}`);
+  const html = emailShell(`
+    ${heading('Your verification code')}
+    ${body('Enter this code to verify your email and finish setting up your Voeq account.')}
+    ${otpTiles(otp)}
+    ${note('This code expires in 10 minutes. If you didn’t request this, you can safely ignore the email.')}
+  `);
+  // 1) Production: Resend
+  if (env.RESEND_API_KEY) {
+    try {
+      await resend.emails.send({
+        from: env.RESEND_FROM_EMAIL,
+        to,
+        subject: 'Your Voeq verification code',
+        html,
+      });
+      return;
+    } catch (error) {
+      logger.error({ error, to }, 'Failed to send OTP email');
+      throw new Error('Failed to send verification email');
     }
+  }
+  // 2) Local dev: Mailpit SMTP sink
+  if (smtpTransport) {
+    await sendViaSmtp(to, 'Your Voeq verification code', html);
+    logger.info({ to }, 'OTP sent via local SMTP (Mailpit)');
     return;
   }
-  try {
-    await resend.emails.send({
-      from: env.RESEND_FROM_EMAIL,
-      to,
-      subject: 'Your Voeq verification code',
-      html: emailShell(`
-        ${heading('Your verification code')}
-        ${body('Enter this code to verify your email and finish setting up your Voeq account.')}
-        ${otpTiles(otp)}
-        ${note('This code expires in 10 minutes. If you didn’t request this, you can safely ignore the email.')}
-      `),
-    });
-  } catch (error) {
-    logger.error({ error, to }, 'Failed to send OTP email');
-    throw new Error('Failed to send verification email');
+  // 3) Last resort: console (no email provider configured)
+  logger.warn({ to, otp }, 'No email provider configured — OTP not emailed (dev fallback)');
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[DEV OTP] ${to} -> ${otp}`);
   }
 }
 
 export async function sendMagicLinkEmail({ to, url }: MagicLinkEmailParams): Promise<void> {
-  try {
-    await resend.emails.send({
-      from: env.RESEND_FROM_EMAIL,
-      to,
-      subject: 'Sign in to Voeq',
-      html: emailShell(`
-        ${heading('Sign in to Voeq')}
-        ${body('Tap the button below to sign in. The link expires in 15 minutes and can only be used once.')}
-        <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Sign in to Voeq')}</div>
-        ${note('Or paste this link into your browser:')}
-        <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
-        ${note('If you didn’t request this, you can safely ignore the email.')}
-      `),
-    });
-  } catch (error) {
-    logger.error({ error, to }, 'Failed to send magic link email');
-    throw new Error('Failed to send sign-in email');
+  const html = emailShell(`
+    ${heading('Sign in to Voeq')}
+    ${body('Tap the button below to sign in. The link expires in 15 minutes and can only be used once.')}
+    <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Sign in to Voeq')}</div>
+    ${note('Or paste this link into your browser:')}
+    <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
+    ${note('If you didn’t request this, you can safely ignore the email.')}
+  `);
+  if (env.RESEND_API_KEY) {
+    try {
+      await resend.emails.send({ from: env.RESEND_FROM_EMAIL, to, subject: 'Sign in to Voeq', html });
+      return;
+    } catch (error) {
+      logger.error({ error, to }, 'Failed to send magic link email');
+      throw new Error('Failed to send sign-in email');
+    }
   }
+  if (smtpTransport) {
+    await sendViaSmtp(to, 'Sign in to Voeq', html);
+    return;
+  }
+  logger.warn({ to }, 'No email provider configured — magic link not emailed (dev fallback)');
+  if (process.env.NODE_ENV !== 'production') console.log(`[DEV MAGIC LINK] ${to} -> ${url}`);
 }
 
 export async function sendWelcomeEmail({ to, name }: { to: string; name?: string | null }): Promise<void> {
-  try {
-    await resend.emails.send({
-      from: env.RESEND_FROM_EMAIL,
-      to,
-      subject: 'Welcome to Voeq',
-      html: emailShell(`
-        ${heading(`Welcome to Voeq${name ? `, ${name}` : ''}`)}
-        ${body('Your account is verified. Voeq is the campus marketplace where Nigerian students and locals find trusted vendors for food, fashion, tech repairs, laundry, and more — and chat with them directly on WhatsApp.')}
-        <div style="text-align:center; margin:4px 0 12px;">${button(`${BRAND.siteUrl}/browse`, 'Browse vendors')}</div>
-        ${note('Need a hand? Reply to this email or reach us at ')}
-        <p style="color:${BRAND.muted}; font-size:13px; line-height:19px; margin:0;"><a href="mailto:support@voeq.ng" style="color:${BRAND.forest};">support@voeq.ng</a></p>
-      `),
-    });
-  } catch (error) {
-    logger.error({ error, to }, 'Failed to send welcome email');
+  const html = emailShell(`
+    ${heading(`Welcome to Voeq${name ? `, ${name}` : ''}`)}
+    ${body('Your account is verified. Voeq is the campus marketplace where Nigerian students and locals find trusted vendors for food, fashion, tech repairs, laundry, and more — and chat with them directly on WhatsApp.')}
+    <div style="text-align:center; margin:4px 0 12px;">${button(`${BRAND.siteUrl}/browse`, 'Browse vendors')}</div>
+    ${note('Need a hand? Reply to this email or reach us at ')}
+    <p style="color:${BRAND.muted}; font-size:13px; line-height:19px; margin:0;"><a href="mailto:support@voeq.ng" style="color:${BRAND.forest};">support@voeq.ng</a></p>
+  `);
+  if (env.RESEND_API_KEY) {
+    try {
+      await resend.emails.send({ from: env.RESEND_FROM_EMAIL, to, subject: 'Welcome to Voeq', html });
+      return;
+    } catch (error) {
+      logger.error({ error, to }, 'Failed to send welcome email');
+    }
+  }
+  if (smtpTransport) {
+    await sendViaSmtp(to, 'Welcome to Voeq', html);
   }
 }
 
 export async function sendPasswordResetEmail({ to, url }: PasswordResetEmailParams): Promise<void> {
-  try {
-    await resend.emails.send({
-      from: env.RESEND_FROM_EMAIL,
-      to,
-      subject: 'Reset your Voeq password',
-      html: emailShell(`
-        ${heading('Reset your password')}
-        ${body('Tap the button below to choose a new password. The link expires in 15 minutes and can only be used once.')}
-        <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Reset password')}</div>
-        ${note('Or paste this link into your browser:')}
-        <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
-        ${note('If you didn’t request this, your password stays the same — you can ignore this email.')}
-      `),
-    });
-  } catch (error) {
-    logger.error({ error, to }, 'Failed to send password reset email');
-    throw new Error('Failed to send password reset email');
+  const html = emailShell(`
+    ${heading('Reset your password')}
+    ${body('Tap the button below to choose a new password. The link expires in 15 minutes and can only be used once.')}
+    <div style="text-align:center; margin:4px 0 12px;">${button(url, 'Reset password')}</div>
+    ${note('Or paste this link into your browser:')}
+    <p style="color:${BRAND.muted}; font-size:12px; line-height:18px; word-break:break-all; margin:0 0 4px;">${url}</p>
+    ${note('If you didn’t request this, your password stays the same — you can ignore this email.')}
+  `);
+  if (env.RESEND_API_KEY) {
+    try {
+      await resend.emails.send({ from: env.RESEND_FROM_EMAIL, to, subject: 'Reset your Voeq password', html });
+      return;
+    } catch (error) {
+      logger.error({ error, to }, 'Failed to send password reset email');
+      throw new Error('Failed to send password reset email');
+    }
   }
+  if (smtpTransport) {
+    await sendViaSmtp(to, 'Reset your Voeq password', html);
+    return;
+  }
+  logger.warn({ to }, 'No email provider configured — password reset not emailed (dev fallback)');
+  if (process.env.NODE_ENV !== 'production') console.log(`[DEV RESET] ${to} -> ${url}`);
 }

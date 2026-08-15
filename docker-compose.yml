@@ -1,0 +1,15 @@
+# Local dev only — Mailpit SMTP sink for catching OTP / magic-link / reset emails.
+# Start: docker compose up -d
+# Web UI (read OTPs): http://localhost:8025
+# SMTP (consumed by apps/api when SMTP_HOST=localhost): localhost:1025
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: voeq-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
