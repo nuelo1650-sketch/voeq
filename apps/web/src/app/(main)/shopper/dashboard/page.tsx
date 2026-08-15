@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { serverGetMe as getMe } from '@/lib/auth-server';
+import { requireShopper, serverGetMe as getMe } from '@/lib/auth-server';
 import { serverGetWishlist as getWishlist, serverGetFollowing as getFollowing } from '@/lib/marketplace-server';
 import { Container } from '@/components/ui/Container';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -19,10 +19,8 @@ export const metadata: Metadata = {
 };
 
 export default async function BuyerDashboardPage() {
+  await requireShopper();
   const me = await getMe().catch(() => null);
-  if (!me?.user) {
-    redirect('/signin');
-  }
 
   const [wishlistData, followingData] = await Promise.all([
     getWishlist().catch(() => ({ items: [] })),
@@ -55,7 +53,7 @@ export default async function BuyerDashboardPage() {
                   <SearchIcon className="h-4 w-4" /> Browse vendors
                 </Button>
               </Link>
-              <Link href="/become-vendor">
+              <Link href="/vendor/onboarding/step-1">
                 <Button variant="outline" size="lg" className="border-cream-100/30 text-cream-100 hover:bg-cream-100/10 dark:border-forest-700/30 dark:bg-forest-900/10">
                   <TrendingUpIcon className="h-4 w-4" /> Sell on Voeq
                 </Button>

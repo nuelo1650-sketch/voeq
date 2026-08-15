@@ -21,14 +21,30 @@ export async function requireAuth() {
 }
 
 /**
- * Guard for vendor routes. Redirects to /signin when unauthenticated and to
- * /become-vendor when the user has no vendor profile.
+ * Guard for vendor routes. Enforces that the authenticated user's role matches
+ * the section: only vendors (and admins) may enter /vendor/*. A shopper (buyer)
+ * who types /vendor/* is server-redirected to their own section — role-switching
+ * by URL is impossible. Unauthenticated users go to /signin.
  */
 export async function requireVendor() {
   const me = await serverGetMe().catch(() => null);
   if (!me?.user) redirect('/signin');
   if (me.user.role !== 'vendor' && me.user.role !== 'admin' && me.user.role !== 'super_admin') {
-    redirect('/become-vendor');
+    redirect('/shopper/dashboard');
+  }
+  return me.user;
+}
+
+/**
+ * Guard for shopper (buyer) routes. Only buyers may enter /shopper/*. A vendor
+ * or admin who types /shopper/* is server-redirected to their section.
+ */
+export async function requireShopper() {
+  const me = await serverGetMe().catch(() => null);
+  if (!me?.user) redirect('/signin');
+  if (me.user.role !== 'buyer') {
+    // Vendors (and admins) belong in the vendor section or admin.
+    redirect(me.user.vendorStatus === 'live' ? '/vendor/dashboard' : '/vendor/onboarding/step-1');
   }
   return me.user;
 }
