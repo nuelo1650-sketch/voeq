@@ -133,7 +133,7 @@ export async function sendOtpEmail({ to, otp }: OtpEmailParams): Promise<void> {
   // 3) Last resort: console (no email provider configured)
   logger.warn({ to, otp }, 'No email provider configured — OTP not emailed (dev fallback)');
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`[DEV OTP] ${to} -> ${otp}`);
+    logger.info(`[DEV OTP] ${to} -> ${otp}`);
   }
 }
 
@@ -160,7 +160,7 @@ export async function sendMagicLinkEmail({ to, url }: MagicLinkEmailParams): Pro
     return;
   }
   logger.warn({ to }, 'No email provider configured — magic link not emailed (dev fallback)');
-  if (process.env.NODE_ENV !== 'production') console.log(`[DEV MAGIC LINK] ${to} -> ${url}`);
+  if (process.env.NODE_ENV !== 'production') logger.info(`[DEV MAGIC LINK] ${to} -> ${url}`);
 }
 
 export async function sendWelcomeEmail({ to, name }: { to: string; name?: string | null }): Promise<void> {
@@ -207,5 +207,5 @@ export async function sendPasswordResetEmail({ to, url }: PasswordResetEmailPara
     return;
   }
   logger.warn({ to }, 'No email provider configured — password reset not emailed (dev fallback)');
-  if (process.env.NODE_ENV !== 'production') console.log(`[DEV RESET] ${to} -> ${url}`);
+  if (process.env.NODE_ENV !== 'production') logger.info(`[DEV RESET] ${to} -> ${url}`);
 }
