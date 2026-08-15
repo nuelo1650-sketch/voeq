@@ -12,7 +12,10 @@ interface AgreementModalProps {
 }
 
 export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
-  const [content, setContent] = useState<{ version: string; content: string; title: string } | null>(null);
+  const [content, setContent] = useState<{
+    tos: { version: string; content: string; title: string } | null;
+    privacy: { version: string; content: string; title: string } | null;
+  } | null>(null);
   const [agreed, setAgreed] = useState(false);
   const [scrolledToBottom, setScrolledToBottom] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,9 +29,10 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
     setError(null);
     getCurrentAgreements()
       .then((data) => {
-        if (data.tos) {
-          setContent({ version: data.tos.version, content: data.tos.content, title: data.tos.title });
-        }
+        setContent({
+          tos: data.tos ? { version: data.tos.version, content: data.tos.content, title: data.tos.title } : null,
+          privacy: data.privacy ? { version: data.privacy.version, content: data.privacy.content, title: data.privacy.title } : null,
+        });
       })
       .catch(() => {
         setError('Failed to load agreement. Please refresh.');
@@ -44,12 +48,12 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
   };
 
   const handleAccept = async () => {
-    if (!content) return;
+    if (!content?.tos) return;
     if (!agreed || !scrolledToBottom) return;
     setIsSubmitting(true);
     setError(null);
     try {
-      await acceptAgreement(content.version);
+      await acceptAgreement(content.tos.version);
       onAccepted();
     } catch {
       setError('Failed to save acceptance. Please try again.');
@@ -61,7 +65,7 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
     <Modal isOpen={isOpen} onClose={() => undefined} hideCloseButton closeOnBackdrop={false} closeOnEscape={false}>
       <div className="p-6">
         <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">
-          {content?.title ?? 'Terms of Service'}
+          {content?.tos?.title ?? 'Terms of Service'}
         </h2>
         <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
           Please read to the end and accept to continue.
@@ -72,7 +76,21 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
           className="mt-4 h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm text-forest-900 dark:border-forest-700 dark:bg-forest-900 dark:text-cream-100 dark:bg-forest-800 dark:border-cream-100"
         >
           {content ? (
-            <pre className="whitespace-pre-wrap font-sans">{content.content}</pre>
+            <div className="space-y-6">
+              {content.tos && (
+                <section>
+                  <h3 className="mb-2 font-semibold text-forest-900 dark:text-cream-100">{content.tos.title}</h3>
+                  <pre className="whitespace-pre-wrap font-sans">{content.tos.content}</pre>
+                </section>
+              )}
+              {content.privacy && (
+                <section>
+                  <h3 className="mb-2 font-semibold text-forest-900 dark:text-cream-100">{content.privacy.title}</h3>
+                  <pre className="whitespace-pre-wrap font-sans">{content.privacy.content}</pre>
+                </section>
+              )}
+              {!content.tos && !content.privacy && <p>Loading…</p>}
+            </div>
           ) : (
             <p>Loading…</p>
           )}
@@ -82,7 +100,7 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
         )}
         <div className="mt-4">
           <Checkbox
-            label={`I agree to the ${content?.title ?? 'Terms of Service'}`}
+            label={`I agree to the ${content?.tos?.title ?? 'Terms of Service'}${content?.privacy ? ' and Privacy Policy' : ''}`}
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
             disabled={!scrolledToBottom}
