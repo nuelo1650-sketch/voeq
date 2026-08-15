@@ -3,10 +3,10 @@ import type { User } from '../lib/db';
 import { hashPassword, verifyPassword, validatePasswordStrength } from './password.service';
 import { generateOtp, generateMagicToken, storeToken, consumeToken } from './token.service';
 import { sendOtpEmail, sendMagicLinkEmail, sendPasswordResetEmail, sendWelcomeEmail } from './email.service';
-import { issueSession, verifyPendingToken, issuePendingToken } from './session.service';
+import { issueSession, issuePendingToken } from './session.service';
 import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
-import { env, webAppUrl } from '../config/env';
+import { webAppUrl } from '../config/env';
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 const MAGIC_LINK_EXPIRY_MS = 15 * 60 * 1000;

@@ -48,6 +48,7 @@ const deleteSchema = z.object({ confirm: z.literal('DELETE MY ACCOUNT') });
 preferencesRouter.delete('/me', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {
     const { confirm } = deleteSchema.parse(req.body);
+    void confirm;
 
     const user = await prisma.user.findUnique({ where: { id: req.userId! } });
     if (!user) {

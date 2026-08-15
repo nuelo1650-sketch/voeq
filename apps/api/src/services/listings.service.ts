@@ -1,5 +1,4 @@
 import { prisma } from '../lib/db';
-import type { Prisma } from '@prisma/client';
 import { generateUniqueListingSlug } from './vendor.service';
 
 export interface ListListingsParams {

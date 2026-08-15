@@ -14,7 +14,7 @@ const generateMessageSchema = z.object({
   customMessage: z.string().optional(),
 });
 
-whatsappRouter.post('/generate-message', (req: any, res: Response, next: NextFunction) => {
+whatsappRouter.post('/generate-message', (req: any, res: Response, _next: NextFunction) => {
   try {
     const input = generateMessageSchema.parse(req.body);
     let message: string;

@@ -1,10 +1,10 @@
-import { Router, type Response, type NextFunction } from 'express';
+import { Router, type Response, type NextFunction, type Request } from 'express';
 import { prisma } from '../lib/db';
 
 export const pressPublicRouter: ReturnType<typeof Router> = Router();
 
 // Public: published press items, newest first.
-pressPublicRouter.get('/', async (_req: import('express').Request, res: Response, next: NextFunction) => {
+pressPublicRouter.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const items = await prisma.pressItem.findMany({
       where: { isPublished: true },

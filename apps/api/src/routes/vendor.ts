@@ -21,7 +21,6 @@ import {
   deleteListing,
   getVendorOwnListing,
 } from '../services/listings.service';
-import type { Prisma } from '@prisma/client';
 
 export const vendorRouter: ReturnType<typeof Router> = Router();
 

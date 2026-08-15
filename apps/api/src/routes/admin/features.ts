@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { type AdminRequest } from '../../middleware/admin';
 import { logAdminAction } from '../../middleware/audit';
 import { prisma } from '../../lib/db';
-import type { Prisma } from '@prisma/client';
 
 export const featuresRouter: ReturnType<typeof Router> = Router();
 
