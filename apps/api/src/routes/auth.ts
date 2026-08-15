@@ -27,7 +27,6 @@ import { safeRedirect } from '../lib/redirect';
 import { getSessionCookieName, getSessionCookieOptions, revokeAllUserSessions, revokeSession, hashToken, verifyPendingToken } from '../services/session.service';
 import { env, webAppUrl } from '../config/env';
 import { logger } from '../config/logger';
-import { CURRENT_AGREEMENT_VERSION } from '../services/auth.service';
 import { prisma } from '../lib/db';
 import { ensureVendorRow } from '../services/vendor.service';
 import { issueSession } from '../services/session.service';
@@ -364,8 +363,9 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           role: intent === 'vendor' ? 'vendor' : 'buyer',
           status: 'active',
           emailVerified: new Date(),
-          agreementVersion: CURRENT_AGREEMENT_VERSION,
-          agreementAcceptedAt: new Date(),
+          // Intentionally NOT stamping agreementAcceptedAt here. The (main)
+          // layout's AgreementModal gate forces informed consent post-auth.
+          // Silently pre-consenting would let Google users bypass the TOS.
         },
       });
     } else {
@@ -376,13 +376,8 @@ authRouter.get('/google/callback', async (req: Request, res: Response, next: Nex
           image: user.image ?? profile.picture ?? null,
           emailVerified: user.emailVerified ?? new Date(),
           lastSignInAt: new Date(),
-          // Record TOS acceptance on first Google sign-in if not already done.
-          ...(user.agreementAcceptedAt
-            ? {}
-            : {
-                agreementVersion: CURRENT_AGREEMENT_VERSION,
-                agreementAcceptedAt: new Date(),
-              }),
+          // Leave agreementAcceptedAt untouched: never silently consent on a
+          // returning Google sign-in. The AgreementModal gate handles it.
         },
       });
     }
