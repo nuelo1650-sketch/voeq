@@ -101,12 +101,11 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
         </Container>
       </header>
       <Container size="xl">
-        <div className="grid grid-cols-1 gap-6 py-6 lg:grid-cols-[220px_1fr]">
+        <div className={cn('grid grid-cols-1 gap-6 py-6', !isOnboarding && 'lg:grid-cols-[220px_1fr]')}>
           <aside
             className={cn(
-              'lg:block',
-              mobileOpen ? 'block' : 'hidden',
-              isOnboarding ? 'hidden' : '',
+              isOnboarding ? 'hidden' : 'lg:block',
+              !isOnboarding && mobileOpen ? 'block' : '',
             )}
           >
             <nav className="flex flex-col gap-1 rounded-2xl border border-cream-200 bg-cream-50/60 p-2 dark:border-forest-700 dark:bg-forest-900/60 dark:bg-forest-800/60 dark:border-cream-100" aria-label="Vendor">
