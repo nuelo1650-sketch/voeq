@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getCategories, getInstitutions } from '@/lib/marketplace-client';
+import { getCategories, getInstitutions, getStats } from '@/lib/marketplace-client';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SearchInput } from '@/components/ui/SearchInput';
@@ -81,13 +81,15 @@ const FAQS = [
 ];
 
 export default async function LandingPage() {
-  const [categoriesResult, institutionsResult] = await Promise.all([
+  const [categoriesResult, institutionsResult, statsResult] = await Promise.all([
     getCategories().catch(() => ({ categories: [] })),
     getInstitutions().catch(() => ({ institutions: [] })),
+    getStats().catch(() => ({ institutions: 0, categories: 0, vendors: 0, listings: 0 })),
   ]);
 
   const categories = categoriesResult.categories ?? [];
   const institutions = institutionsResult.institutions ?? [];
+  const campusCount = statsResult.institutions ?? 0;
 
   const orgJsonLd = buildOrganizationJsonLd();
   const websiteJsonLd = buildWebSiteJsonLd();
@@ -402,7 +404,12 @@ export default async function LandingPage() {
                   <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Grow your business on campus</h2>
                   <p className="mt-4 text-lg text-cream-100/80">Reach every student on campus. Free to start, no upfront costs.</p>
                   <ul className="mt-8 space-y-3">
-                    {['Reach 10,000+ students', 'Free to start', 'Manage your storefront', 'Direct WhatsApp inquiries'].map((benefit) => (
+                    {[
+                      `Reach students across ${campusCount}+ campuses`,
+                      'Free to start',
+                      'Manage your storefront',
+                      'Direct WhatsApp inquiries',
+                    ].map((benefit) => (
                       <li key={benefit} className="flex items-center gap-3">
                         <CheckIcon className="h-5 w-5 text-gold-500" />
                         <span className="text-cream-100">{benefit}</span>
