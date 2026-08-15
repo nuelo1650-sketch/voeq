@@ -43,7 +43,12 @@ export async function uploadImage(
 
   const base64Data = dataUrl.split(',')[1] ?? '';
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/image`, {
+  const base =
+    typeof window !== 'undefined' && process.env.NEXT_PUBLIC_API_URL
+      ? '/api-internal'
+      : process.env.NEXT_PUBLIC_API_URL ?? '';
+
+  const res = await fetch(`${base}/api/upload/image`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
