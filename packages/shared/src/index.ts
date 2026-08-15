@@ -17,7 +17,6 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(4000),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
-  CORS_ORIGINS: z.string().optional(), // comma-separated list, overrides CORS_ORIGIN if set
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
   NEXT_PUBLIC_API_URL: z.string().url(),
@@ -44,8 +43,8 @@ export const envSchema = z.object({
   ADMIN_EMAIL: z.string().email().optional(),
   IMPERSONATION_SECRET: z.string().min(32).optional(),
   SENTRY_DSN: z.string().url().optional(),
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  UPSTASH_REDIS_URL: z.string().url().optional(),
+  UPSTASH_REDIS_TOKEN: z.string().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
   BACKUP_CLOUDINARY_FOLDER: z.string().default('voeq-backups'),
