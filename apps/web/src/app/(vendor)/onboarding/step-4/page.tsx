@@ -1,8 +1,6 @@
 import { type Metadata } from 'next';
-import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
-import { FirstListingForm } from '@/components/vendor/FirstListingForm';
 import { requireVendor } from '@/lib/auth-server';
-import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
+import { ReviewAndGoLive } from '@/components/vendor/ReviewAndGoLive';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 4',
@@ -13,12 +11,5 @@ export const dynamic = 'force-dynamic';
 
 export default function Step4Page() {
   requireVendor();
-  return (
-    <>
-      <VendorPageHeader title="Your first listing" subtitle="Add one item or service to get started." />
-      <OnboardingWizard currentStep={4}>
-        <FirstListingForm />
-      </OnboardingWizard>
-    </>
-  );
+  return <ReviewAndGoLive />;
 }

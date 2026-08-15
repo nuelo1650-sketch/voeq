@@ -17,9 +17,8 @@ interface OnboardingWizardProps {
 const STEPS = [
   { number: 1, label: 'Business' },
   { number: 2, label: 'Contact' },
-  { number: 3, label: 'Photo' },
-  { number: 4, label: 'Listing' },
-  { number: 5, label: 'Go live' },
+  { number: 3, label: 'Photos & listing' },
+  { number: 4, label: 'Go live' },
 ];
 
 export function OnboardingWizard({ children, currentStep }: OnboardingWizardProps) {
@@ -41,7 +40,7 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
           // haven't reached this step. Never redirect on a fetch failure —
           // a flaky/down API must not trap the user in a redirect loop.
           if (res.vendor.status !== 'live') {
-            const actualStep = Math.min(5, Math.max(1, Math.floor(res.progress / 20) + 1));
+            const actualStep = Math.min(4, Math.max(1, Math.floor(res.progress / 20) + 1));
             if (currentStep > actualStep) {
               router.replace(`/vendor/onboarding/step-${actualStep}`);
             }

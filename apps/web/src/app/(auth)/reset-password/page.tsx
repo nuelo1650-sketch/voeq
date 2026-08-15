@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
         newPassword: data.newPassword,
       });
       if (result.user) {
-        window.location.replace(resolvePostAuthDestination(result.user));
+        window.location.replace(resolvePostAuthDestination(result.user, new URLSearchParams(window.location.search).get('next')));
       }
     } catch (err: unknown) {
       const apiError = err as { error?: string; message?: string };

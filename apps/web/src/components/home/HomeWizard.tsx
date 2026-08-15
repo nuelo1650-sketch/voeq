@@ -38,7 +38,7 @@ export function HomeWizard({ firstName, categories }: { firstName: string; categ
         method: 'PATCH',
         body: JSON.stringify({ homeSeenAt: new Date().toISOString(), interests }),
       });
-      router.push('/buyer-dashboard');
+      router.push('/shopper/dashboard');
       router.refresh();
     } catch {
       setFinishing(false);

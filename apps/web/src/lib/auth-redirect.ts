@@ -4,18 +4,33 @@ export type VendorStatus = 'incomplete' | 'pending' | 'live' | 'rejected' | 'sus
 export interface PostAuthUser {
   role: PostAuthRole;
   vendorStatus: VendorStatus;
+  agreementAcceptedAt?: string | null;
+  defaultCampusId?: string | null;
 }
 
 /**
- * Single source of truth for where a user lands after sign-in / OTP / magic-link.
- * Driven by the user's actual role + vendor status — never by the signup button they clicked.
+ * Single source of truth for where a user lands after sign-in / sign-up / OTP.
+ * Driven by the user's actual role + completion status — never by the button
+ * they clicked. Enforces the chain: Auth -> Onboarding -> Dashboard.
+ *
+ * - Vendor (live)        -> /vendor/dashboard
+ * - Vendor (not live)    -> /vendor/onboarding/step-1
+ * - Buyer (complete)     -> /shopper/dashboard
+ * - Buyer (incomplete)   -> /shopper/onboarding
+ * - Admin                 -> /admin
  */
-export function resolvePostAuthDestination(user: PostAuthUser): string {
-  if (user.role === 'admin' || user.role === 'super_admin') return '/admin';
-  if (user.role === 'vendor') {
-    return user.vendorStatus === 'live' ? '/vendor' : '/vendor/onboarding/step-1';
-  }
-  return '/home';
+export function resolvePostAuthDestination(user: PostAuthUser, next?: string | null): string {
+  const roleBased = (() => {
+    if (user.role === 'admin' || user.role === 'super_admin') return '/admin';
+    if (user.role === 'vendor') {
+      return user.vendorStatus === 'live' ? '/vendor/dashboard' : '/vendor/onboarding/step-1';
+    }
+    const shopperReady = !!user.agreementAcceptedAt && !!user.defaultCampusId;
+    return shopperReady ? '/shopper/dashboard' : '/shopper/onboarding';
+  })();
+  // An explicit, safe `next` (e.g. from "List your business") wins — but only if
+  // it's a same-origin absolute path. Otherwise fall back to role-based routing.
+  return next ? safeRedirect(next, roleBased) : roleBased;
 }
 
 /**

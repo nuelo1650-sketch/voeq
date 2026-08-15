@@ -26,7 +26,8 @@ export function SignInForm() {
     try {
       const result = await signInWithPassword({ email, password });
       if (result.user) {
-        window.location.replace(resolvePostAuthDestination(result.user));
+        const next = searchParams.get('next');
+        window.location.replace(resolvePostAuthDestination(result.user, next));
       }
     } catch (err: unknown) {
       const apiError = err as { error?: string; message?: string };

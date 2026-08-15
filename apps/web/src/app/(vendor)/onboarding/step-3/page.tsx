@@ -1,24 +1,138 @@
-import { type Metadata } from 'next';
-import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
-import { ProfilePhotoUpload } from '@/components/vendor/ProfilePhotoUpload';
-import { requireVendor } from '@/lib/auth-server';
-import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Button } from '@/components/ui/Button';
+import { ImageUploader } from '@/components/vendor/ImageUploader';
+import { upsertVendor, createListing, getCategories, type CategoryNode } from '@/lib/vendor-client';
+import type { UploadResult } from '@/lib/upload-client';
 
-export const metadata: Metadata = {
-  title: 'Vendor onboarding — Step 3',
-  robots: { index: false, follow: false },
-};
-
-export const dynamic = 'force-dynamic';
+const MAX_CATEGORIES = 5;
 
 export default function Step3Page() {
-  requireVendor();
+  const router = useRouter();
+
+  // Profile photo
+  const [photo, setPhoto] = useState<UploadResult | null>(null);
+
+  // Listing
+  const [tree, setTree] = useState<CategoryNode[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [priceMin, setPriceMin] = useState('0');
+  const [photos, setPhotos] = useState<Array<{ publicId: string; url: string; width: number; height: number; displayOrder: number }>>([]);
+  const [categoriesError, setCategoriesError] = useState(false);
+
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getCategories()
+      .then((res) => setTree(res.categories))
+      .catch(() => setCategoriesError(true));
+  }, []);
+
+  const toggleCategory = (id: string) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) return prev;
+      if (prev.length >= MAX_CATEGORIES) return prev;
+      return [...prev, id];
+    });
+  };
+
+  const onContinue = async () => {
+    if (!photo) { setError('Please add a profile photo to continue.'); return; }
+    if (photos.length === 0) { setError('Please add at least one listing photo.'); return; }
+    if (selectedIds.length === 0) { setError('Please pick at least one category.'); return; }
+    setSaving(true);
+    setError(null);
+    try {
+      await upsertVendor({ profilePhotoPublicId: photo.publicId });
+      await createListing({
+        categoryIds: selectedIds,
+        title,
+        description,
+        priceMin: Number(priceMin) || 0,
+        photos: photos.map((p, i) => ({ ...p, altText: title, displayOrder: i })),
+      });
+      router.push('/vendor/onboarding/step-4');
+    } catch {
+      setError('Could not save. Check your connection and try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <>
-      <VendorPageHeader title="Profile photo" subtitle="Add a photo students will recognize." />
-      <OnboardingWizard currentStep={3}>
-        <ProfilePhotoUpload />
-      </OnboardingWizard>
-    </>
+    <div className="space-y-8">
+      {/* Profile photo */}
+      <section>
+        <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Profile photo</h2>
+        <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">This shows on your storefront and listing cards.</p>
+        <div className="mt-3 mx-auto max-w-sm">
+          <ImageUploader value={photo} onChange={setPhoto} aspectRatio="square" folder="profile" />
+        </div>
+      </section>
+
+      {/* First listing */}
+      <section>
+        <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Your first listing</h2>
+        <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Add one item or service to get started.</p>
+
+        {categoriesError ? (
+          <div className="mt-3 rounded-2xl border border-cream-300 bg-cream-50 p-4 text-center dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+            <p className="text-sm text-forest-700/80 dark:text-cream-100/80">Couldn&apos;t load categories.</p>
+            <Button type="button" variant="outline" className="mt-3" onClick={() => { setCategoriesError(false); getCategories().then((r) => setTree(r.categories)).catch(() => setCategoriesError(true)); }}>Retry</Button>
+          </div>
+        ) : (
+          <div className="mt-3 space-y-4">
+            <div className="space-y-1.5">
+              <p className="text-sm font-medium text-forest-700 dark:text-cream-100">Categories</p>
+              <p className="text-xs text-forest-700/60 dark:text-cream-100/60">Pick up to {MAX_CATEGORIES}. The first is your primary.</p>
+              <div className="space-y-3">
+                {tree.map((parent) => (
+                  <div key={parent.id} className="rounded-2xl border border-cream-300 bg-cream-50/60 p-4 dark:border-forest-700 dark:bg-forest-800/40 dark:border-cream-100">
+                    <p className="mb-2 text-sm font-semibold text-forest-900 dark:text-cream-100">{parent.name}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button type="button" onClick={() => toggleCategory(parent.id)} className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${selectedIds.includes(parent.id) ? 'border-forest-700 bg-forest-700 text-cream-100' : 'border-cream-300 text-forest-700 hover:border-forest-700/30 dark:border-forest-700 dark:text-cream-100'}`}>{parent.name}</button>
+                      {parent.children.map((child) => (
+                        <button key={child.id} type="button" onClick={() => toggleCategory(child.id)} className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${selectedIds.includes(child.id) ? 'border-forest-700 bg-forest-700 text-cream-100' : 'border-cream-300 text-forest-700 hover:border-forest-700/30 dark:border-forest-700 dark:text-cream-100'}`}>{child.name}</button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {selectedIds.length === 0 && <p className="mt-2 text-sm text-red-600">Select at least one category.</p>}
+            </div>
+
+            <Input label="Title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Jollof rice + chicken" maxLength={60} />
+            <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} placeholder="What's included? Any special options?" />
+            <Input label="Price (₦)" type="number" inputMode="numeric" value={priceMin} onChange={(e) => setPriceMin(e.target.value)} placeholder="1500" />
+
+            <div>
+              <p className="mb-1 text-sm font-medium text-forest-700 dark:text-cream-100">Photos</p>
+              <p className="mb-3 text-xs text-forest-700/60 dark:text-cream-100/60">Add at least 1 photo (max 8). Use real photos of your work.</p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {photos.map((p, i) => (
+                  <div key={p.publicId + i} className="relative aspect-square">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.url} alt={`Photo ${i + 1}`} className="h-full w-full rounded-lg object-cover" />
+                    <button type="button" onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))} className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-forest-900/80 text-cream-100 text-xs">×</button>
+                  </div>
+                ))}
+                {photos.length < 8 && <ImageUploader onChange={(r) => r && setPhotos((prev) => [...prev, { ...r, displayOrder: prev.length }])} aspectRatio="square" />}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex justify-between">
+        <Button variant="ghost" onClick={() => router.push('/vendor/onboarding/step-2')}>Back</Button>
+        <Button onClick={onContinue} isLoading={saving}>Continue</Button>
+      </div>
+    </div>
   );
 }

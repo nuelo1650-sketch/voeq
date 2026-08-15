@@ -23,7 +23,7 @@ export default function AuthCallbackPage() {
       .then((res) => {
         setStatus('success');
         setMessage('Signed in successfully. Redirecting…');
-        const dest = resolvePostAuthDestination(res.user);
+        const dest = resolvePostAuthDestination(res.user, params.get('next'));
         setTimeout(() => {
           window.location.replace(dest);
         }, 1200);

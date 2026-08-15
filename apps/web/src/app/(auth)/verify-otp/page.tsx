@@ -103,7 +103,7 @@ export default function VerifyOtpPage() {
       const result = await verifyOtp({ email, otp: code, pendingToken });
       if (result.user) {
         setVerified(true);
-        const dest = resolvePostAuthDestination(result.user);
+        const dest = resolvePostAuthDestination(result.user, new URLSearchParams(window.location.search).get('next'));
         setTimeout(() => {
           window.location.replace(dest);
         }, 1200);

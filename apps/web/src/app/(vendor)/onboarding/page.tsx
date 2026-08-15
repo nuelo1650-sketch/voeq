@@ -23,7 +23,7 @@ export default async function OnboardingPage() {
     const progress = typeof vendor.onboardingProgress === 'number' && !Number.isNaN(vendor.onboardingProgress)
       ? vendor.onboardingProgress
       : 0;
-    const step = Math.min(5, Math.max(1, Math.floor(progress / 20) + 1));
+    const step = Math.min(4, Math.max(1, Math.floor(progress / 20) + 1));
     redirect(`/vendor/onboarding/step-${step}`);
   }
 

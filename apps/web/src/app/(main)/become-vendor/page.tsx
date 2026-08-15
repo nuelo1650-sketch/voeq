@@ -18,13 +18,13 @@ export const dynamic = 'force-dynamic';
 
 export default async function BecomeVendorPage() {
   const me = await getMe().catch(() => null);
-  if (!me?.user) redirect('/signin');
-  if (!me.user.agreementAcceptedAt) redirect('/signin');
+  if (!me?.user) redirect('/signin?next=/become-vendor');
+  if (!me.user.agreementAcceptedAt) redirect('/signin?next=/become-vendor');
   if (!me.user.defaultCampusId) redirect('/select-campus');
 
   const vendorResult = await getMyVendor().catch(() => null);
   if (vendorResult && 'vendor' in vendorResult && vendorResult.vendor.status === 'live') {
-    redirect('/vendor');
+    redirect('/vendor/dashboard');
   }
 
   return (
