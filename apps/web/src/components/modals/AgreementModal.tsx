@@ -48,12 +48,16 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
   };
 
   const handleAccept = async () => {
-    if (!content?.tos) return;
+    // Accept if we have at least one agreement to record against. If the
+    // backend has no current TOS configured we still let the user proceed
+    // (recording acceptance of whatever was shown) instead of dead-locking
+    // the entire app behind a missing row.
+    const version = content?.tos?.version ?? content?.privacy?.version ?? '1.0';
     if (!agreed || !scrolledToBottom) return;
     setIsSubmitting(true);
     setError(null);
     try {
-      await acceptAgreement(content.tos.version);
+      await acceptAgreement(version);
       onAccepted();
     } catch {
       setError('Failed to save acceptance. Please try again.');

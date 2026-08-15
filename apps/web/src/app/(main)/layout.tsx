@@ -41,7 +41,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const handleAgreementAccepted = () => {
     setShowAgreement(false);
-    setShowCampus(true);
+    // Re-fetch the latest user so agreementAcceptedAt is reflected in state
+    // immediately (otherwise downstream guards like become-vendor would still
+    // see the stale null and bounce to /signin).
+    getMe()
+      .then((data) => setMe(data.user))
+      .catch(() => {})
+      .finally(() => {
+        setShowCampus(true);
+        router.refresh();
+      });
   };
 
   const handleCampusSelected = () => {

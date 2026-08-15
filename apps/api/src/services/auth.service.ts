@@ -7,6 +7,7 @@ import { issueSession, issuePendingToken } from './session.service';
 import { revokeAllUserSessions } from './session.service';
 import { logger } from '../config/logger';
 import { webAppUrl } from '../config/env';
+import { ensureVendorRow } from './vendor.service';
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 const MAGIC_LINK_EXPIRY_MS = 15 * 60 * 1000;
@@ -42,6 +43,17 @@ export async function signUpWithPassword(
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
   if (existing && existing.hasPassword && existing.emailVerified) {
     logger.info({ email: input.email }, 'Signup attempted for existing verified account');
+    // If this signup carries vendor intent and the account is currently a
+    // buyer, promote it to vendor (and guarantee the Vendor row exists) so the
+    // user isn't silently locked into a shopper account they didn't want.
+    // Never demote an existing vendor/admin.
+    if (isVendorIntent && existing.role === 'buyer') {
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { role: 'vendor' },
+      });
+      await ensureVendorRow(existing.id);
+    }
     // Return a pending token so the client can still proceed to /verify-otp
     // (the OTP flow is a no-op here, but the contract must stay consistent).
     return { otpSent: true, pendingToken: await issuePendingToken(input.email) };
@@ -66,8 +78,9 @@ export async function signUpWithPassword(
         name: input.name,
         passwordHash,
         hasPassword: true,
-        // Promote to vendor context only if this is a fresh (unverified) account
-        // being (re)registered with vendor intent; never demote an existing role.
+        // Promote to vendor context if this signup carries vendor intent
+        // (whether the account is fresh/unverified or an existing buyer).
+        // Never demote an existing vendor/admin role.
         ...(isVendorIntent && existing.role === 'buyer'
           ? { role: 'vendor' }
           : {}),

@@ -369,6 +369,10 @@ authRouter.get('/google/callback', async (req: Request, res: Response, _next: Ne
         },
       });
     } else {
+      // If this Google sign-in carries vendor intent and the account is
+      // currently a buyer, promote it to vendor (and guarantee the Vendor
+      // row exists). Never demote an existing vendor/admin.
+      const promote = intent === 'vendor' && user.role === 'buyer';
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -376,10 +380,12 @@ authRouter.get('/google/callback', async (req: Request, res: Response, _next: Ne
           image: user.image ?? profile.picture ?? null,
           emailVerified: user.emailVerified ?? new Date(),
           lastSignInAt: new Date(),
+          ...(promote ? { role: 'vendor' } : {}),
           // Leave agreementAcceptedAt untouched: never silently consent on a
           // returning Google sign-in. The AgreementModal gate handles it.
         },
       });
+      if (promote) await ensureVendorRow(user.id);
     }
 
     // OAuth vendor signup: guarantee the Vendor row exists atomically (mirrors
