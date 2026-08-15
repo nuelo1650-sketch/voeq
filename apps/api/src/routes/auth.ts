@@ -19,7 +19,7 @@ import {
   consumePasswordReset,
   resendOtp,
 } from '../services/auth.service';
-import { rateLimit, trackFailure } from '../middleware/rate-limit';
+import { trackFailure } from '../middleware/rate-limit';
 import { authLimiter, magicLimiter, agreementLimiter, rateLimitWithFallback } from '../middleware/rate-limit-upstash';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
