@@ -8,9 +8,10 @@ import { NAV_ITEMS } from './nav-config';
 export function AppBottomNav() {
   const pathname = usePathname();
 
-  // Hide the buyer bottom nav while a vendor is still onboarding
-  // (they aren't live yet and shouldn't see the shopper navigation).
-  if (pathname.startsWith('/vendor/onboarding')) return null;
+  // Hide the buyer bottom nav anywhere under /vendor — a vendor (whether still
+  // onboarding or on their pre-live dashboard) should never see the shopper
+  // navigation. Buyers never visit /vendor/*, so this is always safe.
+  if (pathname.startsWith('/vendor')) return null;
 
   const primary = NAV_ITEMS.filter((i) => i.primary).slice(0, 4);
 

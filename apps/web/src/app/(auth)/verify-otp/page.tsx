@@ -181,7 +181,6 @@ export default function VerifyOtpPage() {
           value={email}
           readOnly
           aria-readonly="true"
-          onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           className="mb-6 w-full rounded-xl border border-cream-300 bg-cream-100/60 px-4 py-2.5 text-center text-sm text-forest-900 outline-none dark:border-forest-700 dark:bg-forest-900/60 dark:text-cream-100 dark:border-cream-100"
           aria-label="Email address"

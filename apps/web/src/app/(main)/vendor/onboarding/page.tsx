@@ -14,6 +14,12 @@ export default async function OnboardingPage() {
   if (result && 'vendor' in result) {
     const { vendor } = result;
     if (vendor.status === 'live') redirect('/vendor');
+
+    // Never skip past step 1 unless the foundational business basics actually
+    // exist — a stale/over-reported onboardingProgress must not drop the user
+    // into a later step they haven't earned (e.g. "university before name").
+    if (!vendor.businessName) redirect('/vendor/onboarding/step-1');
+
     const progress = typeof vendor.onboardingProgress === 'number' && !Number.isNaN(vendor.onboardingProgress)
       ? vendor.onboardingProgress
       : 0;
