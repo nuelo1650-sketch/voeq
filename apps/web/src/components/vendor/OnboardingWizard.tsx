@@ -7,7 +7,6 @@ import { ProgressMeter } from './ProgressMeter';
 import { getMyVendor } from '@/lib/vendor-client';
 import type { VendorProfile } from '@/lib/vendor-client';
 import { Container } from '@/components/ui/Container';
-import { Section } from '@/components/ui/Section';
 
 interface OnboardingWizardProps {
   children: React.ReactNode;
@@ -61,20 +60,18 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
   }
 
   return (
-    <Section spacing="md">
-      <Container size="md">
-        <div className="mb-8">
-          <ProgressMeter progress={progress} />
-        </div>
+    <Container size="md">
+      <div className="mb-8">
+        <ProgressMeter progress={progress} />
+      </div>
 
-        <div className="mb-12">
-          <StepIndicator steps={steps} />
-        </div>
+      <div className="mb-12">
+        <StepIndicator steps={steps} />
+      </div>
 
-        <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-8 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
-          {children}
-        </div>
-      </Container>
-    </Section>
+      <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-8 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+        {children}
+      </div>
+    </Container>
   );
 }

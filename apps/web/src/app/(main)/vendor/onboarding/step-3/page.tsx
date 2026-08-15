@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { ProfilePhotoUpload } from '@/components/vendor/ProfilePhotoUpload';
 import { requireVendor } from '@/lib/auth-server';
-import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { Container } from '@/components/ui/Container';
 
@@ -18,15 +18,13 @@ export default function Step3Page() {
   return (
     <>
       <VendorPageHeader title="Profile photo" subtitle="Add a photo students will recognize." />
-      <VendorSection>
-        <Container size="md">
-          <AnimatedSection>
-            <OnboardingWizard currentStep={3}>
-              <ProfilePhotoUpload />
-            </OnboardingWizard>
-          </AnimatedSection>
-        </Container>
-      </VendorSection>
+      <Container size="md">
+        <AnimatedSection>
+          <OnboardingWizard currentStep={3}>
+            <ProfilePhotoUpload />
+          </OnboardingWizard>
+        </AnimatedSection>
+      </Container>
     </>
   );
 }

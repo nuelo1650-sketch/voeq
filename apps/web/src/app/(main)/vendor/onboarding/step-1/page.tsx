@@ -3,7 +3,7 @@ import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { BusinessBasicsForm } from '@/components/vendor/BusinessBasicsForm';
 import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 import { requireVendor } from '@/lib/auth-server';
-import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
+import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { Container } from '@/components/ui/Container';
 
@@ -26,15 +26,13 @@ export default async function Step1Page() {
   return (
     <>
       <VendorPageHeader title="Business basics" subtitle="Tell students what you offer." />
-      <VendorSection>
-        <Container size="md">
-          <AnimatedSection>
-            <OnboardingWizard currentStep={1}>
-              <BusinessBasicsForm initialData={initialData} />
-            </OnboardingWizard>
-          </AnimatedSection>
-        </Container>
-      </VendorSection>
+      <Container size="md">
+        <AnimatedSection>
+          <OnboardingWizard currentStep={1}>
+            <BusinessBasicsForm initialData={initialData} />
+          </OnboardingWizard>
+        </AnimatedSection>
+      </Container>
     </>
   );
 }
