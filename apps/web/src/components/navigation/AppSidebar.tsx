@@ -17,6 +17,10 @@ interface AppSidebarProps {
 export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) {
   const pathname = usePathname();
 
+  // Buyers' shopper nav must not render inside vendor sections — a vendor sees
+  // only the vendor chrome. Buyers never visit /vendor/*, so this is always safe.
+  if (pathname.startsWith('/vendor')) return null;
+
   const isActive = (href: string) =>
     pathname === href || (href !== '/home' && pathname.startsWith(href));
 

@@ -135,7 +135,7 @@ export default async function LandingPage() {
                 <Link href="/signup">Sign up</Link>
               </Button>
               <Button variant="primary" size="sm" asChild>
-                <Link href="/signup?intent=vendor">List your business</Link>
+                <Link href="/become-vendor">List your business</Link>
               </Button>
             </div>
             {/* Mobile menu (native <details>, no JS needed) */}
@@ -158,7 +158,7 @@ export default async function LandingPage() {
                 <div className="my-2 border-t border-cream-200 dark:border-forest-700 dark:border-cream-100" />
                 <Link href="/signin" className="block rounded-md bg-forest-700 px-3 py-2 text-center text-sm font-medium text-cream-100 hover:bg-forest-800">Sign in</Link>
                 <Link href="/signup" className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:border-cream-100 dark:bg-forest-700">Sign up</Link>
-                <Link href="/signup?intent=vendor" className="block rounded-md px-3 py-2 text-center text-sm font-medium text-gold-700 hover:bg-cream-200 dark:text-gold-400 dark:hover:bg-forest-700 dark:bg-forest-700">List your business</Link>
+                <Link href="/become-vendor" className="block rounded-md px-3 py-2 text-center text-sm font-medium text-gold-700 hover:bg-cream-200 dark:text-gold-400 dark:hover:bg-forest-700 dark:bg-forest-700">List your business</Link>
               </div>
             </details>
           </div>
@@ -234,7 +234,7 @@ export default async function LandingPage() {
                   No commissions, no middleman — your storefront goes live in minutes.
                 </p>
                 <Button variant="gold" size="md" className="mt-5" asChild>
-                  <Link href="/signup?intent=vendor">List your business <ArrowRightIcon className="h-4 w-4" /></Link>
+                  <Link href="/become-vendor">List your business <ArrowRightIcon className="h-4 w-4" /></Link>
                 </Button>
               </div>
             </div>
@@ -418,7 +418,7 @@ export default async function LandingPage() {
                   </ul>
                   <div className="mt-8">
                     <Button variant="gold" size="lg" rightIcon={<ArrowRightIcon className="h-5 w-5" />} asChild>
-                      <Link href="/signup?intent=vendor">List your business</Link>
+                      <Link href="/become-vendor">List your business</Link>
                     </Button>
                   </div>
                 </div>
