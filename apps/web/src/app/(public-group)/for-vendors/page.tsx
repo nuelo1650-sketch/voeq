@@ -54,7 +54,7 @@ export default async function ForVendorsPage() {
               { step: '2', title: 'Add your listings', description: 'Post what you sell with photos and prices — no commission, ever.' },
               { step: '3', title: 'Get discovered', description: 'Students on your campus find you and message you directly on WhatsApp.' },
             ].map((item) => (
-              <div key={item.step} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 text-center dark:border-forest-700 dark:bg-forest-900">
+              <div key={item.step} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 text-center dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100">
                 <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-forest-700 text-lg font-semibold text-cream-100">{item.step}</div>
                 <h3 className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
                 <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">{item.description}</p>
@@ -75,7 +75,7 @@ export default async function ForVendorsPage() {
               { title: 'Manage easily', description: 'Update your listings, hours, and photos from any device.' },
               { title: 'Grow with us', description: 'Phase 2 (Jan 2027) brings payments, analytics, and featured placements.' },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-900">
+              <div key={item.title} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100">
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/20">
                   <CheckIcon className="h-5 w-5 text-gold-700" />
                 </div>

@@ -12,7 +12,7 @@ interface NotificationItemProps {
 
 export function NotificationItem({ title, body, timestamp, read, actions }: NotificationItemProps) {
   return (
-    <div className={`rounded-xl border border-cream-300 p-3 dark:border-forest-700 ${read ? 'bg-cream-50 dark:bg-forest-800' : 'bg-white dark:bg-forest-900'}`}>
+    <div className={`rounded-xl border border-cream-300 p-3 dark:border-forest-700 ${read ? 'bg-cream-50 dark:bg-forest-800' : 'bg-white dark:bg-forest-900'} dark:border-cream-100`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{title}</p>

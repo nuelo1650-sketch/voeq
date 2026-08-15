@@ -36,7 +36,7 @@ export default async function ListingsPage() {
               {listings.length > 0 ? (
                 <div className="space-y-2">
                   {listings.map((l: Listing) => (
-                    <div key={l.id} className="flex items-center justify-between rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
+                    <div key={l.id} className="flex items-center justify-between rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                       <div>
                         <p className="font-medium text-forest-900 dark:text-cream-100">{l.title}</p>
                         <p className="text-xs text-forest-700/60 dark:text-cream-100/60">
@@ -44,10 +44,10 @@ export default async function ListingsPage() {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <Link href={`/l/${l.slug}`} target="_blank" className="text-sm text-forest-700 hover:underline dark:text-gold-500">
+                        <Link href={`/l/${l.slug}`} target="_blank" className="text-sm text-forest-700 hover:underline dark:text-gold-500 dark:text-cream-100">
                           View
                         </Link>
-                        <Link href={`/vendor/listings/${l.id}/edit`} className="text-sm text-forest-700 hover:underline dark:text-gold-500">
+                        <Link href={`/vendor/listings/${l.id}/edit`} className="text-sm text-forest-700 hover:underline dark:text-gold-500 dark:text-cream-100">
                           Edit
                         </Link>
                       </div>
@@ -55,7 +55,7 @@ export default async function ListingsPage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-dashed border-cream-300 bg-cream-50 p-8 text-center dark:border-forest-700 dark:bg-forest-800">
+                <div className="rounded-2xl border border-dashed border-cream-300 bg-cream-50 p-8 text-center dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                   <p className="text-sm text-forest-700/70 dark:text-cream-100/70">No listings yet.</p>
                 </div>
               )}

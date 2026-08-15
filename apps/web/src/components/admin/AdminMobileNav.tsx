@@ -17,7 +17,7 @@ const MOBILE_NAV = [
 export function AdminMobileNav() {
   const pathname = usePathname();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:hidden dark:bg-forest-800/95 dark:border-cream-100">
       {MOBILE_NAV.map((item) => {
         const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
         const Icon = item.icon;

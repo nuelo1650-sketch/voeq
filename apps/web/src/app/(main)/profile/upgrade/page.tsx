@@ -52,7 +52,7 @@ export default function UpgradePage() {
                   </ul>
                   <button
                     disabled
-                    className="mt-6 w-full rounded-full bg-gold-500 px-6 py-3 text-sm font-medium text-forest-900 opacity-50"
+                    className="mt-6 w-full rounded-full bg-gold-500 px-6 py-3 text-sm font-medium text-forest-900 opacity-50 dark:text-cream-100"
                   >
                     Coming in January 2027
                   </button>

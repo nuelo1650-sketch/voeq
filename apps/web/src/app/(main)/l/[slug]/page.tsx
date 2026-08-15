@@ -92,7 +92,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
 
                 <PriceRange min={listing.priceMin} max={listing.priceMax} size="lg" />
 
-                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
+                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                   <Link
                     href={`/v/${listing.vendor.slug}`}
                     className="flex items-center gap-3"
@@ -136,7 +136,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
         </Container>
       </VendorSection>
 
-      <VendorSection title="Description" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+      <VendorSection title="Description" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
         <Container size="lg" className="py-6">
           <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">{listing.description}</p>
         </Container>

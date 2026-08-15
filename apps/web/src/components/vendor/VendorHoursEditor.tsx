@@ -71,7 +71,7 @@ export function VendorHoursEditor({ initialHours, isAlwaysOpen, timezone, onSave
           <select
             value={tz}
             onChange={(e) => setTz(e.target.value)}
-            className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm dark:border-forest-700 dark:bg-forest-800"
+            className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
           >
             <option value="Africa/Lagos">Africa/Lagos (WAT)</option>
             <option value="UTC">UTC</option>
@@ -95,7 +95,7 @@ export function VendorHoursEditor({ initialHours, isAlwaysOpen, timezone, onSave
                   value={hours[day]?.open || '09:00'}
                   onChange={(e) => updateDay(day, 'open', e.target.value)}
                   disabled={hours[day]?.closed}
-                  className="rounded-md border border-cream-300 bg-cream-50 px-2 py-1 text-sm dark:border-forest-700 dark:bg-forest-800"
+                  className="rounded-md border border-cream-300 bg-cream-50 px-2 py-1 text-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
                 />
                 <span className="text-sm text-forest-700/60 dark:text-cream-100/60">to</span>
                 <input
@@ -103,7 +103,7 @@ export function VendorHoursEditor({ initialHours, isAlwaysOpen, timezone, onSave
                   value={hours[day]?.close || '18:00'}
                   onChange={(e) => updateDay(day, 'close', e.target.value)}
                   disabled={hours[day]?.closed}
-                  className="rounded-md border border-cream-300 bg-cream-50 px-2 py-1 text-sm dark:border-forest-700 dark:bg-forest-800"
+                  className="rounded-md border border-cream-300 bg-cream-50 px-2 py-1 text-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
                 />
               </div>
             ))}

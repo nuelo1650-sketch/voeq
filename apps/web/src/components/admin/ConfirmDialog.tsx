@@ -35,14 +35,14 @@ export function ConfirmDialog({ title, description, confirmLabel = 'Confirm', co
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full border border-cream-300 px-3 py-1.5 text-sm font-medium text-forest-900 hover:border-forest-700/40 dark:text-cream-100"
+        className="rounded-full border border-cream-300 px-3 py-1.5 text-sm font-medium text-forest-900 hover:border-forest-700/40 dark:text-cream-100 dark:border-forest-700 dark:border-cream-100/40"
       >
         {confirmLabel}
       </button>
 
       {open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-md rounded-2xl border border-cream-300 bg-cream-50 p-6 shadow-xl dark:border-forest-700 dark:bg-forest-800">
+          <div className="w-full max-w-md rounded-2xl border border-cream-300 bg-cream-50 p-6 shadow-xl dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <h3 className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">{title}</h3>
             {description ? <p className="mt-2 text-sm text-forest-700/80 dark:text-cream-100/80">{description}</p> : null}
             {requireTypedValue ? (
@@ -51,7 +51,7 @@ export function ConfirmDialog({ title, description, confirmLabel = 'Confirm', co
                 <input
                   value={typed}
                   onChange={(e) => setTyped(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-sm dark:bg-forest-900"
+                  className="mt-2 w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-sm dark:bg-forest-900 dark:border-forest-700"
                 />
               </label>
             ) : null}
@@ -59,7 +59,7 @@ export function ConfirmDialog({ title, description, confirmLabel = 'Confirm', co
               <button
                 type="button"
                 onClick={() => { setOpen(false); onCancel?.(); }}
-                className="rounded-full border border-cream-300 px-4 py-2 text-sm font-medium text-forest-900 hover:border-forest-700/40 dark:text-cream-100"
+                className="rounded-full border border-cream-300 px-4 py-2 text-sm font-medium text-forest-900 hover:border-forest-700/40 dark:text-cream-100 dark:border-forest-700 dark:border-cream-100/40"
               >
                 Cancel
               </button>

@@ -138,7 +138,7 @@ export function ContactLocationForm() {
           <button
             type="button"
             onClick={() => setInstitutionSearchOpen(true)}
-            className="w-full rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 text-left text-base text-forest-900 focus:outline-none focus:ring-2 focus:ring-gold-500 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100"
+            className="w-full rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 text-left text-base text-forest-900 focus:outline-none focus:ring-2 focus:ring-gold-500 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100 dark:border-cream-100"
           >
             {currentInstitution ? currentInstitution.name : 'Select your institution'}
           </button>
@@ -158,7 +158,7 @@ export function ContactLocationForm() {
                     watch('campusId') === campus.id
                       ? 'border-forest-700 bg-cream-100 dark:border-gold-500 dark:bg-forest-900'
                       : 'border-cream-200 hover:border-forest-700/30 dark:border-forest-700'
-                  }`}
+                  } dark:border-cream-100 dark:border-cream-100/30`}
                 >
                   <span>
                     {campus.name}
@@ -196,17 +196,17 @@ export function ContactLocationForm() {
             placeholder="Search institutions..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gold-500 dark:border-forest-700 dark:bg-forest-800"
+            className="w-full rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gold-500 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
             autoFocus
           />
-          <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700">
+          <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700 dark:border-cream-100">
             {filteredInstitutions.length > 0 ? (
               filteredInstitutions.map((inst) => (
                 <button
                   key={inst.id}
                   type="button"
                   onClick={() => handleSelectInstitution(inst)}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700"
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700 dark:bg-forest-900"
                 >
                   {inst.name}
                 </button>

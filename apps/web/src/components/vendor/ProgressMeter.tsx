@@ -16,7 +16,7 @@ export function ProgressMeter({ progress, className, showLabel = true }: Progres
           <span className="font-medium text-forest-900 dark:text-cream-100">
             Setup progress
           </span>
-          <span className="font-semibold text-forest-700 dark:text-gold-500">
+          <span className="font-semibold text-forest-700 dark:text-gold-500 dark:text-cream-100">
             {clampedProgress}%
           </span>
         </div>

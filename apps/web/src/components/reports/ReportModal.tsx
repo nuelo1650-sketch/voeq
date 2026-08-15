@@ -87,11 +87,11 @@ export function ReportModal({ isOpen, onClose, vendorId, vendorName }: ReportMod
                 category === cat.value
                   ? 'border-forest-700 bg-cream-100 dark:border-gold-500 dark:bg-forest-900'
                   : 'border-cream-200 hover:border-forest-700/30 dark:border-forest-700'
-              }`}
+              } dark:border-cream-100 dark:border-cream-100/30`}
             >
               <div className={`h-4 w-4 rounded-full border-2 ${
                 category === cat.value ? 'border-forest-700 bg-forest-700' : 'border-cream-300'
-              }`} />
+              } dark:border-cream-100 dark:border-forest-700`} />
               {cat.label}
             </button>
           ))}

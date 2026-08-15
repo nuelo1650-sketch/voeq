@@ -32,7 +32,7 @@ export function AdminSidebar() {
     router.replace('/signin');
   };
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:flex dark:bg-forest-800/95 dark:border-cream-100">
       <div className="flex h-16 items-center px-5">
         <Link href="/admin" aria-label="Voeq admin" className="transition-opacity hover:opacity-80">
           <Logo size="lg" />
@@ -69,7 +69,7 @@ export function AdminSidebar() {
           );
         })}
       </nav>
-      <div className="space-y-2 border-t border-cream-200 p-3 dark:border-forest-700">
+      <div className="space-y-2 border-t border-cream-200 p-3 dark:border-forest-700 dark:border-cream-100">
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button variant="ghost" size="sm" className="flex-1" onClick={handleSignOut}>

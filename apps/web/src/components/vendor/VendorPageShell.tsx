@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 
 export function VendorPageHeader({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children?: ReactNode }) {
   return (
-    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50/70 dark:border-forest-700 dark:bg-forest-800">
+    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50/70 dark:border-forest-700 dark:bg-forest-800 dark:bg-forest-800/70 dark:border-cream-100">
       <Container size="xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
@@ -22,7 +22,7 @@ export function VendorPageHeader({ title, subtitle, children }: { title: string;
 /** Neutral page header for non-vendor pages (e.g. shopper profile). Same shell, no "vendor" framing. */
 export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children?: ReactNode }) {
   return (
-    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50/70 dark:border-forest-700 dark:bg-forest-800">
+    <Section spacing="lg" className="border-b border-cream-200 bg-cream-50/70 dark:border-forest-700 dark:bg-forest-800 dark:bg-forest-800/70 dark:border-cream-100">
       <Container size="xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">

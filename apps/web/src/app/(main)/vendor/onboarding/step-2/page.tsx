@@ -27,7 +27,7 @@ export default function Step2Page() {
             </OnboardingWizard>
             <div className="mt-8">
               <h3 className="mb-3 font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">
-                Operating hours <span className="text-sm font-normal text-forest-700/60">(optional)</span>
+                Operating hours <span className="text-sm font-normal text-forest-700/60 dark:text-cream-100/60">(optional)</span>
               </h3>
               <VendorHoursOnboarding />
             </div>

@@ -33,7 +33,7 @@ function TrendBadge({ trend, label }: { trend: 'up' | 'down' | 'flat'; label: st
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-800 dark:text-cream-100">
+    <span className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-800 dark:text-cream-100 dark:bg-forest-900">
       — {label}
     </span>
   );
@@ -63,7 +63,7 @@ function QuickAction({ title, description, href, cta }: { title: string; descrip
   return (
     <Link
       href={href}
-      className="group flex items-center justify-between rounded-2xl border border-cream-300 bg-cream-50 p-4 transition hover:border-forest-300 hover:shadow-sm dark:border-forest-700 dark:bg-forest-800 dark:hover:border-forest-600"
+      className="group flex items-center justify-between rounded-2xl border border-cream-300 bg-cream-50 p-4 transition hover:border-forest-300 hover:shadow-sm dark:border-forest-700 dark:bg-forest-800 dark:hover:border-forest-600 dark:border-cream-100"
     >
       <div className="min-w-0">
         <p className="font-medium text-forest-900 dark:text-cream-100">{title}</p>
@@ -237,7 +237,7 @@ export default async function VendorDashboardPage() {
                                 <span className="h-1 w-1 rounded-full bg-forest-500" /> {l.status}
                               </span>
                             )}
-                            <Link href={`/vendor/listings/${l.id}/edit`} className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-gold-500 dark:hover:text-gold-400">
+                            <Link href={`/vendor/listings/${l.id}/edit`} className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-forest-900 dark:text-gold-500 dark:hover:text-gold-400 dark:text-cream-100">
                               Edit
                               <ChevronRightIcon className="h-4 w-4" />
                             </Link>
@@ -246,7 +246,7 @@ export default async function VendorDashboardPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="mt-5 rounded-xl border border-dashed border-cream-300 p-6 text-center dark:border-forest-700">
+                    <div className="mt-5 rounded-xl border border-dashed border-cream-300 p-6 text-center dark:border-forest-700 dark:border-cream-100">
                       <p className="text-sm text-forest-700/70 dark:text-cream-100/70">No listings yet. Create your first one to start appearing in search.</p>
                       <div className="mt-4">
                         <Button variant="primary" size="sm">

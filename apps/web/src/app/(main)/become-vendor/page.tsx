@@ -42,7 +42,7 @@ export default async function BecomeVendorPage() {
                 { title: 'Direct WhatsApp', desc: 'Students message you directly. No platform fees in Phase 1.', Icon: WhatsAppIcon },
                 { title: 'Build trust', desc: 'Earn badges and reviews that help you stand out.', Icon: StarIcon },
               ].map((item) => (
-                <div key={item.title} className="flex items-start gap-4 rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:border-gold-500/40 dark:border-forest-700 dark:bg-forest-800">
+                <div key={item.title} className="flex items-start gap-4 rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:border-gold-500/40 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gold-500/15 text-gold-600 dark:text-gold-400">
                     <item.Icon className="h-5 w-5" />
                   </span>

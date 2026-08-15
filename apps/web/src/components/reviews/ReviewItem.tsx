@@ -12,7 +12,7 @@ interface ReviewItemProps {
 
 export function ReviewItem({ review, showListing = false }: ReviewItemProps) {
   return (
-    <article className="rounded-2xl border border-cream-300 bg-cream-50 p-4 sm:p-6 dark:border-forest-700 dark:bg-forest-800">
+    <article className="rounded-2xl border border-cream-300 bg-cream-50 p-4 sm:p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
       <div className="flex items-start gap-3">
         <Avatar size="md" alt={review.user.name ?? 'User'} src={review.user.image} />
         <div className="flex-1 min-w-0">

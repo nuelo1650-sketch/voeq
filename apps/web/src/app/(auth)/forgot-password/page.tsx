@@ -96,7 +96,7 @@ export default function ForgotPasswordPage() {
               transition={{ duration: 0.2 }}
               className="space-y-6"
             >
-              <div className="rounded-xl border border-forest-900/10 bg-cream-100 p-5 dark:border-cream-100/10 dark:bg-forest-800/50">
+              <div className="rounded-xl border border-forest-900/10 bg-cream-100 p-5 dark:border-cream-100/10 dark:bg-forest-800/50 dark:bg-forest-900 dark:border-forest-700/10">
                 <div className="space-y-2">
                   <p className="text-sm text-forest-700/80 dark:text-cream-100/80">
                     We sent a password reset link to:

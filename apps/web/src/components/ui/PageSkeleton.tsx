@@ -21,7 +21,7 @@ export function PageSkeleton() {
 
 export function ListingCardSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+    <div className="animate-pulse overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
       <div className="aspect-square w-full bg-cream-200 dark:bg-forest-700" />
       <div className="space-y-2 p-3">
         <div className="h-4 w-3/4 rounded bg-cream-200 dark:bg-forest-700" />

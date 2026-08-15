@@ -39,7 +39,7 @@ export default async function PressPage() {
 
         <div className="mt-10 space-y-6">
           {items.length === 0 ? (
-            <div className="rounded-2xl border border-cream-300 bg-cream-50 p-8 text-center dark:border-forest-700 dark:bg-forest-800">
+            <div className="rounded-2xl border border-cream-300 bg-cream-50 p-8 text-center dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
               <p className="text-sm text-forest-700/70 dark:text-cream-100/70">
                 No announcements yet. Check back soon for the latest Voeq news.
               </p>
@@ -48,7 +48,7 @@ export default async function PressPage() {
             items.map((item) => (
               <article
                 key={item.id}
-                className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800"
+                className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
               >
                 <p className="text-xs font-medium uppercase tracking-wide text-gold-700">
                   {KIND_LABELS[item.kind] ?? item.kind}

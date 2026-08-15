@@ -32,10 +32,10 @@ export function VendorAgreementModal({ onAccepted }: { onAccepted: () => void })
       </Button>
       <Modal isOpen={open} onClose={() => setOpen(false)} title={agreement?.title ?? 'Agreement'}>
         <div className="p-6 space-y-4">
-          <div onScroll={handleScroll} className="h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm dark:border-forest-700 dark:bg-forest-900">
+          <div onScroll={handleScroll} className="h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100">
             <pre className="whitespace-pre-wrap font-sans">{agreement?.content}</pre>
           </div>
-          {!scrolled && <p className="text-xs text-forest-700/60">Scroll to the bottom to continue</p>}
+          {!scrolled && <p className="text-xs text-forest-700/60 dark:text-cream-100/60">Scroll to the bottom to continue</p>}
           <Checkbox label="I agree to the vendor agreement" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} disabled={!scrolled} />
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>

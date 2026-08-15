@@ -56,15 +56,15 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-cream-50 dark:bg-forest-900">
-      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur dark:border-forest-700 dark:bg-forest-900/80">
+    <div className="min-h-screen bg-cream-50 dark:bg-forest-900 dark:bg-forest-800">
+      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur dark:border-forest-700 dark:bg-forest-900/80 dark:bg-forest-800/80 dark:border-cream-100">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" aria-hidden="true" />
         <Container size="xl">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-lg p-2 text-forest-700 hover:bg-cream-200 lg:hidden dark:text-cream-100 dark:hover:bg-forest-800"
+                className="inline-flex items-center justify-center rounded-lg p-2 text-forest-700 hover:bg-cream-200 lg:hidden dark:text-cream-100 dark:hover:bg-forest-800 dark:bg-forest-700"
                 onClick={() => setMobileOpen((prev) => !prev)}
                 aria-label="Toggle navigation"
               >
@@ -100,7 +100,7 @@ export default function VendorChrome({ children }: { children: React.ReactNode }
               mobileOpen ? 'block' : 'hidden',
             )}
           >
-            <nav className="flex flex-col gap-1 rounded-2xl border border-cream-200 bg-cream-50/60 p-2 dark:border-forest-700 dark:bg-forest-900/60" aria-label="Vendor">
+            <nav className="flex flex-col gap-1 rounded-2xl border border-cream-200 bg-cream-50/60 p-2 dark:border-forest-700 dark:bg-forest-900/60 dark:bg-forest-800/60 dark:border-cream-100" aria-label="Vendor">
               {NAV_ITEMS.map((item) => {
                 const active = pathname === item.href;
                 const Icon = ICONS[item.icon];

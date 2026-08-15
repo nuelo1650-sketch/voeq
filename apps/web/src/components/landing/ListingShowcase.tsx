@@ -79,7 +79,7 @@ export function ListingShowcase() {
               active === tab.key
                 ? 'bg-forest-700 text-cream-100 shadow-sm'
                 : 'bg-cream-100 text-forest-700 hover:bg-cream-200 dark:bg-forest-800 dark:text-cream-100 dark:hover:bg-forest-700'
-            }`}
+            } dark:bg-forest-900 dark:bg-forest-700`}
             aria-pressed={active === tab.key}
           >
             {tab.label}
@@ -93,7 +93,7 @@ export function ListingShowcase() {
           {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="aspect-square animate-pulse rounded-2xl bg-cream-200/70 dark:bg-forest-800/60"
+            className="aspect-square animate-pulse rounded-2xl bg-cream-200/70 dark:bg-forest-800/60 dark:bg-forest-700/70"
           />
           ))}
           </div>

@@ -39,7 +39,7 @@ export default async function ProfilePage() {
         <Container size="md">
           <AnimatedSection>
             <div className="space-y-6">
-              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                 <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Account</h2>
                 <div className="mt-4 space-y-3 text-sm">
                   <div>
@@ -53,7 +53,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                 <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Edit profile</h2>
                 <div className="mt-4">
                   <ProfileForm initialName={user.name ?? ''} initialImage={user.image ?? null} />
@@ -61,7 +61,7 @@ export default async function ProfilePage() {
               </div>
 
               {campus && (
-                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+                <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                   <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Campus</h2>
                   <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
                     Currently browsing: <span className="font-semibold text-forest-900 dark:text-cream-100">{campus.institution.name} · {campus.name}</span>
@@ -69,7 +69,7 @@ export default async function ProfilePage() {
                 </div>
               )}
 
-              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                 <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Saved & Following</h2>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Button variant="outline" asChild>
@@ -87,7 +87,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+              <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                 <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Appearance</h2>
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-sm text-forest-700/70 dark:text-cream-100/70">Theme</span>

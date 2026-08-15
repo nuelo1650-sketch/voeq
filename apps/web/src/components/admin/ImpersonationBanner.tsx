@@ -54,7 +54,7 @@ export function ImpersonationBanner() {
       <button
         onClick={handleEnd}
         disabled={loading}
-        className="rounded-full bg-gold-500 px-4 py-1.5 text-sm font-medium text-forest-900 hover:bg-gold-400 disabled:opacity-50"
+        className="rounded-full bg-gold-500 px-4 py-1.5 text-sm font-medium text-forest-900 hover:bg-gold-400 disabled:opacity-50 dark:text-cream-100"
       >
         {loading ? 'Ending…' : 'End session'}
       </button>

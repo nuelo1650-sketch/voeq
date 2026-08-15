@@ -74,7 +74,7 @@ export default function AboutPage() {
       </Section>
 
       {/* MISSION / WHY WE EXIST */}
-      <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+      <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
         <Container size="md">
           <AnimatedSection>
             <h2 className="font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100 sm:text-4xl">
@@ -135,7 +135,7 @@ export default function AboutPage() {
             {WHO_ITS_FOR.map((item) => (
               <div
                 key={item.title}
-                className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900"
+                className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100"
               >
                 <h3 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{item.title}</h3>
                 <p className="mt-3 text-sm text-forest-700/80 dark:text-cream-100/80">{item.body}</p>
@@ -166,7 +166,7 @@ export default function AboutPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-cream-100/40 text-cream-100 hover:bg-cream-100/10"
+                  className="border-cream-100/40 text-cream-100 hover:bg-cream-100/10 dark:border-forest-700/40 dark:bg-forest-900/10"
                   asChild
                 >
                   <Link href="/for-vendors">List your business</Link>

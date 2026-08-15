@@ -62,7 +62,7 @@ export function HomeWizard({ firstName, categories }: { firstName: string; categ
                       : active
                         ? 'border-gold-500 text-gold-500'
                         : 'border-cream-100/25 text-cream-100/40'
-                  }`}
+                  } dark:text-cream-100 dark:border-forest-700/25`}
                 >
                   {done ? <CheckIcon className="h-4 w-4" /> : i + 1}
                 </span>
@@ -79,7 +79,7 @@ export function HomeWizard({ firstName, categories }: { firstName: string; categ
         </aside>
 
         {/* Card */}
-        <div className="rounded-3xl border border-cream-100/10 bg-cream-50/95 p-6 shadow-2xl backdrop-blur dark:bg-forest-900/70 sm:p-10">
+        <div className="rounded-3xl border border-cream-100/10 bg-cream-50/95 p-6 shadow-2xl backdrop-blur dark:bg-forest-900/70 sm:p-10 dark:border-forest-700/10 dark:bg-forest-800/95">
           {/* Mobile progress */}
           <div className="mb-6 flex items-center gap-1.5 md:hidden">
             {STEPS.map((label, i) => (
@@ -238,7 +238,7 @@ function TourCard({
         muted
           ? 'border-cream-300/60 opacity-60 dark:border-forest-700'
           : 'border-cream-300 hover:border-gold-500/50 hover:shadow-md dark:border-forest-700'
-      }`}
+      } dark:border-forest-700/60 dark:border-cream-100`}
     >
       <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold-500/15 text-gold-600 dark:text-gold-400">
         {icon}

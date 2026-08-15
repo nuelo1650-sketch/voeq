@@ -41,7 +41,7 @@ export function NotificationBell({ className }: { className?: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="relative rounded-full p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+        className="relative rounded-full p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800 dark:bg-forest-700"
         aria-label={`Notifications${unread > 0 ? ` (${unread} unread)` : ''}`}
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -56,8 +56,8 @@ export function NotificationBell({ className }: { className?: string }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border border-cream-300 bg-cream-50 shadow-lg dark:border-forest-700 dark:bg-forest-800">
-          <div className="border-b border-cream-200 p-3 dark:border-forest-700">
+        <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border border-cream-300 bg-cream-50 shadow-lg dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+          <div className="border-b border-cream-200 p-3 dark:border-forest-700 dark:border-cream-100">
             <h3 className="text-sm font-semibold text-forest-900 dark:text-cream-100">Notifications</h3>
           </div>
           {notifications.length === 0 ? (
@@ -67,7 +67,7 @@ export function NotificationBell({ className }: { className?: string }) {
           ) : (
             <ul className="max-h-80 overflow-y-auto">
               {notifications.map((n) => (
-                <li key={n.id} className="border-b border-cream-200 last:border-0 dark:border-forest-700">
+                <li key={n.id} className="border-b border-cream-200 last:border-0 dark:border-forest-700 dark:border-cream-100">
                   <div className="flex items-start justify-between gap-3 p-3">
                     <Link
                       href={`/v/${n.vendorSlug}`}

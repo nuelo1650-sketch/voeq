@@ -20,7 +20,7 @@ export function BadgeList({ badges, size = 'md', max = 8, className }: BadgeList
       {remaining > 0 && (
         <div className={`flex items-center justify-center rounded-full bg-cream-200 text-xs font-semibold text-forest-700 ${
           size === 'sm' ? 'h-8 w-8' : size === 'md' ? 'h-10 w-10' : 'h-14 w-14'
-        }`}>
+        } dark:bg-forest-700 dark:text-cream-100`}>
           +{remaining}
         </div>
       )}

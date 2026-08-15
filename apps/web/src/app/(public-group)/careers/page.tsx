@@ -24,14 +24,14 @@ export default function CareersPage() {
 
         <div className="mt-10 space-y-4">
           {openings.map((job) => (
-            <div key={job.title} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+            <div key={job.title} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">{job.title}</h2>
                   <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">{job.location}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="rounded-full border border-cream-300 px-3 py-1 text-xs font-medium text-forest-700 dark:border-forest-700 dark:text-cream-100">{job.type}</span>
+                  <span className="rounded-full border border-cream-300 px-3 py-1 text-xs font-medium text-forest-700 dark:border-forest-700 dark:text-cream-100 dark:border-cream-100">{job.type}</span>
                   <Button variant="primary" size="sm" asChild>
                     <a href={`mailto:careers@voeq.ng?subject=Application:%20${encodeURIComponent(job.title)}`}>Apply</a>
                   </Button>

@@ -69,12 +69,12 @@ export function HomeCarousel({ campusId }: HomeCarouselProps) {
   const listings = listingsByKey[section.key] ?? [];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+    <div className="relative overflow-hidden rounded-3xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
       <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 py-4">
         <div>
           <h2 className="font-serif text-2xl font-semibold text-forest-900 dark:text-cream-100">{section.label}</h2>
         </div>
-        <a href={`/browse?sort=${section.sort}`} className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500">
+        <a href={`/browse?sort=${section.sort}`} className="text-sm font-medium text-forest-700 hover:underline dark:text-gold-500 dark:text-cream-100">
           View all →
         </a>
       </div>
@@ -87,7 +87,7 @@ export function HomeCarousel({ campusId }: HomeCarouselProps) {
             onClick={() => setIndex(itemIndex)}
             className={`h-2 rounded-full transition ${
               index === itemIndex ? 'w-6 bg-forest-900 dark:bg-cream-100' : 'w-2 bg-forest-700/20 dark:bg-cream-100/40'
-            }`}
+            } dark:bg-forest-900 dark:bg-forest-900/40`}
             aria-label={item.label}
           />
         ))}

@@ -103,7 +103,7 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
               key={cat.id}
               type="button"
               onClick={() => setSelectedIds((prev) => (prev.includes(cat.id) ? prev.filter((x) => x !== cat.id) : prev.length >= 5 ? prev : [...prev, cat.id]))}
-              className={`rounded-full border px-3 py-1.5 text-xs font-medium ${selectedIds.includes(cat.id) ? 'border-forest-700 bg-forest-700 text-cream-100' : 'border-cream-300 text-forest-700 dark:border-forest-700 dark:text-cream-100'}`}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium ${selectedIds.includes(cat.id) ? 'border-forest-700 bg-forest-700 text-cream-100' : 'border-cream-300 text-forest-700 dark:border-forest-700 dark:text-cream-100'} dark:border-cream-100`}
             >
               {cat.name}
             </button>
@@ -134,7 +134,7 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
                 watch('status') === s
                   ? 'border-forest-700 bg-forest-700 text-cream-100'
                   : 'border-cream-300 text-forest-700 dark:border-forest-700 dark:text-cream-100'
-              }`}
+              } dark:border-cream-100`}
             >
               {s === 'active' ? 'Active' : 'Paused'}
             </button>

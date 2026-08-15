@@ -19,7 +19,7 @@ const container = {
 
 export function AuthShell({ children, title, subtitle }: { children: ReactNode; title: string; subtitle?: string }) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-cream-50 text-forest-900 dark:bg-forest-900 dark:text-cream-100">
+    <div className="relative min-h-screen w-full overflow-hidden bg-cream-50 text-forest-900 dark:bg-forest-900 dark:text-cream-100 dark:bg-forest-800">
       {/* Layered brand background: responds to theme so the toggle changes the
           whole page (not just the card). Forest depth in dark, cream/forest in light. */}
       <div className="pointer-events-none absolute inset-0">
@@ -99,7 +99,7 @@ export function AuthShell({ children, title, subtitle }: { children: ReactNode; 
             </Link>
             <ThemeToggle />
           </div>
-          <div className="overflow-hidden rounded-2xl border border-cream-300/70 bg-white/85 shadow-2xl shadow-forest-900/10 backdrop-blur-xl transition dark:border-forest-700 dark:bg-forest-800/85 sm:rounded-3xl">
+          <div className="overflow-hidden rounded-2xl border border-cream-300/70 bg-white/85 shadow-2xl shadow-forest-900/10 backdrop-blur-xl transition dark:border-forest-700 dark:bg-forest-800/85 sm:rounded-3xl dark:border-forest-700/70 dark:border-cream-100">
             <div className="relative h-1.5 w-full bg-gradient-to-r from-forest-700 via-gold-500 to-forest-700">
               <motion.div
                 initial={{ scaleX: 0 }}

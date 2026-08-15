@@ -16,7 +16,7 @@ export default async function AdminInstitutionsPage() {
     >
       <div className="space-y-3">
         {data.institutions.map((inst: any) => (
-          <div key={inst.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-4 shadow-sm dark:border-forest-700 dark:bg-forest-800">
+          <div key={inst.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-4 shadow-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="font-medium text-forest-900 dark:text-cream-100">{inst.name}</p>
@@ -30,7 +30,7 @@ export default async function AdminInstitutionsPage() {
           </div>
         ))}
         {data.institutions.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-cream-300 p-10 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:text-cream-100/60">No pending institutions.</p>
+          <p className="rounded-2xl border border-dashed border-cream-300 p-10 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:text-cream-100/60 dark:border-cream-100">No pending institutions.</p>
         )}
       </div>
     </AdminPage>

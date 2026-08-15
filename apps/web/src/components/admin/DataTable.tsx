@@ -29,7 +29,7 @@ export function DataTable<T>({ columns, rows, getRowId, emptyMessage = 'No recor
   };
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+    <div className="overflow-x-auto rounded-2xl border border-cream-300 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
       <table className="min-w-full divide-y divide-cream-300 dark:divide-forest-700">
         <thead>
           <tr className="text-left text-xs uppercase tracking-wide text-forest-700/70 dark:text-cream-100/70">
@@ -76,7 +76,7 @@ export function DataTable<T>({ columns, rows, getRowId, emptyMessage = 'No recor
         </tbody>
       </table>
       {selected.size > 0 ? (
-        <div className="border-t border-cream-300 px-4 py-3 text-xs text-forest-700/80 dark:border-forest-700 dark:text-cream-100/80">
+        <div className="border-t border-cream-300 px-4 py-3 text-xs text-forest-700/80 dark:border-forest-700 dark:text-cream-100/80 dark:border-cream-100">
           {selected.size} selected
         </div>
       ) : null}

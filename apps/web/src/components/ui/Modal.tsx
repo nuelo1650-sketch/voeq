@@ -69,14 +69,14 @@ export function Modal({
             )}
           >
             {(title || !hideCloseButton) && (
-              <div className="flex items-center justify-between border-b border-cream-200 px-6 py-4 dark:border-forest-700">
+              <div className="flex items-center justify-between border-b border-cream-200 px-6 py-4 dark:border-forest-700 dark:border-cream-100">
                 {title && (
                   <h2 className="text-lg font-semibold text-forest-900 dark:text-cream-100">{title}</h2>
                 )}
                 {!hideCloseButton && onClose && (
                   <button
                     onClick={onClose}
-                    className="rounded-full p-1.5 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700"
+                    className="rounded-full p-1.5 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:bg-forest-700"
                     aria-label="Close"
                   >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

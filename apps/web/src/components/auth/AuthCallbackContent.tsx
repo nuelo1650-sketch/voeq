@@ -27,6 +27,6 @@ export function AuthCallbackContent() {
   }, [router, searchParams]);
 
   return (
-    <p className="text-sm text-forest-700/70">Signing you in…</p>
+    <p className="text-sm text-forest-700/70 dark:text-cream-100/70">Signing you in…</p>
   );
 }

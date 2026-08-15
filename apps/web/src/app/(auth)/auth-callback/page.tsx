@@ -38,11 +38,11 @@ export default function AuthCallbackPage() {
     <div className="flex min-h-[50vh] items-center justify-center">
       <div className="text-center">
         {status === 'loading' && (
-          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-cream-300 border-t-forest-700 dark:border-forest-700 dark:border-t-cream-100" />
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-cream-300 border-t-forest-700 dark:border-forest-700 dark:border-t-cream-100 dark:border-cream-100" />
         )}
-        <p className={`text-sm ${status === 'error' ? 'text-red-600' : 'text-forest-700/70'}`}>{message}</p>
+        <p className={`text-sm ${status === 'error' ? 'text-red-600' : 'text-forest-700/70'} dark:text-cream-100/70`}>{message}</p>
         {status === 'error' && (
-          <a href="/signin" className="mt-4 inline-block text-sm text-forest-900 underline">Back to sign in</a>
+          <a href="/signin" className="mt-4 inline-block text-sm text-forest-900 underline dark:text-cream-100">Back to sign in</a>
         )}
       </div>
     </div>

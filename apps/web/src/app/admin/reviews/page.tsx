@@ -16,7 +16,7 @@ export default async function AdminReviewsPage() {
     >
       <div className="space-y-3">
         {data.reviews.map((r: any) => (
-          <div key={r.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-4 shadow-sm dark:border-forest-700 dark:bg-forest-800">
+          <div key={r.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-4 shadow-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="font-medium text-forest-900 dark:text-cream-100">{r.rating}★ · {r.vendor?.businessName ?? 'Vendor'}</p>
@@ -36,7 +36,7 @@ export default async function AdminReviewsPage() {
           </div>
         ))}
         {data.reviews.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-cream-300 p-10 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:text-cream-100/60">No reviews yet.</p>
+          <p className="rounded-2xl border border-dashed border-cream-300 p-10 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:text-cream-100/60 dark:border-cream-100">No reviews yet.</p>
         )}
       </div>
     </AdminPage>

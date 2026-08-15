@@ -54,7 +54,7 @@ export function ReviewAndGoLive() {
   };
 
   if (!vendor) {
-    return <p className="text-sm text-forest-700/60">Loading…</p>;
+    return <p className="text-sm text-forest-700/60 dark:text-cream-100/60">Loading…</p>;
   }
 
   return (
@@ -67,7 +67,7 @@ export function ReviewAndGoLive() {
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+        <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700 dark:border-cream-100">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Business</p>
@@ -77,7 +77,7 @@ export function ReviewAndGoLive() {
             <Button variant="ghost" size="sm" onClick={() => router.push('/vendor/onboarding/step-1')}>Edit</Button>
           </div>
         </div>
-        <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+        <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700 dark:border-cream-100">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Contact</p>
@@ -99,7 +99,7 @@ export function ReviewAndGoLive() {
           </div>
         </div>
         {vendor.listings.length > 0 && (
-          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700 dark:border-cream-100">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Listings</p>
@@ -116,7 +116,7 @@ export function ReviewAndGoLive() {
           </div>
         )}
         {(vendor.isAlwaysOpen || vendor.operatingHours) && (
-          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700">
+          <div className="rounded-lg border border-cream-200 p-4 dark:border-forest-700 dark:border-cream-100">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">Hours</p>
@@ -151,10 +151,10 @@ export function ReviewAndGoLive() {
 
       <Modal isOpen={showAgreement} onClose={() => setShowAgreement(false)} title={agreement?.title ?? 'Agreement'}>
         <div className="p-6 space-y-4">
-          <div onScroll={handleScroll} className="h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm dark:border-forest-700 dark:bg-forest-900">
+          <div onScroll={handleScroll} className="h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100">
             <pre className="whitespace-pre-wrap font-sans">{agreement?.content}</pre>
           </div>
-          {!scrolled && <p className="text-xs text-forest-700/60">Scroll to the bottom to continue</p>}
+          {!scrolled && <p className="text-xs text-forest-700/60 dark:text-cream-100/60">Scroll to the bottom to continue</p>}
           <Checkbox label="I agree to the vendor agreement" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} disabled={!scrolled} />
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setShowAgreement(false)}>Cancel</Button>

@@ -23,7 +23,7 @@ export function CookiesPreferences({ onClose }: CookiesPreferencesProps) {
   return (
     <Modal isOpen onClose={onClose} title="Cookie preferences">
       <div className="p-6 space-y-6">
-        <div className="rounded-2xl border border-cream-200 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800">
+        <div className="rounded-2xl border border-cream-200 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <h3 className="font-medium text-forest-900 dark:text-cream-100">Essential cookies</h3>

@@ -30,7 +30,7 @@ export function DraftBanner<T extends FieldValues>({ step, watch, enabled }: Dra
   if (status === 'idle') return null;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 rounded-full border border-cream-300 bg-cream-50 px-4 py-2 text-sm shadow-lg dark:border-forest-700 dark:bg-forest-800">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 rounded-full border border-cream-300 bg-cream-50 px-4 py-2 text-sm shadow-lg dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
       {status === 'saving' ? (
         <>
           <Spinner size="sm" />

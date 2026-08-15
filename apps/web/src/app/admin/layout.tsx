@@ -7,7 +7,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const me = await requireSuperUserAdmin();
 
   return (
-    <div className="min-h-screen bg-cream-50 dark:bg-forest-900">
+    <div className="min-h-screen bg-cream-50 dark:bg-forest-900 dark:bg-forest-800">
       <ImpersonationBanner />
       <div className="flex">
         <AdminSidebar />

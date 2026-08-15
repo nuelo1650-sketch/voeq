@@ -67,7 +67,7 @@ export function ReviewList({ vendorId, vendorName, initialReviews, initialTotal,
           )}
         </>
       ) : (
-        <p className="rounded-2xl border border-cream-300 bg-cream-50 p-8 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100/60">
+        <p className="rounded-2xl border border-cream-300 bg-cream-50 p-8 text-center text-sm text-forest-700/60 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100/60 dark:border-cream-100">
           No reviews yet. Be the first to share your experience.
         </p>
       )}

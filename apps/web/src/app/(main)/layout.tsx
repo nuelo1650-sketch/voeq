@@ -57,13 +57,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-sm text-forest-700/70">Loading…</p>
+        <p className="text-sm text-forest-700/70 dark:text-cream-100/70">Loading…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream-50 dark:bg-forest-900">
+    <div className="min-h-screen bg-cream-50 dark:bg-forest-900 dark:bg-forest-800">
       <AppSidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} onSignOut={handleSignOut} />
       <AppBottomNav />
       <div className={`transition-[padding] duration-200 md:pl-[var(--sb-w)]`} style={{ ['--sb-w' as string]: collapsed ? '76px' : '16rem' }}>

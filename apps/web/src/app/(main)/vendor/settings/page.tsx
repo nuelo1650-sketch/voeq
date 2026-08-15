@@ -19,7 +19,7 @@ export default function SettingsPage() {
       <VendorSection>
         <div className="mx-auto max-w-xl">
           <AnimatedSection>
-            <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+            <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-forest-900 dark:text-cream-100">Theme</p>

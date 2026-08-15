@@ -103,7 +103,7 @@ export default async function LandingPage() {
 
       <AnnouncementBar messages={[]} />
 
-      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80">
+      <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/80 backdrop-blur-md dark:border-forest-700 dark:bg-forest-900/80 dark:bg-forest-800/80 dark:border-cream-100">
         <Container size="lg">
           <div className="flex h-16 items-center justify-between gap-3">
             <Link href="/" className="flex items-center" aria-label="Voeq home">
@@ -117,7 +117,7 @@ export default async function LandingPage() {
             <div className="flex items-center gap-2 md:hidden">
               <Link
                 href="/browse"
-                className="rounded-md px-2 py-1.5 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800"
+                className="rounded-md px-2 py-1.5 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800 dark:bg-forest-700"
               >
                 Browse
               </Link>
@@ -140,25 +140,25 @@ export default async function LandingPage() {
             </div>
             {/* Mobile menu (native <details>, no JS needed) */}
             <details className="group relative md:hidden">
-              <summary className="flex list-none items-center gap-2 rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800" aria-label="Open menu">
+              <summary className="flex list-none items-center gap-2 rounded-md p-2 text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-800 dark:bg-forest-700" aria-label="Open menu">
                 <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="4" y1="6" x2="20" y2="6" />
                   <line x1="4" y1="12" x2="20" y2="12" />
                   <line x1="4" y1="18" x2="20" y2="18" />
                 </svg>
               </summary>
-              <div className="absolute right-0 z-50 mt-2 w-56 space-y-1 rounded-2xl border border-cream-200 bg-cream-50 p-3 shadow-xl dark:border-forest-700 dark:bg-forest-800">
-                <Link href="/browse" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Browse</Link>
-                <Link href="/for-vendors" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">For Vendors</Link>
-                <Link href="/about" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">About</Link>
+              <div className="absolute right-0 z-50 mt-2 w-56 space-y-1 rounded-2xl border border-cream-200 bg-cream-50 p-3 shadow-xl dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+                <Link href="/browse" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:bg-forest-700">Browse</Link>
+                <Link href="/for-vendors" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:bg-forest-700">For Vendors</Link>
+                <Link href="/about" className="block rounded-md px-3 py-2 text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:bg-forest-700">About</Link>
                 <div className="flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm font-medium text-forest-700 dark:text-cream-100">
                   <span>Theme</span>
                   <ThemeToggle />
                 </div>
-                <div className="my-2 border-t border-cream-200 dark:border-forest-700" />
+                <div className="my-2 border-t border-cream-200 dark:border-forest-700 dark:border-cream-100" />
                 <Link href="/signin" className="block rounded-md bg-forest-700 px-3 py-2 text-center text-sm font-medium text-cream-100 hover:bg-forest-800">Sign in</Link>
-                <Link href="/signup" className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700">Sign up</Link>
-                <Link href="/signup?intent=vendor" className="block rounded-md px-3 py-2 text-center text-sm font-medium text-gold-700 hover:bg-cream-200 dark:text-gold-400 dark:hover:bg-forest-700">List your business</Link>
+                <Link href="/signup" className="block rounded-md border border-forest-700 px-3 py-2 text-center text-sm font-medium text-forest-700 hover:bg-cream-200 dark:text-cream-100 dark:hover:bg-forest-700 dark:border-cream-100 dark:bg-forest-700">Sign up</Link>
+                <Link href="/signup?intent=vendor" className="block rounded-md px-3 py-2 text-center text-sm font-medium text-gold-700 hover:bg-cream-200 dark:text-gold-400 dark:hover:bg-forest-700 dark:bg-forest-700">List your business</Link>
               </div>
             </details>
           </div>
@@ -202,11 +202,11 @@ export default async function LandingPage() {
         </Section>
 
         {/* DUAL AUDIENCE SPLIT — Shoppers and vendors, equal weight */}
-        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
           <Container size="lg">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {/* Shoppers */}
-              <div className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900">
+              <div className="rounded-3xl border border-cream-300 bg-cream-50 p-7 dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest-700 text-cream-100">
                     <StarIcon className="h-5 w-5" />
@@ -222,7 +222,7 @@ export default async function LandingPage() {
                 </Button>
               </div>
               {/* Vendors */}
-              <div className="rounded-3xl border border-gold-500/30 bg-cream-50 p-7 dark:border-gold-500/20 dark:bg-forest-900">
+              <div className="rounded-3xl border border-gold-500/30 bg-cream-50 p-7 dark:border-gold-500/20 dark:bg-forest-900 dark:bg-forest-800">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-600 text-white">
                     <WhatsAppIcon className="h-5 w-5" />
@@ -279,12 +279,12 @@ export default async function LandingPage() {
         </Section>
 
         {/* TRUST STRIP — values, not vanity metrics (never goes stale) */}
-        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+        <Section spacing="md" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
           <Container size="lg">
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {TRUST_PILLARS.map((p) => (
                 <div key={p.title} className="flex flex-col items-start">
-                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-forest-700/10 text-forest-700 dark:bg-gold-500/15 dark:text-gold-500">
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-forest-700/10 text-forest-700 dark:bg-gold-500/15 dark:text-gold-500 dark:text-cream-100">
                     <p.icon className="h-5 w-5" />
                   </span>
                   <h3 className="font-serif text-base font-semibold text-forest-900 dark:text-cream-100">{p.title}</h3>
@@ -329,7 +329,7 @@ export default async function LandingPage() {
                   <Link
                     key={cat.id}
                     href={`/browse?category=${cat.slug}`}
-                    className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900"
+                    className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-cream-300 bg-cream-50 p-5 transition hover:border-gold-500/50 hover:shadow-md dark:border-forest-700 dark:bg-forest-900 dark:bg-forest-800 dark:border-cream-100"
                   >
                     {Icon && <Icon className="h-7 w-7 text-forest-700 dark:text-cream-100" />}
                     <span className="text-sm font-medium text-forest-900 dark:text-cream-100">{cat.name}</span>
@@ -426,7 +426,7 @@ export default async function LandingPage() {
               <div className="hidden md:flex justify-center">
                 <div className="grid grid-cols-2 gap-4">
                   {[FoodIcon, TechIcon, FashionIcon, BeautyIcon].map((Icon, i) => (
-                    <div key={i} className="rounded-2xl border border-forest-700 bg-forest-800/50 p-8">
+                    <div key={i} className="rounded-2xl border border-forest-700 bg-forest-800/50 p-8 dark:border-cream-100">
                       <Icon className="h-12 w-12 text-gold-500" />
                     </div>
                   ))}
@@ -485,7 +485,7 @@ export default async function LandingPage() {
             </AnimatedSection>
             <div className="mt-12 space-y-3">
               {FAQS.map((item) => (
-                <details key={item.question} className="group rounded-2xl border border-gold-500/20 bg-cream-50 transition hover:border-gold-500/40 dark:border-forest-700 dark:bg-forest-800 dark:hover:border-gold-500/30">
+                <details key={item.question} className="group rounded-2xl border border-gold-500/20 bg-cream-50 transition hover:border-gold-500/40 dark:border-forest-700 dark:bg-forest-800 dark:hover:border-gold-500/30 dark:border-cream-100">
                   <summary className="cursor-pointer list-none px-6 py-5 text-base font-medium text-forest-900 dark:text-cream-100">
                     <div className="flex items-center justify-between gap-4">
                       <span>{item.question}</span>
@@ -504,7 +504,7 @@ export default async function LandingPage() {
         </Section>
       </main>
 
-      <footer className="border-t border-cream-200 bg-forest-900 py-12 text-cream-100 dark:border-forest-700">
+      <footer className="border-t border-cream-200 bg-forest-900 py-12 text-cream-100 dark:border-forest-700 dark:border-cream-100">
         <Container size="lg">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
@@ -568,11 +568,11 @@ export default async function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 border-t border-forest-700 pt-6">
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 border-t border-forest-700 pt-6 dark:border-cream-100">
             <span className="text-xs uppercase tracking-widest text-cream-100/50">Powered by</span>
             <Link href="https://legacylm.com" target="_blank" rel="noreferrer noopener" className="group inline-flex items-center gap-2 transition hover:opacity-80" aria-label="Legacy LM">
               <span className="font-serif text-base font-semibold tracking-wide text-cream-100">Legacy</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-xs font-bold text-forest-900 ring-1 ring-gold-400/30 transition group-hover:ring-gold-400/60">LM</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-xs font-bold text-forest-900 ring-1 ring-gold-400/30 transition group-hover:ring-gold-400/60 dark:text-cream-100">LM</span>
             </Link>
           </div>
 

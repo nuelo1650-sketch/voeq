@@ -17,7 +17,7 @@ export function MethodSwitcher({ type }: MethodSwitcherProps) {
       {isSignin ? "Don't have an account?" : 'Already have an account?'}{' '}
       <Link
         href={otherPage}
-        className="font-medium text-forest-700 underline-offset-2 hover:underline dark:text-gold-500"
+        className="font-medium text-forest-700 underline-offset-2 hover:underline dark:text-gold-500 dark:text-cream-100"
       >
         {otherPageText}
       </Link>

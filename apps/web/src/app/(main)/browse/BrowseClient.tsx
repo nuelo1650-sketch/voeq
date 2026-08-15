@@ -105,7 +105,7 @@ export function BrowseClient({
         <select
           value={currentSort}
           onChange={(e) => pushQuery({ sort: e.target.value === 'newest' ? undefined : e.target.value })}
-          className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm dark:border-forest-700 dark:bg-forest-800"
+          className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>

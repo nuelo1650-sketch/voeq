@@ -34,7 +34,7 @@ export function CSVExportButton({ url, filename = 'export.csv', label = 'Export 
       type="button"
       onClick={handleExport}
       disabled={loading}
-      className="rounded-full border border-cream-300 px-3 py-1.5 text-sm font-medium text-forest-900 hover:border-forest-700/40 disabled:opacity-50 dark:text-cream-100"
+      className="rounded-full border border-cream-300 px-3 py-1.5 text-sm font-medium text-forest-900 hover:border-forest-700/40 disabled:opacity-50 dark:text-cream-100 dark:border-forest-700 dark:border-cream-100/40"
     >
       {loading ? 'Exporting…' : label}
     </button>

@@ -60,12 +60,12 @@ export default function AdminUsersPage() {
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               placeholder="Search users..."
-              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900"
+              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900 dark:border-forest-700"
             />
             <select
               value={role}
               onChange={(e) => { setRole(e.target.value); setPage(1); }}
-              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900"
+              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900 dark:border-forest-700"
             >
               <option value="">All roles</option>
               <option value="buyer">Shopper</option>
@@ -76,7 +76,7 @@ export default function AdminUsersPage() {
             <select
               value={status}
               onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900"
+              className="rounded-full border border-cream-300 bg-white px-3 py-1.5 text-sm dark:bg-forest-900 dark:border-forest-700"
             >
               <option value="">All statuses</option>
               <option value="active">Active</option>
@@ -103,7 +103,7 @@ export default function AdminUsersPage() {
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-full border border-cream-300 px-3 py-1.5 disabled:opacity-50"
+            className="rounded-full border border-cream-300 px-3 py-1.5 disabled:opacity-50 dark:border-forest-700"
           >
             Previous
           </button>
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
             type="button"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-full border border-cream-300 px-3 py-1.5 disabled:opacity-50"
+            className="rounded-full border border-cream-300 px-3 py-1.5 disabled:opacity-50 dark:border-forest-700"
           >
             Next
           </button>

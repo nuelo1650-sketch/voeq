@@ -109,7 +109,7 @@ export function WhatsAppButton({
                   selectedTemplate === t.key
                     ? 'border-forest-700 bg-forest-700/5 dark:border-gold-500'
                     : 'border-cream-300 hover:border-forest-700/30 dark:border-forest-700'
-                }`}
+                } dark:border-cream-100 dark:border-cream-100/30`}
               >
                 <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{t.label}</p>
                 <p className="mt-0.5 text-xs text-forest-700/60 dark:text-cream-100/60">{t.description}</p>
@@ -146,7 +146,7 @@ export function WhatsAppButton({
             />
           )}
 
-          <div className="rounded-lg border border-cream-300 bg-cream-50 p-3 dark:border-forest-700 dark:bg-forest-800">
+          <div className="rounded-lg border border-cream-300 bg-cream-50 p-3 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <p className="text-xs font-medium text-forest-700/60 dark:text-cream-100/60">Message preview:</p>
             <p className="mt-1 text-sm text-forest-900 dark:text-cream-100">
               {selectedTemplate === 'general_inquiry' && `Hi! I found you on Voeq${listingTitle ? ` and I'm interested in "${listingTitle}"` : ''}. Is it still available?`}

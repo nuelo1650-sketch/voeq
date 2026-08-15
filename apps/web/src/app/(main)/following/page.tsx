@@ -42,7 +42,7 @@ export default async function FollowingPage() {
             ) : (
               <div className="space-y-6">
                 {follows.map((follow: any) => (
-                  <div key={follow.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+                  <div key={follow.id} className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                     <Link href={`/v/${follow.vendor.slug}`} className="text-lg font-semibold text-forest-900 hover:text-forest-700 dark:text-cream-100">
                       {follow.vendor.businessName}
                     </Link>

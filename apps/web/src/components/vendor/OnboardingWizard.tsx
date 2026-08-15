@@ -55,7 +55,7 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
   if (loading) {
     return (
       <Container size="md">
-        <div className="py-16 text-center text-sm text-forest-700/60">Loading…</div>
+        <div className="py-16 text-center text-sm text-forest-700/60 dark:text-cream-100/60">Loading…</div>
       </Container>
     );
   }
@@ -71,7 +71,7 @@ export function OnboardingWizard({ children, currentStep }: OnboardingWizardProp
           <StepIndicator steps={steps} />
         </div>
 
-        <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-8 dark:border-forest-700 dark:bg-forest-800">
+        <div className="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-8 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
           {children}
         </div>
       </Container>

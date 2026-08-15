@@ -147,7 +147,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
         </Container>
       </VendorSection>
 
-      <VendorSection title="About" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800">
+      <VendorSection title="About" className="border-y border-cream-200 bg-cream-50 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
         <Container size="lg" className="py-6">
           <p className="whitespace-pre-wrap text-base text-forest-700/90 dark:text-cream-100/90">{vendor.description}</p>
         </Container>
@@ -170,7 +170,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
         </>
       )}
 
-      <VendorSection title="Reviews" className="border-y border-cream-200 dark:border-forest-700">
+      <VendorSection title="Reviews" className="border-y border-cream-200 dark:border-forest-700 dark:border-cream-100">
         <Container size="lg" className="py-6">
           <AnimatedSection>
             <ReviewListWrapper

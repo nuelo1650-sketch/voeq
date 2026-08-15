@@ -24,7 +24,7 @@ export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) 
     <aside
       className={`fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-cream-200 bg-cream-50/95 backdrop-blur dark:border-forest-700 dark:bg-forest-900/95 md:flex ${
         collapsed ? 'w-[76px]' : 'w-64'
-      } transition-[width] duration-200`}
+      } transition-[width] duration-200 dark:bg-forest-800/95 dark:border-cream-100`}
     >
       <div className="flex h-16 items-center px-4">
         <Link href="/home" aria-label="Voeq home" className={collapsed ? 'mx-auto' : ''}>
@@ -45,12 +45,12 @@ export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) 
                 active
                   ? 'bg-gold-500/15 text-forest-900 dark:text-cream-100'
                   : 'text-forest-700 hover:bg-cream-200 hover:text-forest-900 dark:text-cream-100/80 dark:hover:bg-forest-800'
-              }`}
+              } dark:bg-forest-700`}
             >
               <span
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
                   active ? 'bg-gold-500 text-forest-900' : 'bg-cream-200/60 dark:bg-forest-800'
-                }`}
+                } dark:text-cream-100 dark:bg-forest-700/60`}
               >
                 <Icon className="h-5 w-5" />
               </span>
@@ -63,13 +63,13 @@ export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) 
         })}
       </nav>
 
-      <div className="space-y-2 border-t border-cream-200 p-3 dark:border-forest-700">
+      <div className="space-y-2 border-t border-cream-200 p-3 dark:border-forest-700 dark:border-cream-100">
         <Link
           href={BECOME_VENDOR.href}
           title={collapsed ? BECOME_VENDOR.label : undefined}
           className={`flex items-center gap-3 rounded-xl bg-gold-500 px-3 py-2.5 text-sm font-semibold text-forest-900 shadow-sm shadow-gold-500/30 transition hover:bg-gold-400 ${
             collapsed ? 'justify-center' : ''
-          }`}
+          } dark:text-cream-100`}
         >
           <BECOME_VENDOR.icon className="h-5 w-5 shrink-0" />
           {!collapsed && <span className="truncate">{BECOME_VENDOR.label}</span>}
@@ -92,7 +92,7 @@ export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) 
           type="button"
           onClick={onToggle}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-forest-700/70 hover:bg-cream-200 dark:text-cream-100/60 dark:hover:bg-forest-800"
+          className="flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-forest-700/70 hover:bg-cream-200 dark:text-cream-100/60 dark:hover:bg-forest-800 dark:text-cream-100/70 dark:bg-forest-700"
         >
           {collapsed ? (
             <PanelLeftOpen className="h-4 w-4" />

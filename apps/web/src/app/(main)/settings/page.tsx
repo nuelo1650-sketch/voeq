@@ -60,7 +60,7 @@ export default async function SettingsPage() {
                   ) : (
                     <ul className="space-y-2">
                       {disputes.disputes.map((d: any) => (
-                        <li key={d.id} className="rounded-md border border-cream-300 bg-cream-50 p-3 dark:border-forest-700 dark:bg-forest-800">
+                        <li key={d.id} className="rounded-md border border-cream-300 bg-cream-50 p-3 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
                           <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{d.reason}</p>
                           <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">
                             Status: {d.status} · Filed {new Date(d.createdAt).toLocaleDateString()}

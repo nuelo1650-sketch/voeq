@@ -127,13 +127,13 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700">
+            <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700 dark:border-cream-100">
               {filtered.map((inst) => (
                 <button
                   key={inst.id}
                   type="button"
                   onClick={() => handleSelectInstitution(inst)}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700"
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700 dark:bg-forest-900"
                 >
                   {inst.name}
                 </button>
@@ -141,7 +141,7 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
               <button
                 type="button"
                 onClick={handleSelectOther}
-                className="w-full border-t border-cream-200 px-4 py-3 text-left text-sm font-medium text-forest-700 hover:bg-cream-100 dark:border-forest-700 dark:text-gold-500 dark:hover:bg-forest-700"
+                className="w-full border-t border-cream-200 px-4 py-3 text-left text-sm font-medium text-forest-700 hover:bg-cream-100 dark:border-forest-700 dark:text-gold-500 dark:hover:bg-forest-700 dark:text-cream-100 dark:bg-forest-900 dark:border-cream-100"
               >
                 My institution isn&apos;t listed
               </button>
@@ -166,7 +166,7 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
                     selectedCampusId === campus.id
                       ? 'border-forest-700 bg-cream-100 dark:border-gold-500 dark:bg-forest-900'
                       : 'border-cream-200 hover:border-forest-700/30 dark:border-forest-700'
-                  }`}
+                  } dark:border-cream-100 dark:border-cream-100/30`}
                 >
                   {campus.name}
                   {campus.isPrimary && (
@@ -192,7 +192,7 @@ export function CampusSelectModal({ isOpen, onSelected }: CampusSelectModalProps
               value={otherName}
               onChange={(e) => setOtherName(e.target.value)}
             />
-            <p className="text-xs text-forest-700/60">
+            <p className="text-xs text-forest-700/60 dark:text-cream-100/60">
               We&apos;ll review and add it within 24 hours. For now, you can continue without selecting.
             </p>
             <div className="flex justify-end gap-2">

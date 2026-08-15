@@ -69,7 +69,7 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="mt-4 h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm text-forest-900 dark:border-forest-700 dark:bg-forest-900 dark:text-cream-100"
+          className="mt-4 h-64 overflow-y-auto rounded-lg border border-cream-200 bg-cream-50 p-4 text-sm text-forest-900 dark:border-forest-700 dark:bg-forest-900 dark:text-cream-100 dark:bg-forest-800 dark:border-cream-100"
         >
           {content ? (
             <pre className="whitespace-pre-wrap font-sans">{content.content}</pre>
@@ -78,7 +78,7 @@ export function AgreementModal({ isOpen, onAccepted }: AgreementModalProps) {
           )}
         </div>
         {!scrolledToBottom && content && (
-          <p className="mt-2 text-xs text-forest-700/60">Scroll to the bottom to continue</p>
+          <p className="mt-2 text-xs text-forest-700/60 dark:text-cream-100/60">Scroll to the bottom to continue</p>
         )}
         <div className="mt-4">
           <Checkbox

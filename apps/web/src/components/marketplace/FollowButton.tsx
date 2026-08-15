@@ -40,7 +40,7 @@ export function FollowButton({ vendorId, initialIsFollowing = false, className }
         isFollowing
           ? 'border-forest-700 bg-forest-700 text-cream-100'
           : 'border-cream-300 bg-cream-50 text-forest-700 hover:border-forest-700/30 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100'
-      } ${className}`}
+      } ${className} dark:border-cream-100 dark:border-cream-100/30`}
       aria-label={isFollowing ? 'Unfollow' : 'Follow'}
     >
       {isFollowing ? <CheckIcon className="h-4 w-4" /> : <PlusIcon className="h-4 w-4" />}

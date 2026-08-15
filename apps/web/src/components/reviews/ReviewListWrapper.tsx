@@ -31,7 +31,7 @@ export function ReviewListWrapper({ vendorId, vendorName, vendorSlug }: Props) {
   }, [vendorId]);
 
   if (loading) {
-    return <div className="py-8 text-center text-sm text-forest-700/60">Loading reviews…</div>;
+    return <div className="py-8 text-center text-sm text-forest-700/60 dark:text-cream-100/60">Loading reviews…</div>;
   }
 
   return (

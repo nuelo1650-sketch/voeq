@@ -15,7 +15,7 @@ export default async function AdminAuditPage() {
         <CardContent className="pt-6">
           <ul className="space-y-3">
             {data.entries.map((e: any) => (
-              <li key={e.id} className="flex items-start gap-3 border-b border-cream-200 pb-3 last:border-0 dark:border-forest-700">
+              <li key={e.id} className="flex items-start gap-3 border-b border-cream-200 pb-3 last:border-0 dark:border-forest-700 dark:border-cream-100">
                 <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-gold-500" />
                 <div>
                   <p className="text-sm font-medium text-forest-900 dark:text-cream-100">{e.action}</p>

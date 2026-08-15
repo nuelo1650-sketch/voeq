@@ -36,7 +36,7 @@ export default async function AdminAnalyticsPage() {
               {clicks.data.map((c: any) => (
                 <div key={c.name} className="flex items-center gap-3">
                   <span className="w-28 shrink-0 truncate text-sm text-forest-700/70 dark:text-cream-100/70">{c.name}</span>
-                  <div className="h-3 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-forest-800">
+                  <div className="h-3 flex-1 overflow-hidden rounded-full bg-cream-200 dark:bg-forest-800 dark:bg-forest-700">
                     <div className="h-full rounded-full bg-gold-500" style={{ width: `${(c.clicks / maxClicks) * 100}%` }} />
                   </div>
                   <span className="w-10 text-right text-sm font-medium text-forest-900 dark:text-cream-100">{c.clicks}</span>

@@ -40,11 +40,11 @@ export function SignupDisclaimerModal({ isOpen, onClose, onAccept, userType }: S
             label={
               <span>
                 I understand that Voeq is strictly a discovery and classifieds directory. Voeq does not process payments, verify vendor identity beyond email confirmation, or take responsibility for any transaction, exchange, scam, or interaction between users. I agree to transact with other users entirely at my own risk, and I agree to release and hold harmless Voeq&apos;s founders, developers, and administrators from any resulting claims or disputes, per Voeq&apos;s{' '}
-                <Link href="/terms" target="_blank" className="text-forest-700 underline dark:text-gold-500">
+                <Link href="/terms" target="_blank" className="text-forest-700 underline dark:text-gold-500 dark:text-cream-100">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy" target="_blank" className="text-forest-700 underline dark:text-gold-500">
+                <Link href="/privacy" target="_blank" className="text-forest-700 underline dark:text-gold-500 dark:text-cream-100">
                   Privacy Policy
                 </Link>
                 .

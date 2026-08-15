@@ -40,7 +40,7 @@ export function WishlistButton({ vendorId, initialIsWishlisted = false, classNam
         isWishlisted
           ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/20 dark:text-red-400'
           : 'border-cream-300 bg-cream-50 text-forest-700 hover:border-forest-700/30 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100'
-      } ${className}`}
+      } ${className} dark:border-cream-100/30 dark:border-cream-100`}
       aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
     >
       <HeartIcon className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />

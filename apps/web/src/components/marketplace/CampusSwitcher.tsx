@@ -71,13 +71,13 @@ export function CampusSwitcher({ currentCampusId, onClose, onSelect }: CampusSwi
               rightIcon={query ? <button onClick={() => setQuery('')}><CloseIcon className="h-4 w-4" /></button> : undefined}
               autoFocus
             />
-            <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700">
+            <div className="max-h-64 overflow-y-auto rounded-lg border border-cream-200 dark:border-forest-700 dark:border-cream-100">
               {(filtered ?? institutions.slice(0, 20)).map((inst: Institution) => (
                 <button
                   key={inst.id}
                   type="button"
                   onClick={() => setSelectedInstitution(inst)}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700"
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-cream-100 dark:hover:bg-forest-700 dark:bg-forest-900"
                 >
                   {inst.name}
                 </button>
@@ -105,7 +105,7 @@ export function CampusSwitcher({ currentCampusId, onClose, onSelect }: CampusSwi
                   type="button"
                   onClick={() => handleSelectCampus(campus.id)}
                   disabled={loading}
-                  className="flex w-full items-center justify-between rounded-lg border-2 border-cream-200 px-4 py-3 text-left text-sm transition hover:border-forest-700/30 disabled:opacity-50 dark:border-forest-700"
+                  className="flex w-full items-center justify-between rounded-lg border-2 border-cream-200 px-4 py-3 text-left text-sm transition hover:border-forest-700/30 disabled:opacity-50 dark:border-forest-700 dark:border-cream-100/30 dark:border-cream-100"
                 >
                   <span>
                     {campus.name}

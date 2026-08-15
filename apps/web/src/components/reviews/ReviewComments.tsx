@@ -58,7 +58,7 @@ export function ReviewComments({ reviewId }: ReviewCommentsProps) {
   };
 
   return (
-    <div className="mt-4 space-y-3 border-t border-cream-200 pt-4 dark:border-forest-700">
+    <div className="mt-4 space-y-3 border-t border-cream-200 pt-4 dark:border-forest-700 dark:border-cream-100">
       {comments.map((c) => (
         <div key={c.id} className="flex gap-3">
           <Avatar size="sm" alt={c.author.name ?? 'User'} src={c.author.image} />

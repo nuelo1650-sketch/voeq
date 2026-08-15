@@ -144,7 +144,7 @@ export function FirstListingForm() {
 
           <div className="space-y-4">
             {tree.map((parent) => (
-              <div key={parent.id} className="rounded-2xl border border-cream-300 bg-cream-50/60 p-4 dark:border-forest-700 dark:bg-forest-800/40">
+              <div key={parent.id} className="rounded-2xl border border-cream-300 bg-cream-50/60 p-4 dark:border-forest-700 dark:bg-forest-800/40 dark:bg-forest-800/60 dark:border-cream-100">
                 <p className="mb-2 text-sm font-semibold text-forest-900 dark:text-cream-100">
                   {parent.name}
                 </p>
@@ -176,7 +176,7 @@ export function FirstListingForm() {
         </div>
 
         {/* Custom category */}
-        <div className="rounded-2xl border border-dashed border-cream-300 p-4 dark:border-forest-700">
+        <div className="rounded-2xl border border-dashed border-cream-300 p-4 dark:border-forest-700 dark:border-cream-100">
           <p className="text-xs font-medium uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">
             Can&apos;t find yours? Add a category
           </p>
@@ -252,7 +252,7 @@ export function FirstListingForm() {
                   </button>
                 </div>
                 {i === 0 && (
-                  <span className="absolute inset-x-0 bottom-1 mx-auto w-fit rounded-full bg-gold-500/90 px-2 py-0.5 text-[10px] font-semibold text-forest-900">
+                  <span className="absolute inset-x-0 bottom-1 mx-auto w-fit rounded-full bg-gold-500/90 px-2 py-0.5 text-[10px] font-semibold text-forest-900 dark:text-cream-100">
                     Cover
                   </span>
                 )}

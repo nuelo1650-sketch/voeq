@@ -71,7 +71,7 @@ export function DisputeButton({ vendorId, vendorName, listingId, listingTitle }:
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full rounded-md border border-cream-300 bg-cream-50 px-3 py-2 text-sm dark:border-forest-700 dark:bg-forest-800"
+              className="w-full rounded-md border border-cream-300 bg-cream-50 px-3 py-2 text-sm dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100"
             >
               <option value="">Select a reason</option>
               {REASONS.map((r) => (

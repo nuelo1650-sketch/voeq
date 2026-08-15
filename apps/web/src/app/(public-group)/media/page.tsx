@@ -20,7 +20,7 @@ export default function MediaPage() {
         </p>
 
         <div className="mt-10 space-y-6">
-          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Brand assets</h2>
             <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
               Download the Voeq logo and favicon for editorial use.
@@ -35,7 +35,7 @@ export default function MediaPage() {
             </div>
           </article>
 
-          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Media kit</h2>
             <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
               For logos, high-resolution screenshots, or interview requests, reach our press team.
@@ -47,7 +47,7 @@ export default function MediaPage() {
             </div>
           </article>
 
-          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800">
+          <article className="rounded-2xl border border-cream-300 bg-cream-50 p-6 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
             <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Latest news</h2>
             <p className="mt-2 text-sm text-forest-700/70 dark:text-cream-100/70">
               Read the latest announcements on our press page.
