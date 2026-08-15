@@ -18,7 +18,7 @@ const schema = z.object({
   whatsappNumber: z.string().regex(/^\+234[789]\d{9}$/, 'Use Nigerian format: +234 followed by 10 digits starting with 7, 8, or 9'),
   publicPhone: z.string().regex(/^\+234[789]\d{9}$/).optional().or(z.literal('')),
   institutionId: z.string().min(1, 'Required'),
-  campusId: z.string().min(1, 'Required'),
+  campusId: z.string().optional(),
   websiteUrl: z.string().url().optional().or(z.literal('')),
   instagramHandle: z.string().optional().or(z.literal('')),
   tiktokHandle: z.string().optional().or(z.literal('')),
@@ -94,12 +94,20 @@ export function ContactLocationForm() {
     setQuery('');
   };
 
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const onSubmit = async (data: FormData) => {
+    setSubmitError(null);
+    // If the institution has campuses, one must be selected (visible error, not silent block).
+    if (currentInstitution && currentInstitution.campuses.length > 0 && !data.campusId) {
+      setSubmitError('Please select a campus.');
+      return;
+    }
     await upsertVendor({
       whatsappNumber: data.whatsappNumber,
       publicPhone: data.publicPhone || undefined,
       institutionId: data.institutionId,
-      campusId: data.campusId,
+      campusId: data.campusId || undefined,
       websiteUrl: data.websiteUrl || undefined,
       instagramHandle: data.instagramHandle || undefined,
       tiktokHandle: data.tiktokHandle || undefined,
@@ -187,6 +195,7 @@ export function ContactLocationForm() {
           </Button>
           <Button type="submit" isLoading={isSubmitting}>Continue</Button>
         </div>
+        {submitError && <p className="text-right text-sm text-red-600">{submitError}</p>}
       </form>
 
       <Modal isOpen={institutionSearchOpen} onClose={() => setInstitutionSearchOpen(false)} title="Select institution">
