@@ -115,7 +115,7 @@ export function ListingForm({ mode, listingId }: ListingFormProps) {
       <Input label="Title" maxLength={60} error={errors.title?.message} {...register('title')} />
       <Textarea label="Description" rows={3} maxLength={500} error={errors.description?.message} {...register('description')} />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Input label="Price (₦)" type="number" inputMode="numeric" error={errors.priceMin?.message} {...register('priceMin')} />
         <Input label="Max price (optional)" type="number" inputMode="numeric" error={errors.priceMax?.message} {...register('priceMax')} />
       </div>

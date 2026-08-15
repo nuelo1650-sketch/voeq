@@ -424,7 +424,7 @@ export default async function LandingPage() {
                 </div>
               </AnimatedSection>
               <div className="hidden md:flex justify-center">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {[FoodIcon, TechIcon, FashionIcon, BeautyIcon].map((Icon, i) => (
                     <div key={i} className="rounded-2xl border border-forest-700 bg-forest-800/50 p-8 dark:border-cream-100">
                       <Icon className="h-12 w-12 text-gold-500" />

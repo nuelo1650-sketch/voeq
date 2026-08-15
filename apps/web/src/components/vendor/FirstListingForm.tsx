@@ -208,7 +208,7 @@ export function FirstListingForm() {
         <Input label="Title" placeholder="e.g. Jollof rice + chicken" maxLength={60} error={errors.title?.message} {...register('title')} />
         <Textarea label="Description" rows={3} maxLength={500} placeholder="What's included? Any special options?" error={errors.description?.message} {...register('description')} />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Input label="Price (₦)" type="number" inputMode="numeric" placeholder="1500" error={errors.priceMin?.message} {...register('priceMin')} />
           <Input label="Max price (optional)" type="number" inputMode="numeric" placeholder="2500" error={errors.priceMax?.message} {...register('priceMax')} />
         </div>

@@ -53,7 +53,7 @@ function SignUpPageInner() {
     >
       <div className="px-6 pb-6 pt-8 md:px-8 md:pb-8 md:pt-10">
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
               onClick={() => setIntent('buyer')}
