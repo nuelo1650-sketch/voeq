@@ -24,7 +24,7 @@ const DEFAULT_PREFS: Prefs = {
   notifyNewListings: true,
   notifyNewReviews: true,
   notifyNewFollowers: true,
-  notifyNewDisputes: true,
+  notifyDisputes: true,
 };
 
 const PREFS_UI: Array<{ key: keyof Prefs; label: string; desc: string }> = [

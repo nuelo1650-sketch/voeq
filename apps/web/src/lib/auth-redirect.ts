@@ -4,7 +4,7 @@ export type VendorStatus = 'incomplete' | 'pending' | 'live' | 'rejected' | 'sus
 export interface PostAuthUser {
   role: PostAuthRole;
   vendorStatus: VendorStatus;
-  agreementAcceptedAt?: string | null;
+  agreementAcceptedAt?: Date | string | null;
   defaultCampusId?: string | null;
 }
 
