@@ -4,8 +4,6 @@ import { BusinessBasicsForm } from '@/components/vendor/BusinessBasicsForm';
 import { serverGetMyVendor as getMyVendor } from '@/lib/vendor-server';
 import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
-import { AnimatedSection } from '@/components/landing/AnimatedSection';
-import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 1',
@@ -26,13 +24,9 @@ export default async function Step1Page() {
   return (
     <>
       <VendorPageHeader title="Business basics" subtitle="Tell students what you offer." />
-      <Container size="md">
-        <AnimatedSection>
-          <OnboardingWizard currentStep={1}>
-            <BusinessBasicsForm initialData={initialData} />
-          </OnboardingWizard>
-        </AnimatedSection>
-      </Container>
+      <OnboardingWizard currentStep={1}>
+        <BusinessBasicsForm initialData={initialData} />
+      </OnboardingWizard>
     </>
   );
 }

@@ -3,8 +3,6 @@ import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { ReviewAndGoLive } from '@/components/vendor/ReviewAndGoLive';
 import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
-import { AnimatedSection } from '@/components/landing/AnimatedSection';
-import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 5',
@@ -18,13 +16,9 @@ export default function Step5Page() {
   return (
     <>
       <VendorPageHeader title="Review & go live" subtitle="Double-check everything before opening your storefront." />
-      <Container size="md">
-        <AnimatedSection>
-          <OnboardingWizard currentStep={5}>
-            <ReviewAndGoLive />
-          </OnboardingWizard>
-        </AnimatedSection>
-      </Container>
+      <OnboardingWizard currentStep={5}>
+        <ReviewAndGoLive />
+      </OnboardingWizard>
     </>
   );
 }

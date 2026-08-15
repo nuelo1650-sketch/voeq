@@ -3,8 +3,6 @@ import { OnboardingWizard } from '@/components/vendor/OnboardingWizard';
 import { ProfilePhotoUpload } from '@/components/vendor/ProfilePhotoUpload';
 import { requireVendor } from '@/lib/auth-server';
 import { VendorPageHeader } from '@/components/vendor/VendorPageShell';
-import { AnimatedSection } from '@/components/landing/AnimatedSection';
-import { Container } from '@/components/ui/Container';
 
 export const metadata: Metadata = {
   title: 'Vendor onboarding — Step 3',
@@ -18,13 +16,9 @@ export default function Step3Page() {
   return (
     <>
       <VendorPageHeader title="Profile photo" subtitle="Add a photo students will recognize." />
-      <Container size="md">
-        <AnimatedSection>
-          <OnboardingWizard currentStep={3}>
-            <ProfilePhotoUpload />
-          </OnboardingWizard>
-        </AnimatedSection>
-      </Container>
+      <OnboardingWizard currentStep={3}>
+        <ProfilePhotoUpload />
+      </OnboardingWizard>
     </>
   );
 }
