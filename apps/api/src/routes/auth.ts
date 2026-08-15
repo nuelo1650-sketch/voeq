@@ -307,7 +307,7 @@ authRouter.get('/google', (_req: Request, res: Response) => {
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
 });
 
-authRouter.get('/google/callback', async (req: Request, res: Response, next: NextFunction) => {
+authRouter.get('/google/callback', async (req: Request, res: Response, _next: NextFunction) => {
   try {
     const code = req.query.code as string;
     if (!code) {
