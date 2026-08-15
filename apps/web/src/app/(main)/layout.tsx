@@ -22,15 +22,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         setMe(data.user);
         if (!data.user.agreementAcceptedAt) {
           setShowAgreement(true);
-        } else if (!data.user.homeSeenAt && !data.user.defaultCampusId) {
-          // During first-run onboarding the HomeWizard owns campus selection,
-          // so we intentionally do NOT also pop the layout campus modal here
-          // (that would double-prompt). Only prompt from the layout once the
-          // user has finished onboarding (homeSeenAt set) but later clears
-          // their campus.
-          setShowCampus(false);
-        } else if (data.user.homeSeenAt && !data.user.defaultCampusId) {
-          setShowCampus(true);
+        } else if (!data.user.defaultCampusId) {
+          // Force campus selection for any user missing a campus — buyers on
+          // first run, or a live vendor who later clears theirs. Vendors still
+          // in onboarding set their campus at step-2, so skip them there to
+          // avoid a double prompt.
+          const isVendorInOnboarding =
+            data.user.role === 'vendor' && data.user.vendorStatus !== 'live';
+          if (!isVendorInOnboarding) setShowCampus(true);
         }
       })
       .catch(() => {

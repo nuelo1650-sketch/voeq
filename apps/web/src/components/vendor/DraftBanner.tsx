@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm, type FieldValues } from 'react-hook-form';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { saveDraft } from '@/lib/vendor-client';
@@ -16,15 +16,30 @@ export function DraftBanner<T extends FieldValues>({ step, watch, enabled }: Dra
   const data = watch();
   const debouncedData = useDebounce(data, 1000);
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  // Track the last payload we actually sent so we don't re-save identical data
+  // on every react render (watch() returns a new object each render, which
+  // would otherwise spin "Saving draft…" forever).
+  const lastSaved = useRef<string>('');
 
   useEffect(() => {
     if (!enabled) return;
+    const serialized = JSON.stringify(debouncedData);
+    if (serialized === lastSaved.current) return;
     if (Object.keys(debouncedData).length === 0) return;
 
     setStatus('saving');
     saveDraft(step, debouncedData as Record<string, unknown>)
-      .then(() => setStatus('saved'))
-      .catch(() => setStatus('idle'));
+      .then(() => {
+        lastSaved.current = serialized;
+        setStatus('saved');
+        // Settle back to idle so the banner doesn't persist indefinitely.
+        setTimeout(() => setStatus((s) => (s === 'saved' ? 'idle' : s)), 1500);
+      })
+      .catch(() => {
+        // Don't loop on failure — drop back to idle and let the next change retry.
+        lastSaved.current = serialized;
+        setStatus('idle');
+      });
   }, [debouncedData, step, enabled]);
 
   if (status === 'idle') return null;

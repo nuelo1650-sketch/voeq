@@ -37,6 +37,7 @@ export async function api<T = unknown>(
   try {
     const res = await fetch(`${base}${path}`, {
       ...options,
+      cache: 'no-store',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
