@@ -20,6 +20,7 @@ import {
   resendOtp,
 } from '../services/auth.service';
 import { rateLimit, trackFailure } from '../middleware/rate-limit';
+import { authLimiter, magicLimiter, agreementLimiter, rateLimitWithFallback } from '../middleware/rate-limit-upstash';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { getClientIp } from '../utils/ip';
 import { safeRedirect } from '../lib/redirect';
@@ -35,7 +36,7 @@ export const authRouter: ReturnType<typeof Router> = Router();
 
 authRouter.post(
   '/signup/password',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signup', keyFromBody: 'email' }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signup', keyFromBody: 'email' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = SignupWithPasswordSchema.parse(req.body);
@@ -52,7 +53,7 @@ authRouter.post(
 
 authRouter.post(
   '/verify-otp',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'otp', keyFromBody: 'email', lockoutAfter: 5 }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'otp', keyFromBody: 'email', lockoutAfter: 5 }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = VerifyOtpSchema.parse(req.body);
@@ -93,7 +94,7 @@ authRouter.post(
 
 authRouter.post(
   '/resend-otp',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp', keyFromBody: 'email', lockoutAfter: 5 }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-otp', keyFromBody: 'email', lockoutAfter: 5 }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = RequestMagicLinkSchema.parse(req.body);
@@ -115,7 +116,7 @@ authRouter.post(
 
 authRouter.post(
   '/signin/password',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signin' }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'signin' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = SignInWithPasswordSchema.parse(req.body);
@@ -152,7 +153,7 @@ authRouter.post(
 
 authRouter.post(
   '/magic-link',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'magic' }),
+  rateLimitWithFallback(magicLimiter, { windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'magic' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = RequestMagicLinkSchema.parse(req.body);
@@ -169,7 +170,7 @@ authRouter.post(
 
 authRouter.post(
   '/magic-link/consume',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'magic-consume' }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'magic-consume' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { token } = req.body;
@@ -226,7 +227,7 @@ authRouter.post('/signout', async (req: Request, res: Response) => {
 
 authRouter.post(
   '/password-reset/request',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'pw-reset-req' }),
+  rateLimitWithFallback(magicLimiter, { windowMs: 15 * 60 * 1000, max: 3, keyPrefix: 'pw-reset-req' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = RequestPasswordResetSchema.parse(req.body);
@@ -243,7 +244,7 @@ authRouter.post(
 
 authRouter.post(
   '/password-reset/consume',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'pw-reset-consume' }),
+  rateLimitWithFallback(authLimiter, { windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'pw-reset-consume' }),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = ConsumePasswordResetSchema.parse(req.body);
@@ -276,7 +277,7 @@ authRouter.post(
 authRouter.post(
   '/accept-agreement',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 10, keyPrefix: 'agreement' }),
+  rateLimitWithFallback(agreementLimiter, { windowMs: 60 * 60 * 1000, max: 10, keyPrefix: 'agreement' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const input = AcceptAgreementSchema.parse(req.body);

@@ -1,7 +1,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
-import { rateLimit } from '../middleware/rate-limit';
+import { rateLimitWithFallback, writeLimiter } from '../middleware/rate-limit-upstash';
 import { prisma } from '../lib/db';
 
 export const wishlistRouter: ReturnType<typeof Router> = Router();
@@ -71,7 +71,7 @@ wishlistRouter.get('/', requireAuth, async (req: AuthedRequest, res: Response, n
 wishlistRouter.post(
   '/',
   requireAuth,
-  rateLimit({ windowMs: 60 * 1000, max: 30, keyPrefix: 'wishlist-add' }),
+  rateLimitWithFallback(writeLimiter, { windowMs: 60 * 1000, max: 30, keyPrefix: 'wishlist-add' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const { vendorId } = z.object({ vendorId: z.string().min(1) }).parse(req.body);

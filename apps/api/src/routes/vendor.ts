@@ -6,7 +6,7 @@ import {
   UpdateListingSchema,
 } from '../schemas/vendor';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
-import { rateLimit } from '../middleware/rate-limit';
+import { rateLimitWithFallback, agreementLimiter, reviewCreateLimiter, reviewRespondLimiter } from '../middleware/rate-limit-upstash';
 import { prisma } from '../lib/db';
 import {
   generateUniqueVendorSlug,
@@ -174,7 +174,7 @@ vendorRouter.patch(
 vendorRouter.post(
   '/me/accept-agreement',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 10, keyPrefix: 'vendor-agreement' }),
+  rateLimitWithFallback(agreementLimiter, { windowMs: 60 * 60 * 1000, max: 10, keyPrefix: 'vendor-agreement' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const input = AcceptVendorAgreementSchema.parse(req.body);
@@ -205,7 +205,7 @@ vendorRouter.post(
 vendorRouter.post(
   '/me/go-live',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'go-live' }),
+  rateLimitWithFallback(reviewCreateLimiter, { windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'go-live' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const vendor = await prisma.vendor.findUnique({ where: { userId: req.userId! } });
@@ -334,7 +334,7 @@ vendorRouter.get('/me/analytics', requireAuth, async (req: AuthedRequest, res: R
 vendorRouter.post(
   '/me/listings',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 20, keyPrefix: 'listing-create' }),
+  rateLimitWithFallback(reviewRespondLimiter, { windowMs: 60 * 60 * 1000, max: 20, keyPrefix: 'listing-create' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const vendor = await prisma.vendor.findUnique({ where: { userId: req.userId! } });

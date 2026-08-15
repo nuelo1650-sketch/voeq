@@ -1,6 +1,6 @@
 import { Router, type Response, type NextFunction } from 'express';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
-import { rateLimit } from '../middleware/rate-limit';
+import { rateLimitWithFallback, uploadLimiter } from '../middleware/rate-limit-upstash';
 import {
   uploadToCloudinary,
   moderateImage,
@@ -16,7 +16,7 @@ const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 uploadRouter.post(
   '/image',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 50, keyPrefix: 'upload' }),
+  rateLimitWithFallback(uploadLimiter, { windowMs: 60 * 60 * 1000, max: 50, keyPrefix: 'upload' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const { data, filename, mimetype, folder } = req.body as {

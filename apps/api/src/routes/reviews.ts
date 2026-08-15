@@ -7,7 +7,7 @@ import {
   UpdateVendorResponseSchema,
 } from '../schemas/review';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
-import { rateLimit } from '../middleware/rate-limit';
+import { rateLimitWithFallback, reviewCreateLimiter, reviewRespondLimiter } from '../middleware/rate-limit-upstash';
 import { prisma } from '../lib/db';
 import {
   createReview,
@@ -39,7 +39,7 @@ reviewsRouter.get('/vendor/:vendorId', async (req: Request, res: Response, next:
 reviewsRouter.post(
   '/vendor/:vendorId',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'review-create' }),
+  rateLimitWithFallback(reviewCreateLimiter, { windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'review-create' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const input = CreateReviewSchema.parse(req.body);
@@ -78,7 +78,7 @@ reviewsRouter.patch(
 reviewsRouter.post(
   '/:id/respond',
   requireAuth,
-  rateLimit({ windowMs: 60 * 60 * 1000, max: 20, keyPrefix: 'review-respond' }),
+  rateLimitWithFallback(reviewRespondLimiter, { windowMs: 60 * 60 * 1000, max: 20, keyPrefix: 'review-respond' }),
   async (req: AuthedRequest, res: Response, next: NextFunction) => {
     try {
       const input = CreateVendorResponseSchema.parse(req.body);
