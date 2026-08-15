@@ -23,8 +23,8 @@ const apiEnvSchema = envSchema.extend({
   // upload/read/search limiters use the distributed store instead of the
   // in-memory fallback (which is per-instance and doesn't hold across the
   // Render instance fleet). Local dev leaves these unset -> in-memory.
-  UPSTASH_REDIS_REST_URL: z.string().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  UPSTASH_REDIS_URL: z.string().optional(),
+  UPSTASH_REDIS_TOKEN: z.string().optional(),
 });
 
 const parsed = apiEnvSchema.safeParse(process.env);

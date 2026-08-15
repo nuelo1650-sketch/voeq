@@ -4,17 +4,17 @@ import type { Request, Response, NextFunction } from 'express';
 import { env } from '../config/env';
 
 /**
- * Distributed rate-limit store (Upstash Redis). When UPSTASH_REDIS_REST_URL and
- * UPSTASH_REDIS_REST_TOKEN are set, limiters use this shared store so limits
+ * Distributed rate-limit store (Upstash Redis). When UPSTASH_REDIS_URL and
+ * UPSTASH_REDIS_TOKEN are set, limiters use this shared store so limits
  * hold across the Render instance fleet (the in-memory fallback in
  * rate-limit.ts is per-instance and doesn't aggregate). Local dev / missing
  * creds => callers fall back to the in-memory limiter.
  */
 const redis =
-  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+  env.UPSTASH_REDIS_URL && env.UPSTASH_REDIS_TOKEN
     ? new Redis({
-        url: env.UPSTASH_REDIS_REST_URL,
-        token: env.UPSTASH_REDIS_REST_TOKEN,
+        url: env.UPSTASH_REDIS_URL,
+        token: env.UPSTASH_REDIS_TOKEN,
       })
     : null;
 
