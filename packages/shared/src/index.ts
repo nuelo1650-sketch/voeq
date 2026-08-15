@@ -22,6 +22,10 @@ export const envSchema = z.object({
   DIRECT_URL: z.string().url().optional(),
   NEXT_PUBLIC_API_URL: z.string().url(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
+  NEXT_PUBLIC_WHATSAPP_NUMBER: z
+    .string()
+    .regex(/^\+?[0-9]{10,15}$/, 'WhatsApp number in E.164 format, e.g. 2348012345678')
+    .optional(),
   AUTH_SECRET: z.string().min(32, 'AUTH_SECRET must be at least 32 characters'),
   AUTH_GOOGLE_CLIENT_ID: z.string().min(1),
   AUTH_GOOGLE_CLIENT_SECRET: z.string().min(1),
