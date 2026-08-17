@@ -39,6 +39,10 @@ export function BrowseClient({
   const currentSearch = searchParams.get('search') ?? '';
   const currentCategory = searchParams.get('category') ?? '';
   const currentSort = searchParams.get('sort') ?? 'newest';
+  const currentMinPrice = searchParams.get('minPrice') ?? '';
+  const currentMaxPrice = searchParams.get('maxPrice') ?? '';
+  const currentMinRating = searchParams.get('minRating') ?? '';
+  const currentVerified = searchParams.get('verifiedOnly') === 'true';
 
   // Build a query string that preserves the meaningful params.
   const buildQuery = (overrides: Record<string, string | undefined>) => {
@@ -46,9 +50,17 @@ export function BrowseClient({
     const search = overrides.search ?? currentSearch;
     const category = overrides.category ?? currentCategory;
     const sort = overrides.sort ?? currentSort;
+    const minPrice = overrides.minPrice ?? currentMinPrice;
+    const maxPrice = overrides.maxPrice ?? currentMaxPrice;
+    const minRating = overrides.minRating ?? currentMinRating;
+    const verifiedOnly = overrides.verifiedOnly ?? (currentVerified ? 'true' : undefined);
     if (search) sp.set('search', search);
     if (category) sp.set('category', category);
     if (sort && sort !== 'newest') sp.set('sort', sort);
+    if (minPrice) sp.set('minPrice', minPrice);
+    if (maxPrice) sp.set('maxPrice', maxPrice);
+    if (minRating) sp.set('minRating', minRating);
+    if (verifiedOnly) sp.set('verifiedOnly', verifiedOnly);
     return sp.toString();
   };
 
@@ -100,6 +112,58 @@ export function BrowseClient({
         </div>
       </AnimatedSection>
 
+      <details className="mb-6 rounded-2xl border border-cream-300 bg-cream-50 p-4 dark:border-forest-700 dark:bg-forest-800 dark:border-cream-100">
+        <summary className="cursor-pointer text-sm font-medium text-forest-900 dark:text-cream-100">More filters</summary>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="flex flex-col gap-1 text-xs font-medium text-forest-700/70 dark:text-cream-100/70">
+            Min price (₦)
+            <input
+              type="number"
+              min={0}
+              inputMode="numeric"
+              defaultValue={currentMinPrice}
+              placeholder="0"
+              onBlur={(e) => pushQuery({ minPrice: e.target.value || undefined })}
+              className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm text-forest-900 outline-none focus:border-forest-700 dark:border-forest-700 dark:bg-forest-900/60 dark:text-cream-100"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-forest-700/70 dark:text-cream-100/70">
+            Max price (₦)
+            <input
+              type="number"
+              min={0}
+              inputMode="numeric"
+              defaultValue={currentMaxPrice}
+              placeholder="Any"
+              onBlur={(e) => pushQuery({ maxPrice: e.target.value || undefined })}
+              className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm text-forest-900 outline-none focus:border-forest-700 dark:border-forest-700 dark:bg-forest-900/60 dark:text-cream-100"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-forest-700/70 dark:text-cream-100/70">
+            Min rating
+            <select
+              value={currentMinRating}
+              onChange={(e) => pushQuery({ minRating: e.target.value || undefined })}
+              className="rounded-md border border-cream-300 bg-cream-50 px-3 py-1.5 text-sm text-forest-900 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100"
+            >
+              <option value="">Any</option>
+              <option value="3">3+ stars</option>
+              <option value="4">4+ stars</option>
+              <option value="4.5">4.5+ stars</option>
+            </select>
+          </label>
+          <label className="flex items-end gap-3 text-sm font-medium text-forest-900 dark:text-cream-100">
+            <input
+              type="checkbox"
+              checked={currentVerified}
+              onChange={(e) => pushQuery({ verifiedOnly: e.target.checked ? 'true' : undefined })}
+              className="h-4 w-4 rounded border-cream-300 text-forest-700 focus:ring-forest-700"
+            />
+            Verified only
+          </label>
+        </div>
+      </details>
+
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-sm text-forest-700/60 dark:text-cream-100/60 sm:inline">Sort:</span>
         <select
@@ -124,10 +188,34 @@ export function BrowseClient({
               </button>
             </span>
           )}
-          {currentCategory && (
+          {currentMinPrice && (
             <span className="inline-flex items-center gap-1 rounded-full border border-gold-500 bg-gold-500/10 px-2 py-0.5 text-xs font-medium text-forest-900 dark:text-cream-100">
-              Category: {currentCategory}
-              <button type="button" onClick={() => pushQuery({ category: undefined })} className="text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60">
+              Min ₦{currentMinPrice}
+              <button type="button" onClick={() => pushQuery({ minPrice: undefined })} className="text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60">
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          {currentMaxPrice && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-gold-500 bg-gold-500/10 px-2 py-0.5 text-xs font-medium text-forest-900 dark:text-cream-100">
+              Max ₦{currentMaxPrice}
+              <button type="button" onClick={() => pushQuery({ maxPrice: undefined })} className="text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60">
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          {currentMinRating && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-gold-500 bg-gold-500/10 px-2 py-0.5 text-xs font-medium text-forest-900 dark:text-cream-100">
+              {currentMinRating}+ stars
+              <button type="button" onClick={() => pushQuery({ minRating: undefined })} className="text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60">
+                <XIcon className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          {currentVerified && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-gold-500 bg-gold-500/10 px-2 py-0.5 text-xs font-medium text-forest-900 dark:text-cream-100">
+              Verified only
+              <button type="button" onClick={() => pushQuery({ verifiedOnly: undefined })} className="text-forest-700/60 hover:text-forest-900 dark:text-cream-100/60">
                 <XIcon className="h-3 w-3" />
               </button>
             </span>

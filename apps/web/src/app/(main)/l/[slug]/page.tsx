@@ -9,6 +9,7 @@ import { WhatsAppButton } from '@/components/marketplace/WhatsAppButton';
 import { ShareButton } from '@/components/marketplace/ShareButton';
 import { ListingSaveButton } from '@/components/marketplace/ListingSaveButton';
 import { MessageButton } from '@/components/marketplace/MessageButton';
+import { FollowButton } from '@/components/marketplace/FollowButton';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { RatingStars } from '@/components/marketplace/RatingStars';
 import Link from 'next/link';
@@ -138,6 +139,13 @@ export default async function ListingPage({ params }: ListingPageProps) {
                     text={`Check out ${listing.title} on Voeq`}
                     fullWidth
                   />
+                  <FollowButton vendorId={listing.vendor.id} className="w-full" />
+                  <Link
+                    href={`/v/${listing.vendor.slug}#reviews`}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-cream-300 bg-cream-50 px-4 py-2.5 text-sm font-semibold text-forest-800 transition hover:border-forest-500 dark:border-forest-700 dark:bg-forest-800 dark:text-cream-100 dark:border-cream-100"
+                  >
+                    Write a review
+                  </Link>
                 </div>
               </div>
             </div>
