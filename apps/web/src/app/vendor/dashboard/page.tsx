@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import Link from 'next/link';
 import { serverGetMyVendor as getMyVendor, serverGetMyAnalytics as getMyAnalytics, serverGetMyListings as getMyListings } from '@/lib/vendor-server';
+import { serverGetMe as getMe } from '@/lib/auth-server';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { ArrowRightIcon, ChevronRightIcon, CheckIcon, StarIcon, ShareIcon } from '@/components/icons';
@@ -9,6 +10,7 @@ import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageS
 import { ThreadCard } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { requireVendor } from '@/lib/auth-server';
+import { VendorWelcomeOverlay } from '@/components/vendor/VendorWelcomeOverlay';
 
 export const metadata: Metadata = {
   title: 'Vendor dashboard',
@@ -79,10 +81,11 @@ function QuickAction({ title, description, href, cta }: { title: string; descrip
 
 export default async function VendorDashboardPage() {
   await requireVendor();
-  const [vendorResult, analytics, listings] = await Promise.all([
+  const [vendorResult, analytics, listings, me] = await Promise.all([
     getMyVendor().catch(() => null),
     getMyAnalytics().catch(() => null),
     getMyListings().catch(() => null),
+    getMe().catch(() => null),
   ]);
 
   // Graceful degradation: if /me 404s (row not yet created) but the user is a
@@ -115,6 +118,7 @@ export default async function VendorDashboardPage() {
   const listingItems = listings?.listings ?? [];
   const progress = vendorResult.progress ?? 0;
   const isLive = vendor.status === 'live';
+  const showWelcome = !me?.user?.homeSeenAt;
 
   return (
     <>
@@ -268,6 +272,7 @@ export default async function VendorDashboardPage() {
           </AnimatedSection>
         </Container>
       </VendorSection>
+      {showWelcome && <VendorWelcomeOverlay storefrontHref={`/v/${vendor.businessSlug}`} />}
     </>
   );
 }

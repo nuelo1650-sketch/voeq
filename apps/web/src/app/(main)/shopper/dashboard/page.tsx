@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { VendorCard } from '@/components/marketplace/VendorCard';
 import { ListingCard } from '@/components/marketplace/ListingCard';
+import { ShopperWelcomeOverlay } from '@/components/shopper/ShopperWelcomeOverlay';
 import { HeartIcon, CheckIcon, SearchIcon, TrendingUpIcon, SparklesIcon, ArrowRightIcon } from '@/components/icons';
 import { ThreadSeam } from '@/components/brand/Thread';
 import { formatDistanceToNow } from '@/lib/utils';
@@ -188,6 +189,7 @@ export default async function BuyerDashboardPage() {
           </div>
         </AnimatedSection>
       </Container>
+      {!me?.user?.homeSeenAt && <ShopperWelcomeOverlay firstName={firstName} />}
     </>
   );
 }
