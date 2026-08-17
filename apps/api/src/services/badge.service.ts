@@ -1,4 +1,5 @@
 import { prisma } from '../lib/db';
+import { notify } from './notification.service';
 import type { BadgeKey } from '@prisma/client';
 
 export interface BadgeCriteria {
@@ -168,12 +169,27 @@ export async function syncVendorBadges(vendorId: string): Promise<{ awarded: Bad
   const currentBadgeKeys = new Set(currentBadges.map((b) => b.badgeKey));
 
   const awarded: BadgeKey[] = [];
+  let ownerUserId: string | null = null;
   for (const key of earned) {
     if (!currentBadgeKeys.has(key)) {
       await prisma.vendorBadge.create({
         data: { vendorId, badgeKey: key },
       });
       awarded.push(key);
+
+      // Notify the vendor owner of the newly earned badge (fire-and-forget).
+      if (ownerUserId === null) {
+        const v = await prisma.vendor.findUnique({ where: { id: vendorId }, select: { userId: true } });
+        ownerUserId = v?.userId ?? null;
+      }
+      if (ownerUserId) {
+        const def = BADGE_DEFINITIONS[key];
+        await notify({
+          userId: ownerUserId,
+          type: 'badge_earned',
+          payload: { badgeKey: key, label: def?.label ?? key },
+        });
+      }
     }
   }
 

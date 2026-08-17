@@ -7,6 +7,7 @@ import { Logo } from '@/components/brand/Logo';
 import { ThemeToggle } from '@/components/marketplace/ThemeToggle';
 import { Button } from '@/components/ui/Button';
 import { NAV_ITEMS, BECOME_VENDOR } from './nav-config';
+import { NotificationBell } from '@/components/user/NotificationBell';
 
 interface AppSidebarProps {
   collapsed: boolean;
@@ -81,6 +82,7 @@ export function AppSidebar({ collapsed, onToggle, onSignOut }: AppSidebarProps) 
 
         <div className={`flex items-center gap-2 ${collapsed ? 'flex-col' : ''}`}>
           <ThemeToggle />
+          <NotificationBell />
           <Button
             variant="ghost"
             size="sm"

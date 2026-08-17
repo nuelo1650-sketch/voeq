@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimitWithFallback, writeLimiter } from '../middleware/rate-limit-upstash';
 import { prisma } from '../lib/db';
+import { notify } from '../services/notification.service';
 
 export const followRouter: ReturnType<typeof Router> = Router();
 
@@ -25,6 +26,23 @@ followRouter.post(
         create: { userId: req.userId!, vendorId },
         update: {},
       });
+
+      // Notify the vendor's owner of a new follower (fire-and-forget).
+      if (vendor.userId) {
+        const follower = await prisma.user.findUnique({
+          where: { id: req.userId! },
+          select: { name: true },
+        });
+        await notify({
+          userId: vendor.userId,
+          type: 'new_follower',
+          payload: {
+            followerName: follower?.name ?? 'Someone',
+            vendorId,
+            vendorName: vendor.businessName,
+          },
+        });
+      }
 
       res.status(200).json({ following: true });
     } catch (error) {

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MoreHorizontal } from 'lucide-react';
 import { NAV_ITEMS } from './nav-config';
+import { NotificationBell } from '@/components/user/NotificationBell';
 
 export function AppBottomNav() {
   const pathname = usePathname();
@@ -37,6 +38,10 @@ export function AppBottomNav() {
           </Link>
         );
       })}
+      <div className="flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium text-forest-700/70 dark:text-cream-100/60 dark:text-cream-100/70">
+        <NotificationBell />
+        <span>Alerts</span>
+      </div>
       <Link
         href="/settings"
         className="flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium text-forest-700/70 dark:text-cream-100/60 dark:text-cream-100/70"

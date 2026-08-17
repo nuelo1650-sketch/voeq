@@ -17,6 +17,7 @@ import {
   listVendorReviews,
 } from '../services/review.service';
 import { logEvent } from '../services/analytics.service';
+import { notify } from '../services/notification.service';
 import { getClientIp } from '../utils/ip';
 
 export const reviewsRouter: ReturnType<typeof Router> = Router();
@@ -44,6 +45,26 @@ reviewsRouter.post(
     try {
       const input = CreateReviewSchema.parse(req.body);
       const result = await createReview(req.params.vendorId ?? '', req.userId!, input);
+
+      // Notify the vendor owner of a new review (fire-and-forget).
+      const [vendor, reviewer] = await Promise.all([
+        prisma.vendor.findUnique({ where: { id: req.params.vendorId ?? '' }, select: { userId: true, businessName: true } }),
+        prisma.user.findUnique({ where: { id: req.userId! }, select: { name: true } }),
+      ]);
+      if (vendor?.userId) {
+        await notify({
+          userId: vendor.userId,
+          type: 'new_review',
+          payload: {
+            reviewId: result.review.id,
+            rating: input.rating,
+            reviewerName: reviewer?.name ?? 'A shopper',
+            vendorId: req.params.vendorId,
+            vendorName: vendor.businessName,
+            listingId: input.listingId ?? null,
+          },
+        });
+      }
 
       await logEvent({
         eventType: 'review_submitted',
@@ -93,6 +114,28 @@ reviewsRouter.post(
       }
 
       const result = await addVendorResponse(req.params.id ?? '', vendor.id, input.text);
+
+      // Notify the original reviewer that the vendor responded (fire-and-forget).
+      const review = await prisma.review.findUnique({
+        where: { id: req.params.id ?? '' },
+        include: {
+          user: { select: { id: true, name: true } },
+          vendor: { select: { businessName: true } },
+        },
+      });
+      if (review?.user?.id) {
+        await notify({
+          userId: review.user.id,
+          type: 'review_response',
+          payload: {
+            reviewId: review.id,
+            vendorId: review.vendorId,
+            vendorName: review.vendor?.businessName ?? 'The vendor',
+            reviewerName: review.user.name,
+          },
+        });
+      }
+
       res.status(200).json(result);
     } catch (error) {
       next(error);

@@ -117,6 +117,14 @@ enum EventType {
   badge_earned
 }
 
+enum NotificationType {
+  new_follower
+  new_review
+  review_response
+  badge_earned
+  new_message
+}
+
 enum AuthTokenType {
   otp
   magic_link
@@ -165,6 +173,7 @@ model User {
   events           EventLog[]
   wishlistItems    WishlistItem[]
   following        Follow[]
+  notifications    Notification[]
   preference       UserPreference?
   reviewComments   ReviewComment[]
   reviewLikes      ReviewLike[]
@@ -690,6 +699,20 @@ model Follow {
   @@unique([userId, vendorId])
   @@index([userId])
   @@index([vendorId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String // recipient
+  type      NotificationType
+  payload   Json?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
 }
 
 model PressItem {
