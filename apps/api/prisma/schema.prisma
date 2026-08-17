@@ -395,6 +395,7 @@ model Listing {
   reviews  Review[]
   events   EventLog[]
   disputes Dispute[]
+  wishlistItems WishlistItem[]
 
   @@unique([vendorId, slug])
   @@index([vendorId])
@@ -659,15 +660,22 @@ model AuditLog {
 model WishlistItem {
   id        String   @id @default(cuid())
   userId    String
-  vendorId  String
+  vendorId  String?
+  listingId String?
   createdAt DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor  Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
+  // Exactly one of vendorId / listingId is set. The two partial uniques
+  // never overlap (one row has vendorId set + listingId null, the other
+  // has vendorId null + listingId set) so a user can't double-save.
   @@unique([userId, vendorId])
+  @@unique([userId, listingId])
   @@index([userId])
   @@index([vendorId])
+  @@index([listingId])
 }
 
 model Follow {

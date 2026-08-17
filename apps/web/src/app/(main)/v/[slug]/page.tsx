@@ -118,6 +118,9 @@ export default async function VendorPage({ params }: VendorPageProps) {
                     <RatingStars rating={vendor.ratingAvg} count={vendor.ratingCount} size="md" />
                   </div>
                 )}
+                <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">
+                  {vendor.followerCount} {vendor.followerCount === 1 ? 'follower' : 'followers'}
+                </p>
                 <div className="mt-2">
                   <TrustScore score={vendor.trustScore} size="sm" showLabel={false} />
                   <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">

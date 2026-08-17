@@ -39,6 +39,10 @@ vendorsRouter.get('/:slug', async (req: Request, res: Response, next: NextFuncti
       return;
     }
 
+    const followerCount = await prisma.follow.count({
+      where: { vendorId: vendor.id },
+    });
+
     await prisma.vendor.update({
       where: { id: vendor.id },
       data: { viewCount: { increment: 1 } },
@@ -56,6 +60,7 @@ vendorsRouter.get('/:slug', async (req: Request, res: Response, next: NextFuncti
         trustScore: vendor.trustScore,
         ratingAvg: vendor.ratingAvg,
         ratingCount: vendor.ratingCount,
+        followerCount,
         institution: vendor.institution,
         campus: vendor.campus,
         listings: vendor.listings.map((l) => ({

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { PriceRange } from './PriceRange';
+import { ListingSaveButton } from './ListingSaveButton';
 import type { ListingSummary } from '@/lib/marketplace-client';
 
 interface ListingCardProps {
@@ -21,6 +22,11 @@ export function ListingCard({ listing, className }: ListingCardProps) {
       )}
     >
       <div className="relative aspect-square w-full overflow-hidden bg-cream-200 dark:bg-forest-700">
+        <ListingSaveButton
+          listingId={listing.id}
+          showLabel={false}
+          className="absolute right-2 top-2 z-10 bg-cream-50/90 backdrop-blur dark:bg-forest-800/90"
+        />
         {listing.photoUrl ? (
           <Image
             src={listing.photoUrl}

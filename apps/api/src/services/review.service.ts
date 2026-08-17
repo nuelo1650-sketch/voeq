@@ -142,6 +142,7 @@ export async function listVendorReviews(
   vendorId: string,
   page: number = 1,
   limit: number = 10,
+  viewerId?: string | null,
 ): Promise<ReviewListResult> {
   const skip = (page - 1) * limit;
 
@@ -154,13 +155,20 @@ export async function listVendorReviews(
       include: {
         user: { select: { name: true, image: true } },
         listing: { select: { title: true, slug: true } },
+        _count: { select: { comments: true, likes: true } },
+        likes: viewerId ? { where: { userId: viewerId }, select: { id: true } } : false,
       },
     }),
     prisma.review.count({ where: { vendorId, status: 'visible' } }),
   ]);
 
   return {
-    reviews: reviews as ReviewWithRelations[],
+    reviews: reviews.map((r) => ({
+      ...r,
+      commentsCount: r._count?.comments ?? 0,
+      likesCount: r._count?.likes ?? 0,
+      myLiked: Array.isArray(r.likes) ? r.likes.length > 0 : false,
+    })) as ReviewWithRelations[],
     total,
     page,
     totalPages: Math.ceil(total / limit),

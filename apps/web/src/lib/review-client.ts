@@ -10,6 +10,9 @@ export interface Review {
   createdAt: string;
   user: { name: string | null; image: string | null };
   listing: { title: string; slug: string } | null;
+  commentsCount: number;
+  likesCount: number;
+  myLiked: boolean;
 }
 
 export async function listVendorReviews(vendorId: string, page: number = 1): Promise<{

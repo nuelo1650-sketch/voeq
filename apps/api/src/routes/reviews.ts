@@ -6,7 +6,7 @@ import {
   CreateVendorResponseSchema,
   UpdateVendorResponseSchema,
 } from '../schemas/review';
-import { requireAuth, type AuthedRequest } from '../middleware/auth';
+import { requireAuth, optionalAuth, type AuthedRequest } from '../middleware/auth';
 import { rateLimitWithFallback, reviewCreateLimiter, reviewRespondLimiter } from '../middleware/rate-limit-upstash';
 import { prisma } from '../lib/db';
 import {
@@ -26,10 +26,10 @@ const listQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(50).default(10),
 });
 
-reviewsRouter.get('/vendor/:vendorId', async (req: Request, res: Response, next: NextFunction) => {
+reviewsRouter.get('/vendor/:vendorId', optionalAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
   try {
     const params = listQuerySchema.parse(req.query);
-    const result = await listVendorReviews(req.params.vendorId ?? '', params.page, params.limit);
+    const result = await listVendorReviews(req.params.vendorId ?? '', params.page, params.limit, req.userId);
     res.status(200).json(result);
   } catch (error) {
     next(error);

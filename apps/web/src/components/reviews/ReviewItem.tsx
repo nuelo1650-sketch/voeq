@@ -3,6 +3,7 @@
 import { Avatar } from '@/components/ui/Avatar';
 import { RatingStars } from '@/components/marketplace/RatingStars';
 import { Badge } from '@/components/ui/Badge';
+import { ReviewComments, ReviewLikeButton } from './ReviewComments';
 import type { Review } from '@/lib/review-client';
 
 interface ReviewItemProps {
@@ -53,6 +54,21 @@ export function ReviewItem({ review, showListing = false }: ReviewItemProps) {
           </p>
         </div>
       )}
+
+      <div className="mt-3 flex items-center gap-4">
+        <ReviewLikeButton
+          reviewId={review.id}
+          initialCount={review.likesCount}
+          initialLiked={review.myLiked}
+        />
+        {review.commentsCount > 0 && (
+          <span className="text-xs text-forest-700/60 dark:text-cream-100/60">
+            {review.commentsCount} {review.commentsCount === 1 ? 'comment' : 'comments'}
+          </span>
+        )}
+      </div>
+
+      <ReviewComments reviewId={review.id} />
     </article>
   );
 }

@@ -152,6 +152,7 @@ export interface VendorDetail {
   trustScore: number;
   ratingAvg: number;
   ratingCount: number;
+  followerCount: number;
   institution: { name: string; slug: string };
   campus: { name: string; slug: string };
   listings: ListingSummary[];
@@ -210,7 +211,8 @@ export async function getInstitutions(): Promise<{ institutions: InstitutionSumm
   }
 }
 
-export interface WishlistItemSummary {
+export interface WishlistVendorItem {
+  kind: 'vendor';
   id: string;
   vendorId: string;
   vendor: {
@@ -241,6 +243,29 @@ export interface WishlistItemSummary {
   createdAt: string;
 }
 
+export interface WishlistListingItem {
+  kind: 'listing';
+  id: string;
+  listingId: string;
+  listing: {
+    id: string;
+    slug: string;
+    title: string;
+    description: string;
+    priceMin: number;
+    priceMax: number | null;
+    photoUrl: string | null;
+    categoryName: string;
+    categorySlug: string;
+    vendorName: string;
+    vendorSlug: string;
+    campusName: string | null;
+  };
+  createdAt: string;
+}
+
+export type WishlistItemSummary = WishlistVendorItem | WishlistListingItem;
+
 export async function getWishlist(): Promise<{ items: WishlistItemSummary[] }> {
   return api<{ items: WishlistItemSummary[] }>('/api/wishlist');
 }
@@ -250,7 +275,20 @@ export async function addToWishlist(vendorId: string): Promise<{ added: boolean 
 }
 
 export async function removeFromWishlist(vendorId: string): Promise<{ removed: boolean }> {
-  return api<{ removed: boolean }>(`/api/wishlist/${vendorId}`, { method: 'DELETE' });
+  return api<{ removed: boolean }>(`/api/wishlist?vendorId=${vendorId}`, { method: 'DELETE' });
+}
+
+export async function addListingToWishlist(listingId: string): Promise<{ added: boolean }> {
+  return api<{ added: boolean }>('/api/wishlist', { method: 'POST', body: JSON.stringify({ listingId }) });
+}
+
+export async function removeListingFromWishlist(listingId: string): Promise<{ removed: boolean }> {
+  return api<{ removed: boolean }>(`/api/wishlist?listingId=${listingId}`, { method: 'DELETE' });
+}
+
+export async function checkWishlistSaved(params: { vendorId?: string; listingId?: string }): Promise<{ saved: boolean }> {
+  const qs = params.vendorId ? `vendorId=${params.vendorId}` : `listingId=${params.listingId}`;
+  return api<{ saved: boolean }>(`/api/wishlist/check?${qs}`);
 }
 
 export interface FollowSummary {

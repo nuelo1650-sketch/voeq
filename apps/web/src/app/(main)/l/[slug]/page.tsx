@@ -7,6 +7,7 @@ import { PhotoGallery } from '@/components/marketplace/PhotoGallery';
 import { PriceRange } from '@/components/marketplace/PriceRange';
 import { WhatsAppButton } from '@/components/marketplace/WhatsAppButton';
 import { ShareButton } from '@/components/marketplace/ShareButton';
+import { ListingSaveButton } from '@/components/marketplace/ListingSaveButton';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { RatingStars } from '@/components/marketplace/RatingStars';
 import Link from 'next/link';
@@ -123,6 +124,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
                     listingPrice={priceStr}
                     fullWidth
                   />
+                  <ListingSaveButton listingId={listing.id} fullWidth />
                   <ShareButton
                     url={pageUrl}
                     title={listing.title}
