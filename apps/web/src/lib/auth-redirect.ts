@@ -6,6 +6,7 @@ export interface PostAuthUser {
   vendorStatus: VendorStatus;
   agreementAcceptedAt?: Date | string | null;
   defaultCampusId?: string | null;
+  feedPrefsSetAt?: Date | string | null;
 }
 
 /**
@@ -25,7 +26,8 @@ export function resolvePostAuthDestination(user: PostAuthUser, next?: string | n
     if (user.role === 'vendor') {
       return user.vendorStatus === 'live' ? '/vendor/dashboard' : '/vendor/onboarding/step-1';
     }
-    const shopperReady = !!user.agreementAcceptedAt && !!user.defaultCampusId;
+    const shopperReady =
+      !!user.agreementAcceptedAt && !!user.defaultCampusId && !!user.feedPrefsSetAt;
     return shopperReady ? '/shopper/dashboard' : '/shopper/onboarding';
   })();
   // An explicit, safe `next` (e.g. from "List your business") wins — but only if

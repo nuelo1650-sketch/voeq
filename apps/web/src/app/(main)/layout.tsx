@@ -30,6 +30,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           const isVendorInOnboarding =
             data.user.role === 'vendor' && data.user.vendorStatus !== 'live';
           if (!isVendorInOnboarding) setShowCampus(true);
+        } else if (!data.user.feedPrefsSetAt) {
+          // Agreement + campus done but feed preferences never explicitly saved
+          // (step 3 of shopper onboarding). Send them to finish onboarding
+          // rather than leaving them on the dashboard with prefs unset.
+          router.replace('/shopper/onboarding');
         }
       })
       .catch(() => {

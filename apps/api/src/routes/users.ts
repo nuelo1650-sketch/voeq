@@ -15,6 +15,9 @@ usersRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, ne
         defaultCampus: {
           include: { institution: true },
         },
+        preference: {
+          select: { feedPrefsSetAt: true },
+        },
       },
     });
     if (!user) {

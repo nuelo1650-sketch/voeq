@@ -10,6 +10,7 @@ export interface AuthUser {
   homeSeenAt: string | null;
   defaultCampusId: string | null;
   image?: string | null;
+  feedPrefsSetAt?: string | null;
   vendorStatus: 'incomplete' | 'pending' | 'live' | 'rejected' | 'suspended' | null;
 }
 

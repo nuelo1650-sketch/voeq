@@ -77,6 +77,17 @@ export function ContactLocationForm() {
         setValue(key, values[key] ?? '', { shouldValidate: false });
       });
       setInstitutions(instData.institutions);
+
+      // Fix: if an institution is already set on load but no campus was
+      // pre-selected (returning vendor / data gap), auto-pick the primary
+      // campus so the user isn't silently blocked at Continue. They can still
+      // change it. Only do this when campusId is empty to avoid clobbering a
+      // deliberate existing selection.
+      if (values.institutionId && !values.campusId) {
+        const pre = instData.institutions.find((i) => i.id === values.institutionId);
+        const primary = pre?.campuses.find((c) => c.isPrimary) ?? pre?.campuses[0];
+        if (primary) setValue('campusId', primary.id, { shouldValidate: true });
+      }
     });
   }, []);
 

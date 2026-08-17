@@ -33,8 +33,8 @@ preferencesRouter.patch('/me', requireAuth, async (req: AuthedRequest, res: Resp
 
     const prefs = await prisma.userPreference.upsert({
       where: { userId: req.userId! },
-      create: { userId: req.userId!, ...input },
-      update: input,
+      create: { userId: req.userId!, feedPrefsSetAt: new Date(), ...input },
+      update: { ...input, feedPrefsSetAt: new Date() },
     });
 
     res.status(200).json({ preferences: prefs });

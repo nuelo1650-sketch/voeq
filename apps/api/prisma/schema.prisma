@@ -496,6 +496,7 @@ model UserPreference {
   notifyNewReviews    Boolean  @default(true)
   notifyNewFollowers  Boolean  @default(true)
   notifyDisputes      Boolean  @default(true)
+  feedPrefsSetAt      DateTime?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 

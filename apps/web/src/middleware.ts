@@ -18,7 +18,9 @@ import { verifySession, type EdgeRole } from '@/lib/session-edge';
 const AUTH_PAGES = ['/signin', '/signup', '/forgot-password', '/reset-password'];
 const PROTECTED_PREFIXES = [
   '/home',
-  '/buyer-dashboard',
+  '/shopper',
+  '/shopper/dashboard',
+  '/shopper/onboarding',
   '/wishlist',
   '/following',
   '/messages',
@@ -27,13 +29,20 @@ const PROTECTED_PREFIXES = [
   '/select-campus',
   '/become-vendor',
   '/vendor',
+  '/vendor/dashboard',
+  '/vendor/onboarding',
   '/admin',
 ];
 
+// Source of truth mirrors lib/auth-server.ts (requireVendor/requireShopper):
+// - vendor (live)      -> /vendor/dashboard
+// - vendor (not live)  -> /vendor/onboarding/step-1
+// - shopper            -> /shopper/dashboard
+// - admin              -> /admin
 function postAuthDestination(role: EdgeRole, vendorStatus: string | null): string {
   if (role === 'admin' || role === 'super_admin') return '/admin';
-  if (role === 'vendor') return vendorStatus === 'live' ? '/vendor' : '/vendor/onboarding/step-1';
-  return '/home';
+  if (role === 'vendor') return vendorStatus === 'live' ? '/vendor/dashboard' : '/vendor/onboarding/step-1';
+  return '/shopper/dashboard';
 }
 
 function isProtected(pathname: string): boolean {
@@ -78,11 +87,13 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(signin);
     }
     if (session) {
-      if (pathname === '/vendor' || pathname.startsWith('/vendor/')) {
-        if (session.role !== 'vendor' && session.role !== 'admin' && session.role !== 'super_admin') {
-          return NextResponse.redirect(new URL('/become-vendor', req.url));
-        }
+    if (pathname === '/vendor' || pathname.startsWith('/vendor/')) {
+      // Mirror requireVendor() in lib/auth-server.ts: a non-vendor in the
+      // vendor section is bounced to their own section, not to promotion.
+      if (session.role !== 'vendor' && session.role !== 'admin' && session.role !== 'super_admin') {
+        return NextResponse.redirect(new URL('/shopper/dashboard', req.url));
       }
+    }
       if (pathname === '/admin' || pathname.startsWith('/admin/')) {
         if (session.role !== 'admin' && session.role !== 'super_admin') {
           return NextResponse.redirect(new URL('/home', req.url));
