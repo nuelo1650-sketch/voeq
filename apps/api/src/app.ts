@@ -21,6 +21,8 @@ import { testRouter } from './routes/test';
 import { wishlistRouter } from './routes/wishlist';
 import { followRouter } from './routes/follow';
 import { notificationsRouter } from './routes/notifications';
+import { analyticsRouter } from './routes/analytics';
+import { discoverRouter } from './routes/discover';
 import { statsRouter } from './routes/stats';
 import { vendorRouter } from './routes/vendor';
 import { uploadRouter } from './routes/upload';
@@ -158,6 +160,8 @@ export function createApp(): Application {
   app.use('/api/wishlist', wishlistRouter);
   app.use('/api/follow', followRouter);
   app.use('/api/notifications', notificationsRouter);
+  app.use('/api/analytics', analyticsRouter);
+  app.use('/api/discover', discoverRouter);
   app.use('/api/stats', statsRouter);
   app.use('/api/disputes', disputesRouter);
   app.use('/api/preferences', preferencesRouter);

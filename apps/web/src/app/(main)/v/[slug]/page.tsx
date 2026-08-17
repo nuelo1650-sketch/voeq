@@ -21,6 +21,8 @@ import { ReviewListWrapper } from '@/components/reviews/ReviewListWrapper';
 import { VendorSection } from '@/components/vendor/VendorPageShell';
 import { ThreadSeam, ThreadLine } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { ViewTracker } from '@/components/analytics/ViewTracker';
+import { serverGetMe } from '@/lib/auth-server';
 import Image from 'next/image';
 
 interface VendorPageProps {
@@ -53,6 +55,9 @@ export default async function VendorPage({ params }: VendorPageProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
   const pageUrl = `${siteUrl}/v/${vendor.slug}`;
 
+  const me = await serverGetMe().catch(() => null);
+  const campusId = me?.user?.defaultCampus?.id ?? null;
+
   const vendorBadges = await getVendorBadges(vendor.id).catch(() => ({ badges: [] }));
 
   const jsonLd = {
@@ -76,6 +81,7 @@ export default async function VendorPage({ params }: VendorPageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <ViewTracker kind="vendor" id={vendor.id} campusId={campusId} />
 
       <VendorSection>
         <Container size="lg" className="py-6">

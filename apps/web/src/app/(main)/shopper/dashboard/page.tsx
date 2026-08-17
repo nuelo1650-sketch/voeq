@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { VendorCard } from '@/components/marketplace/VendorCard';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { ShopperWelcomeOverlay } from '@/components/shopper/ShopperWelcomeOverlay';
+import { TrendingOnCampus } from '@/components/shopper/TrendingOnCampus';
 import { HeartIcon, CheckIcon, SearchIcon, TrendingUpIcon, SparklesIcon, ArrowRightIcon } from '@/components/icons';
 import { ThreadSeam } from '@/components/brand/Thread';
 import { formatDistanceToNow } from '@/lib/utils';
@@ -189,6 +190,7 @@ export default async function BuyerDashboardPage() {
           </div>
         </AnimatedSection>
       </Container>
+      <TrendingOnCampus campusId={me?.user?.defaultCampus?.id} />
       {!me?.user?.homeSeenAt && <ShopperWelcomeOverlay firstName={firstName} />}
     </>
   );

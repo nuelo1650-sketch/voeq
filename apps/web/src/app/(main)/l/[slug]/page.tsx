@@ -14,6 +14,8 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { VendorSection } from '@/components/vendor/VendorPageShell';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { ViewTracker } from '@/components/analytics/ViewTracker';
+import { serverGetMe } from '@/lib/auth-server';
 
 interface ListingPageProps {
   params: Promise<{ slug: string }>;
@@ -42,6 +44,8 @@ export default async function ListingPage({ params }: ListingPageProps) {
   if (!result) notFound();
 
   const { listing } = result;
+  const me = await serverGetMe().catch(() => null);
+  const campusId = me?.user?.defaultCampus?.id ?? null;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
   const pageUrl = `${siteUrl}/l/${listing.slug}`;
   const priceStr = listing.priceMax
@@ -66,6 +70,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <ViewTracker kind="listing" id={listing.id} campusId={campusId} />
 
       <VendorSection>
         <Container size="lg" className="py-6">
