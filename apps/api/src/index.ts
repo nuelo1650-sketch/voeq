@@ -1,6 +1,7 @@
 import { env } from './config/env';
 import { logger } from './config/logger';
 import { createApp } from './app';
+import { createRealtime } from './realtime';
 
 const app = createApp();
 
@@ -8,6 +9,9 @@ const port = env.PORT;
 const server = app.listen(port, () => {
   logger.info({ port, env: env.NODE_ENV }, `🚀 Voeq API running on :${port}`);
 });
+
+// Real-time chat (Socket.IO) shares the same HTTP server / port.
+createRealtime(server);
 
 const shutdown = (signal: NodeJS.Signals): void => {
   logger.info({ signal }, 'Shutting down');

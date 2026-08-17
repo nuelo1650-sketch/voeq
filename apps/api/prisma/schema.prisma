@@ -115,6 +115,7 @@ enum EventType {
   report_submitted
   request_submitted
   badge_earned
+  conversation_started
 }
 
 enum NotificationType {
@@ -174,6 +175,8 @@ model User {
   wishlistItems    WishlistItem[]
   following        Follow[]
   notifications    Notification[]
+  conversationsShopper Conversation[] @relation("ConversationShopper")
+  messages         Message[]
   preference       UserPreference?
   reviewComments   ReviewComment[]
   reviewLikes      ReviewLike[]
@@ -337,6 +340,7 @@ model Vendor {
   events      EventLog[]
   wishlistItems WishlistItem[]
   followers   Follow[]
+  conversations Conversation[] @relation("ConversationVendor")
   disputes    Dispute[] @relation("DisputeVendor")
 
   @@index([businessSlug])
@@ -405,6 +409,7 @@ model Listing {
   events   EventLog[]
   disputes Dispute[]
   wishlistItems WishlistItem[]
+  conversations Conversation[]
 
   @@unique([vendorId, slug])
   @@index([vendorId])
@@ -713,6 +718,38 @@ model Notification {
 
   @@index([userId, createdAt])
   @@index([userId, readAt])
+}
+
+model Conversation {
+  id           String   @id @default(cuid())
+  shopperId    String
+  vendorId     String
+  listingId    String?
+  createdAt    DateTime @default(now())
+  lastMessageAt DateTime @default(now())
+
+  shopper User     @relation("ConversationShopper", fields: [shopperId], references: [id], onDelete: Cascade)
+  vendor  Vendor   @relation("ConversationVendor", fields: [vendorId], references: [id], onDelete: Cascade)
+  listing Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@unique([shopperId, vendorId])
+  @@index([vendorId, lastMessageAt])
+  @@index([shopperId, lastMessageAt])
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  body           String
+  createdAt      DateTime  @default(now())
+  readAt         DateTime?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
 }
 
 model PressItem {
