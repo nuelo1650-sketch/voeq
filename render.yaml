@@ -13,7 +13,7 @@ services:
       - key: PORT
         value: 4000
       - key: CORS_ORIGIN
-        sync: false
+        value: https://voeq.ng
       - key: DATABASE_URL
         sync: false
       - key: DIRECT_URL
