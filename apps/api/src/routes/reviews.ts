@@ -12,9 +12,11 @@ import { prisma } from '../lib/db';
 import {
   createReview,
   updateReview,
+  deleteReview,
   addVendorResponse,
   updateVendorResponse,
   listVendorReviews,
+  listMyReviews,
 } from '../services/review.service';
 import { logEvent } from '../services/analytics.service';
 import { notify } from '../services/notification.service';
@@ -32,6 +34,15 @@ reviewsRouter.get('/vendor/:vendorId', optionalAuth, async (req: AuthedRequest, 
     const params = listQuerySchema.parse(req.query);
     const result = await listVendorReviews(req.params.vendorId ?? '', params.page, params.limit, req.userId);
     res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+reviewsRouter.get('/me', requireAuth, async (req: AuthedRequest, res: Response, next: NextFunction) => {
+  try {
+    const reviews = await listMyReviews(req.userId!);
+    res.status(200).json({ reviews });
   } catch (error) {
     next(error);
   }
@@ -89,6 +100,19 @@ reviewsRouter.patch(
     try {
       const input = UpdateReviewSchema.parse(req.body);
       const result = await updateReview(req.params.id ?? '', req.userId!, input);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+reviewsRouter.delete(
+  '/:id',
+  requireAuth,
+  async (req: AuthedRequest, res: Response, next: NextFunction) => {
+    try {
+      const result = await deleteReview(req.params.id ?? '', req.userId!);
       res.status(200).json(result);
     } catch (error) {
       next(error);

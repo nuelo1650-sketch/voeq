@@ -58,3 +58,23 @@ export async function updateResponse(reviewId: string, text: string): Promise<{ 
     body: JSON.stringify({ text }),
   });
 }
+
+export async function deleteReview(reviewId: string): Promise<{ deleted: true }> {
+  return api(`/api/reviews/${reviewId}`, { method: 'DELETE' });
+}
+
+export async function listMyReviews(): Promise<{
+  reviews: Array<{
+    id: string;
+    vendorId: string;
+    rating: number;
+    text: string;
+    status: string;
+    vendorResponse: string | null;
+    createdAt: string;
+    vendor: { businessName: string; businessSlug: string };
+    listing: { title: string; slug: string } | null;
+  }>;
+}> {
+  return api(`/api/reviews/me`);
+}

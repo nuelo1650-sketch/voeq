@@ -9,11 +9,15 @@ import { Button } from '@/components/ui/Button';
 import { VendorCard } from '@/components/marketplace/VendorCard';
 import { ListingCard } from '@/components/marketplace/ListingCard';
 import { ShopperWelcomeOverlay } from '@/components/shopper/ShopperWelcomeOverlay';
-import { TrendingOnCampus } from '@/components/shopper/TrendingOnCampus';
 import { HeartIcon, CheckIcon, SearchIcon, TrendingUpIcon, SparklesIcon, ArrowRightIcon } from '@/components/icons';
 import { ThreadSeam } from '@/components/brand/Thread';
 import { formatDistanceToNow } from '@/lib/utils';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
+import { NotificationBell } from '@/components/user/NotificationBell';
+import { TrendingMiniCard } from '@/components/shopper/TrendingMiniCard';
+import { RecentlyViewed } from '@/components/shopper/RecentlyViewed';
+import { MyReviews } from '@/components/shopper/MyReviews';
+import { MessagesPreview } from '@/components/shopper/MessagesPreview';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -37,6 +41,9 @@ export default async function BuyerDashboardPage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-cream-200 bg-gradient-to-br from-forest-800 via-forest-900 to-forest-950 dark:border-forest-700 dark:border-cream-100">
+        <div className="absolute right-4 top-4 z-10">
+          <NotificationBell />
+        </div>
         <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_20%_20%,theme(colors.gold.500/0.25),transparent_45%)]" />
         <Container size="lg" className="relative">
           <div className="flex flex-col gap-4 py-10 sm:py-14">
@@ -97,78 +104,60 @@ export default async function BuyerDashboardPage() {
                   </CardContent>
                 </Card>
               </Link>
-              <Card className="opacity-70">
-                <CardContent className="flex items-center justify-between pt-6">
-                  <div>
-                    <p className="text-sm font-medium text-forest-900/70 dark:text-cream-100/70">Messages</p>
-                    <p className="mt-1 text-xs text-forest-700/60 dark:text-cream-100/60">Coming in Phase 2</p>
+              <Card className="flex flex-col">
+                <CardContent className="flex flex-1 flex-col pt-6">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-sm font-medium text-forest-900 dark:text-cream-100">Trending on campus</p>
+                    <TrendingUpIcon className="h-5 w-5 text-gold-600 dark:text-gold-400" />
                   </div>
-                  <span className="rounded-md bg-cream-200/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-forest-700/60 dark:bg-forest-700 dark:text-cream-100/60 dark:bg-forest-700/70">
-                    Soon
-                  </span>
+                  <div className="flex-1">
+                    <TrendingMiniCard campusId={me?.user?.defaultCampus?.id} />
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Recent saved */}
-            {wishlistItems.length > 0 && (
-              <div>
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Recently saved</h2>
-                  <Link href="/wishlist" className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-gold-600 dark:text-gold-500 dark:text-cream-100">
-                    View all <ArrowRightIcon className="h-4 w-4" />
-                  </Link>
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {wishlistItems.map((item: any) => (
-                    <VendorCard
-                      key={item.id}
-                      vendor={{
-                        id: item.vendor.id,
-                        slug: item.vendor.businessSlug,
-                        businessName: item.vendor.businessName,
-                        description: item.vendor.description ?? '',
-                        photoUrl: item.vendor.photoUrl ?? null,
-                        campusName: item.vendor.campus?.name ?? '',
-                        ratingAvg: item.vendor.ratingAvg ?? 0,
-                        ratingCount: item.vendor.ratingCount ?? 0,
-                        verifiedBadge: item.vendor.verifiedBadge,
-                      }}
-                    />
-                  ))}
-                </div>
+            {/* Recently viewed */}
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Recently viewed</h2>
+                <Link href="/browse" className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-gold-600 dark:text-gold-500 dark:text-cream-100">
+                  Browse <ArrowRightIcon className="h-4 w-4" />
+                </Link>
               </div>
-            )}
+              <Card>
+                <CardContent className="pt-5">
+                  <RecentlyViewed />
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Following */}
-            {followingItems.length > 0 && (
+            {/* Personal activity: your reviews + messages */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Following</h2>
-                  <Link href="/following" className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-gold-600 dark:text-gold-500 dark:text-cream-100">
+                  <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Your reviews</h2>
+                </div>
+                <Card>
+                  <CardContent className="pt-5">
+                    <MyReviews />
+                  </CardContent>
+                </Card>
+              </div>
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="font-serif text-xl font-semibold text-forest-900 dark:text-cream-100">Messages</h2>
+                  <Link href="/messages" className="inline-flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-gold-600 dark:text-gold-500 dark:text-cream-100">
                     View all <ArrowRightIcon className="h-4 w-4" />
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {followingItems.map((follow: any) => (
-                    <VendorCard
-                      key={follow.id}
-                      vendor={{
-                        id: follow.vendor.id,
-                        slug: follow.vendor.businessSlug,
-                        businessName: follow.vendor.businessName,
-                        description: follow.vendor.description ?? '',
-                        photoUrl: follow.vendor.photoUrl ?? null,
-                        campusName: follow.vendor.campus?.name ?? '',
-                        ratingAvg: follow.vendor.ratingAvg ?? 0,
-                        ratingCount: follow.vendor.ratingCount ?? 0,
-                        verifiedBadge: follow.vendor.verifiedBadge,
-                      }}
-                    />
-                  ))}
-                </div>
+                <Card>
+                  <CardContent className="pt-5">
+                    <MessagesPreview />
+                  </CardContent>
+                </Card>
               </div>
-            )}
+            </div>
 
             {/* Empty states */}
             {wishlistItems.length === 0 && followingItems.length === 0 && (
@@ -187,10 +176,24 @@ export default async function BuyerDashboardPage() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Sell CTA */}
+            <Card className="border-forest-700/15 bg-forest-700/5 dark:border-forest-600 dark:bg-forest-800">
+              <CardContent className="flex flex-col items-start justify-between gap-4 py-6 sm:flex-row sm:items-center">
+                <div>
+                  <p className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">Sell on Voeq</p>
+                  <p className="mt-1 text-sm text-forest-700/70 dark:text-cream-100/70">Turn your campus audience into customers.</p>
+                </div>
+                <Link href="/vendor/onboarding/step-1">
+                  <Button variant="gold">
+                    <TrendingUpIcon className="h-4 w-4" /> Get started
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         </AnimatedSection>
       </Container>
-      <TrendingOnCampus campusId={me?.user?.defaultCampus?.id} />
       {!me?.user?.homeSeenAt && <ShopperWelcomeOverlay firstName={firstName} />}
     </>
   );

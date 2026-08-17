@@ -16,6 +16,8 @@ export async function serverGetMyAnalytics(): Promise<{
     viewsLast30Days: number;
     totalClicks: number;
     clicksLast7Days: number;
+    conversationsStarted: number;
+    conversationsStartedLast7Days: number;
     conversionRate: number;
     activeListings: number;
     totalReviews: number;
@@ -30,6 +32,7 @@ export async function serverGetMyAnalytics(): Promise<{
     whatsappClickCount: number;
     photos: Array<{ url: string }>;
   }>;
+  daily: Array<{ date: string; views: number; clicks: number; conversations: number }>;
 }> {
   return serverApi('/api/vendors/me/analytics');
 }

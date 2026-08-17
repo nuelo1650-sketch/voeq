@@ -4,13 +4,18 @@ import { serverGetMyVendor as getMyVendor, serverGetMyAnalytics as getMyAnalytic
 import { serverGetMe as getMe } from '@/lib/auth-server';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ArrowRightIcon, ChevronRightIcon, CheckIcon, StarIcon, ShareIcon } from '@/components/icons';
+import { ArrowRightIcon, ChevronRightIcon, ShareIcon } from '@/components/icons';
 import type { Listing } from '@/lib/vendor-client';
 import { VendorPageHeader, VendorSection } from '@/components/vendor/VendorPageShell';
 import { ThreadCard } from '@/components/brand/Thread';
 import { AnimatedSection } from '@/components/landing/AnimatedSection';
 import { requireVendor } from '@/lib/auth-server';
 import { VendorWelcomeOverlay } from '@/components/vendor/VendorWelcomeOverlay';
+import { NotificationBell } from '@/components/user/NotificationBell';
+import { OpenNowIndicator } from '@/components/vendor/OpenNowIndicator';
+import { VendorTrendCard } from '@/components/vendor/VendorTrendCard';
+import { PerListingTable } from '@/components/vendor/PerListingTable';
+import { ReviewsPanel } from '@/components/vendor/ReviewsPanel';
 
 export const metadata: Metadata = {
   title: 'Vendor dashboard',
@@ -18,48 +23,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = 'force-dynamic';
-
-function TrendBadge({ trend, label }: { trend: 'up' | 'down' | 'flat'; label: string }) {
-  if (trend === 'up') {
-    return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300">
-        ↑ {label}
-      </span>
-    );
-  }
-  if (trend === 'down') {
-    return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300">
-        ↓ {label}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2 py-0.5 text-xs font-medium text-forest-700 dark:bg-forest-800 dark:text-cream-100 dark:bg-forest-900">
-      — {label}
-    </span>
-  );
-}
-
-function StatCard({ title, value, sub, trend, trendLabel, icon }: { title: string; value: string | number; sub?: string; trend?: 'up' | 'down' | 'flat'; trendLabel?: string; icon?: React.ReactNode }) {
-  return (
-    <ThreadCard className="p-5 transition hover:shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-forest-700/60 dark:text-cream-100/60">{title}</p>
-          <p className="mt-2 font-serif text-3xl font-semibold text-forest-900 dark:text-cream-100">{value}</p>
-          {sub ? <p className="mt-1 text-xs text-forest-700/70 dark:text-cream-100/70">{sub}</p> : null}
-        </div>
-        <div className="rounded-xl bg-cream-100 p-2 dark:bg-forest-900/60">{icon}</div>
-      </div>
-      {trendLabel ? (
-        <div className="mt-3">
-          <TrendBadge trend={trend ?? 'flat'} label={trendLabel} />
-        </div>
-      ) : null}
-    </ThreadCard>
-  );
-}
 
 function QuickAction({ title, description, href, cta }: { title: string; description: string; href: string; cta: string }) {
   return (
@@ -75,6 +38,18 @@ function QuickAction({ title, description, href, cta }: { title: string; descrip
         {cta}
         <ChevronRightIcon className="h-4 w-4 transition group-hover:translate-x-0.5" />
       </div>
+    </Link>
+  );
+}
+
+function GrowPrompt({ title, href }: { title: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center justify-between rounded-xl border border-forest-700/15 bg-cream-50 px-4 py-3 text-sm font-medium text-forest-800 transition hover:border-forest-500 hover:bg-forest-700/5 dark:border-forest-600 dark:bg-forest-800 dark:text-cream-100"
+    >
+      {title}
+      <ChevronRightIcon className="h-4 w-4 transition group-hover:translate-x-0.5" />
     </Link>
   );
 }
@@ -125,7 +100,7 @@ export default async function VendorDashboardPage() {
       <VendorPageHeader
         title={vendor.businessName}
         subtitle={
-          <div className="flex items-center gap-2 text-sm text-forest-700/70 dark:text-cream-100/70">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-forest-700/70 dark:text-cream-100/70">
             {isLive ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Live
@@ -135,12 +110,24 @@ export default async function VendorDashboardPage() {
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> {vendor.status}
               </span>
             )}
+            {vendor.verifiedBadge && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-forest-700/10 px-2.5 py-1 text-xs font-medium text-forest-800 dark:bg-forest-700 dark:text-cream-100">
+                ✓ Verified
+              </span>
+            )}
+            {stats && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2.5 py-1 text-xs font-medium text-forest-700 dark:bg-forest-900/60 dark:text-cream-100">
+                Trust {stats.trustScore}
+              </span>
+            )}
+            <OpenNowIndicator slug={vendor.businessSlug} />
             <span>·</span>
             <span>{vendor.ownerName}</span>
           </div>
         }
       >
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <Button variant="ghost" size="sm" rightIcon={<ShareIcon className="h-4 w-4" />}>
             <Link href={`/v/${vendor.businessSlug}`} target="_blank">View storefront</Link>
           </Button>
@@ -176,39 +163,26 @@ export default async function VendorDashboardPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                <StatCard
-                  title="Views"
-                  value={stats?.totalViews ?? 0}
-                  sub={!stats ? 'Analytics unavailable' : 'Total public profile views'}
-                  trend={stats ? 'up' : 'flat'}
-                  trendLabel={stats ? 'Live data' : 'Pending'}
-                  icon={<StarIcon className="h-5 w-5 text-forest-700 dark:text-cream-100" />}
-                />
-                <StatCard
-                  title="WhatsApp clicks"
-                  value={stats?.totalClicks ?? 0}
-                  sub={stats ? `${stats.clicksLast7Days} this week` : "Inquiries from your storefront"}
-                  trend="flat"
-                  trendLabel="This period"
-                  icon={<svg className="h-5 w-5 text-forest-700 dark:text-cream-100" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.464 3.488" /></svg>}
-                />
-                <StatCard
-                  title="Active listings"
-                  value={stats?.activeListings ?? vendor._count.listings}
-                  sub={listingItems.length === 0 ? 'No listings yet' : `${listingItems.length} total listed`}
-                  trend={listingItems.length === 0 ? 'flat' : 'up'}
-                  trendLabel={listingItems.length === 0 ? 'Get started' : 'Active inventory'}
-                  icon={<CheckIcon className="h-5 w-5 text-forest-700 dark:text-cream-100" />}
-                />
-                <StatCard
-                  title="Reviews"
-                  value={stats?.totalReviews ?? 0}
-                  sub={stats ? `${stats.totalReviews} reviews` : "Customer ratings on storefront"}
-                  trend={stats ? 'up' : 'flat'}
-                  trendLabel={stats ? 'Growing' : 'Pending'}
-                  icon={<svg className="h-5 w-5 text-forest-700 dark:text-cream-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>}
-                />
+              {stats && analytics?.daily ? (
+                <VendorTrendCard daily={analytics.daily} stats={{
+                  totalViews: stats.totalViews,
+                  totalClicks: stats.totalClicks,
+                  conversationsStarted: stats.conversationsStarted,
+                  totalReviews: stats.totalReviews,
+                }} />
+              ) : (
+                <ThreadCard className="p-5 text-sm text-forest-700/70 dark:text-cream-100/70">Analytics unavailable.</ThreadCard>
+              )}
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {analytics?.topListings ? (
+                  <PerListingTable listings={analytics.topListings as unknown as Array<{
+                    id: string; title: string; slug: string; viewCount: number; whatsappClickCount: number; photos: Array<{ url: string }>;
+                  }>} />
+                ) : (
+                  <ThreadCard className="p-5 text-sm text-forest-700/70 dark:text-cream-100/70">Listing performance unavailable.</ThreadCard>
+                )}
+                <ReviewsPanel vendorId={vendor.id} businessSlug={vendor.businessSlug} />
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -268,6 +242,17 @@ export default async function VendorDashboardPage() {
                   <QuickAction title="Share your storefront" description="Copy your public page link" href={`/v/${vendor.businessSlug}`} cta="View" />
                 </div>
               </div>
+
+              {isLive && (
+                <ThreadCard className="border-forest-700/20 p-5 dark:border-forest-600">
+                  <h2 className="font-serif text-lg font-semibold text-forest-900 dark:text-cream-100">Grow your storefront</h2>
+                  <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <GrowPrompt title="Add a second listing" href="/vendor/listings/new" />
+                    <GrowPrompt title="Complete your operating hours" href="/vendor/profile" />
+                    <GrowPrompt title="Share your storefront" href={`/v/${vendor.businessSlug}`} />
+                  </div>
+                </ThreadCard>
+              )}
             </div>
           </AnimatedSection>
         </Container>

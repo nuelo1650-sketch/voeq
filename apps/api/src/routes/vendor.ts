@@ -314,6 +314,32 @@ vendorRouter.get('/me/analytics', requireAuth, async (req: AuthedRequest, res: R
       },
     });
 
+    // 30-day daily series (views / clicks / conversations) for the sparkline.
+    // Bucket events by local day in JS to stay DB-agnostic.
+    const seriesEvents = await prisma.eventLog.findMany({
+      where: {
+        vendorId: vendor.id,
+        eventType: { in: ['vendor_view', 'listing_view', 'whatsapp_click', 'conversation_started'] },
+        createdAt: { gte: thirtyDaysAgo },
+      },
+      select: { eventType: true, createdAt: true },
+    });
+    const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+    const buckets = new Map<string, { views: number; clicks: number; conversations: number }>();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      buckets.set(dayKey(d), { views: 0, clicks: 0, conversations: 0 });
+    }
+    for (const e of seriesEvents) {
+      const k = dayKey(e.createdAt);
+      const b = buckets.get(k);
+      if (!b) continue;
+      if (e.eventType === 'vendor_view' || e.eventType === 'listing_view') b.views++;
+      else if (e.eventType === 'whatsapp_click') b.clicks++;
+      else if (e.eventType === 'conversation_started') b.conversations++;
+    }
+    const daily = [...buckets.entries()].map(([date, v]) => ({ date, ...v }));
+
     res.status(200).json({
       stats: {
         totalViews,
@@ -330,6 +356,7 @@ vendorRouter.get('/me/analytics', requireAuth, async (req: AuthedRequest, res: R
         trustScore: vendor.trustScore,
       },
       topListings,
+      daily,
     });
   } catch (error) {
     next(error);

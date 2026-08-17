@@ -94,6 +94,27 @@ export async function updateReview(
   return { review: updated as unknown as ReviewWithRelations };
 }
 
+export async function deleteReview(
+  reviewId: string,
+  userId: string,
+): Promise<{ deleted: true }> {
+  const review = await prisma.review.findUnique({ where: { id: reviewId } });
+  if (!review) throw new Error('Review not found');
+  if (review.userId !== userId) throw new Error('Unauthorized');
+
+  // Cascade related rows (comments, likes) then the review itself.
+  // vendorResponse is a column on Review, removed with the row.
+  await prisma.$transaction([
+    prisma.reviewComment.deleteMany({ where: { reviewId } }),
+    prisma.reviewLike.deleteMany({ where: { reviewId } }),
+    prisma.review.delete({ where: { id: reviewId } }),
+  ]);
+
+  await updateVendorRating(review.vendorId);
+
+  return { deleted: true };
+}
+
 export async function addVendorResponse(
   reviewId: string,
   vendorId: string,
@@ -188,6 +209,30 @@ async function updateVendorRating(vendorId: string): Promise<void> {
     where: { id: vendorId },
     data: { ratingAvg: avg, ratingCount: count },
   });
+}
+
+export async function listMyReviews(
+  userId: string,
+): Promise<Array<{
+  id: string;
+  vendorId: string;
+  rating: number;
+  text: string;
+  status: string;
+  vendorResponse: string | null;
+  createdAt: Date;
+  vendor: { businessName: string; businessSlug: string };
+  listing: { title: string; slug: string } | null;
+}>> {
+  const reviews = await prisma.review.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      vendor: { select: { businessName: true, businessSlug: true } },
+      listing: { select: { title: true, slug: true } },
+    },
+  });
+  return reviews;
 }
 
 export function canEditReview(review: { createdAt: Date }): boolean {
