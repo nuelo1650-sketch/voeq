@@ -77,6 +77,7 @@ async function handler(req: NextRequest, ctx: { params: Promise<{ path?: string[
 }
 
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 export const runtime = 'nodejs';
 
 export { handler as GET, handler as POST, handler as PUT, handler as PATCH, handler as DELETE };
