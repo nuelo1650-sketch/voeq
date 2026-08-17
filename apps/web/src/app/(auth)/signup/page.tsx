@@ -1,90 +1,44 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { SignUpForm } from '@/components/auth/SignUpForm';
 import { AuthDivider } from '@/components/auth/AuthDivider';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { signInWithGoogle } from '@/lib/auth-client';
-import { motion } from 'framer-motion';
-
-type Intent = 'buyer' | 'vendor';
 
 function SignUpPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [intent, setIntent] = useState<Intent>('buyer');
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Honor ?intent=vendor from CTAs (e.g. "List your business" on the signin page).
-  useEffect(() => {
-    const q = searchParams.get('intent');
-    if (q === 'vendor' || q === 'buyer') setIntent(q);
-  }, [searchParams]);
-
   const handleSuccess = (email: string, pendingToken: string) => {
-    const params = new URLSearchParams({ email, intent, pendingToken });
+    // Client-side transition to OTP — no full page reload (continuous flow).
+    const params = new URLSearchParams({ email, pendingToken });
     router.push(`/verify-otp?${params.toString()}`);
   };
 
   const handleGoogle = async () => {
     setGoogleLoading(true);
     try {
+      const intent = searchParams.get('intent') === 'vendor' ? 'vendor' : 'buyer';
       await signInWithGoogle(intent);
     } catch {
       setGoogleLoading(false);
     }
   };
 
-  const cardBase =
-    'flex flex-col items-start rounded-2xl border p-4 text-left transition';
-  const card = (active: boolean) =>
-    `${cardBase} ${
-      active
-        ? 'border-forest-700 bg-forest-700/5 shadow-sm dark:border-cream-100/40 dark:bg-cream-100/5'
-        : 'border-cream-300 hover:border-forest-700/40 dark:border-forest-700'
-    }`;
-
   return (
     <AuthShell
       title="Create your account"
-      subtitle="Be one of the first to try Voeq at NMU."
+      subtitle="Join Voeq and connect with verified campus vendors."
     >
       <div className="px-6 pb-6 pt-8 md:px-8 md:pb-8 md:pt-10">
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={() => setIntent('buyer')}
-              aria-pressed={intent === 'buyer'}
-              className={card(intent === 'buyer')}
-            >
-              <span className="text-sm font-semibold text-forest-900 dark:text-cream-100">
-                I&apos;m a Shopper
-              </span>
-              <span className="mt-1 text-xs text-forest-700/70 dark:text-cream-100/70">
-                Browse &amp; chat with vendors
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setIntent('vendor')}
-              aria-pressed={intent === 'vendor'}
-              className={card(intent === 'vendor')}
-            >
-              <span className="text-sm font-semibold text-forest-900 dark:text-cream-100">
-                I&apos;m a vendor
-              </span>
-              <span className="mt-1 text-xs text-forest-700/70 dark:text-cream-100/70">
-                List my business
-              </span>
-            </button>
-          </div>
-
           <GoogleButton isLoading={googleLoading} onClick={handleGoogle} />
           <AuthDivider />
-          <SignUpForm onSuccess={handleSuccess} intent={intent} />
+          <SignUpForm onSuccess={handleSuccess} />
           <p className="text-center text-sm text-forest-700/70 dark:text-cream-100/70">
             Already have an account?{' '}
             <a

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { verifyOtp, resendOtp } from '@/lib/auth-client';
 import { resolvePostAuthDestination } from '@/lib/auth-redirect';
 import { Button } from '@/components/ui/Button';
@@ -21,6 +22,7 @@ export default function VerifyOtpPage() {
   const [verified, setVerified] = useState(false);
   const [resending, setResending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [shake, setShake] = useState(false);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   // Read email + intent from the URL (?email=...&intent=...) on mount.
@@ -45,6 +47,39 @@ export default function VerifyOtpPage() {
 
   const code = digits.join('');
 
+  const submitCode = useCallback(
+    async (fullCode: string) => {
+      if (fullCode.length < OTP_LENGTH) {
+        setError(`Please enter all ${OTP_LENGTH} digits`);
+        return;
+      }
+      setError(null);
+      setLoading(true);
+      try {
+        const result = await verifyOtp({ email, otp: fullCode, pendingToken });
+        if (result.user) {
+          setVerified(true);
+          const dest = resolvePostAuthDestination(
+            result.user,
+            new URLSearchParams(window.location.search).get('next'),
+          );
+          setTimeout(() => {
+            window.location.replace(dest);
+          }, 1200);
+        }
+      } catch (err: unknown) {
+        const apiError = err as { error?: string; message?: string };
+        setError(apiError.error || apiError.message || 'Invalid or expired code');
+        setShake(true);
+        setDigits(Array(OTP_LENGTH).fill(''));
+        inputsRef.current[0]?.focus();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, pendingToken],
+  );
+
   const handleChange = (index: number, value: string) => {
     // Keep only the last typed digit (numeric).
     const sanitized = value.replace(/\D/g, '');
@@ -61,9 +96,13 @@ export default function VerifyOtpPage() {
     next[index] = char;
     setDigits(next);
     setError(null);
+    setShake(false);
     // Auto-advance to the next box.
     if (index < OTP_LENGTH - 1) {
       inputsRef.current[index + 1]?.focus();
+    } else if (next.every((d) => d !== '')) {
+      // 6th digit entered and all boxes full — auto-submit.
+      void submitCode(next.join(''));
     }
   };
 
@@ -93,30 +132,7 @@ export default function VerifyOtpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (code.length < OTP_LENGTH) {
-      setError(`Please enter all ${OTP_LENGTH} digits`);
-      return;
-    }
-    setError(null);
-    setLoading(true);
-    try {
-      const result = await verifyOtp({ email, otp: code, pendingToken });
-      if (result.user) {
-        setVerified(true);
-        const dest = resolvePostAuthDestination(result.user, new URLSearchParams(window.location.search).get('next'));
-        setTimeout(() => {
-          window.location.replace(dest);
-        }, 1200);
-      }
-    } catch (err: unknown) {
-      const apiError = err as { error?: string; message?: string };
-      setError(apiError.error || apiError.message || 'Invalid or expired code');
-      // Clear the boxes so the user can retype.
-      setDigits(Array(OTP_LENGTH).fill(''));
-      inputsRef.current[0]?.focus();
-    } finally {
-      setLoading(false);
-    }
+    await submitCode(code);
   };
 
   const handleResend = async () => {
@@ -189,7 +205,12 @@ export default function VerifyOtpPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
             <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-0 h-px -translate-y-1/2 bg-gradient-to-r from-gold-500/0 via-gold-500/40 to-gold-500/0" aria-hidden="true" />
-            <div className="relative flex justify-center gap-2 sm:gap-3" onPaste={handlePaste}>
+            <motion.div
+              className="relative flex justify-center gap-2 sm:gap-3"
+              onPaste={handlePaste}
+              animate={shake ? { x: [0, -8, 8, -8, 8, 0] } : { x: 0 }}
+              transition={{ duration: 0.4 }}
+            >
               {digits.map((digit, i) => (
                 <input
                   key={i}
@@ -208,7 +229,7 @@ export default function VerifyOtpPage() {
                   aria-label={`Digit ${i + 1}`}
                 />
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {error && (

@@ -8,19 +8,24 @@ interface GoogleButtonProps {
   text?: string;
 }
 
+/**
+ * Google-brand button — kept recognizable per Google's brand guidelines
+ * (white surface, outline, 4-colour mark). Deliberately NOT reskinned to the
+ * app's forest/gold pill theme. Spinner state covers redirect latency.
+ */
 export function GoogleButton({ isLoading, onClick, text = 'Continue with Google' }: GoogleButtonProps) {
   return (
     <Button
       type="button"
-      variant="secondary"
+      variant="outline"
       size="md"
       isLoading={isLoading}
       onClick={onClick}
       fullWidth
-      className="h-12"
+      className="h-12 border border-forest-200 bg-white text-forest-900 hover:bg-cream-100 dark:border-cream-100/30 dark:bg-white dark:text-forest-900 dark:hover:bg-cream-100"
     >
       <span className="flex items-center justify-center gap-3">
-        <svg width="20" height="20" viewBox="0 0 24 24">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
